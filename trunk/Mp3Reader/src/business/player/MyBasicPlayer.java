@@ -2,6 +2,7 @@ package business.player;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import javazoom.jlgui.basicplayer.BasicController;
@@ -9,6 +10,7 @@ import javazoom.jlgui.basicplayer.BasicPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayerEvent;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
 import javazoom.jlgui.basicplayer.BasicPlayerListener;
+import oggettiWrapper.Mp3;
 import vista.NewPlayList;
 
 /**
@@ -19,12 +21,15 @@ import vista.NewPlayList;
  * Vorbis * SPI in your CLASSPATH to play MP3 and Ogg Vorbis file.
  */
 public class MyBasicPlayer implements BasicPlayerListener {
-	private PrintStream out = null;
-	private BasicPlayer control;
-	private Map<String, Object> properties;
-	private int lunghezzaFrameMp3;
-	private Integer lunghezzaByteMp3;
-	protected boolean continua = false;
+	private PrintStream          out      = null;
+	private BasicPlayer          control;
+	private HashMap<String, Mp3> mappaMp3 = new HashMap<String, Mp3>();
+	private Map<String, Object>  properties;
+	private int                  lunghezzaFrameMp3;
+	private Integer              lunghezzaByteMp3;
+	protected boolean            continua = false;
+	private static int           index;
+	private static int           size     = 1;
 
 	/**
 	 * Entry point.
@@ -207,10 +212,44 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		// ...)
 		display("stateUpdated : " + event.toString());
 		if (continua) {
-			if (event.toString().equals("STOPPED")) {
-				mappaMp3.get();
+			if (event.toString().equals("STOPPED:-1")) {
+				if (index < size) {
+					index++;
+					Mp3 mp3 = mappaMp3.get(index);
+					try {
+						control.play();
+						control.open(mp3.getMp3file());
+					} catch (BasicPlayerException e) {
+						e.printStackTrace();
+					}
+				} else {
+					index = 0;
+					Mp3 mp3 = mappaMp3.get(index);
+					try {
+						control.play();
+						control.open(mp3.getMp3file());
+					} catch (BasicPlayerException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
+	}
+
+	public static int getIndex() {
+		return index;
+	}
+
+	public static void setIndex(int index) {
+		MyBasicPlayer.index = index;
+	}
+
+	public static int getSize() {
+		return size;
+	}
+
+	public static void setSize(int size) {
+		MyBasicPlayer.size = size;
 	}
 
 	/**
@@ -254,5 +293,13 @@ public class MyBasicPlayer implements BasicPlayerListener {
 
 	public void setContinua(final boolean continua) {
 		this.continua = continua;
+	}
+
+	public HashMap<String, Mp3> getMappaMp3() {
+		return mappaMp3;
+	}
+
+	public void setMappaMp3(HashMap<String, Mp3> mappaMp3) {
+		this.mappaMp3 = mappaMp3;
 	}
 }

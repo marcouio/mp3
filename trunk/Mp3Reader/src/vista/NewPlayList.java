@@ -23,14 +23,14 @@ import business.player.MyBasicPlayer;
 
 public class NewPlayList extends JPanel {
 
-	private static final long serialVersionUID = 1L;
-	private static MyTable table;
-	final String[] nomiColonne = new String[] { "Titolo - Artista - Album" };
+	private static final long  serialVersionUID = 1L;
+	private static MyTable     table;
+	final String[]             nomiColonne      = new String[] { "Titolo - Artista - Album" };
 	private static JScrollPane scrollPane;
-	HashMap<String, Mp3> mappaMp3 = new HashMap<String, Mp3>();
-	protected MyBasicPlayer player = new MyBasicPlayer();
-	private JLabel label;
-	private JSlider slider;
+	HashMap<String, Mp3>       mappaMp3         = new HashMap<String, Mp3>();
+	protected MyBasicPlayer    player           = new MyBasicPlayer();
+	private JLabel             label;
+	private JSlider            slider;
 
 	public static void main(final String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -92,23 +92,10 @@ public class NewPlayList extends JPanel {
 					if (player != null) {
 						player.stop();
 					}
-					if (continua) {
-						final int i = riga;
-						// while (i < mappaMp3.size()) {
-						fileMp3 = mappaMp3.get(Integer.toString(i));
-						label.setText(fileMp3.getNome());
-						player.opener(fileMp3.getMp3file().getAbsolutePath());
-						player.play();
-						// if (player.getStato() == BasicPlayer.STOPPED ||
-						// player.getStato() == BasicPlayer.PAUSED) {
-						// i++;
-						// }
-						// }
-					} else {
-						label.setText(fileMp3.getNome());
-						player.opener(fileMp3.getMp3file().getAbsolutePath());
-						player.play();
-					}
+					player.setIndex(riga);
+					label.setText(fileMp3.getNome());
+					player.opener(fileMp3.getMp3file().getAbsolutePath());
+					player.play();
 				}
 			}
 		});
@@ -148,9 +135,9 @@ public class NewPlayList extends JPanel {
 			@Override
 			public void mouseReleased(final MouseEvent e) {
 				if (checkContinue.isSelected()) {
-					continua = true;
+					player.setContinua(true);
 				} else {
-					continua = false;
+					player.setContinua(false);
 				}
 			}
 
@@ -182,16 +169,6 @@ public class NewPlayList extends JPanel {
 				final int valore = slider.getValue();
 				player.stop();
 				player.salta(valore);
-			}
-
-			@Override
-			public void mouseDragged(final MouseEvent arg0) {
-				player.stop();
-			}
-
-			@Override
-			public void mousePressed(final MouseEvent arg0) {
-				player.stop();
 			}
 
 		});
@@ -266,13 +243,5 @@ public class NewPlayList extends JPanel {
 
 	public void setLabel(final JLabel label) {
 		this.label = label;
-	}
-
-	public boolean isContinua() {
-		return continua;
-	}
-
-	public void setContinua(final boolean continua) {
-		this.continua = continua;
 	}
 }

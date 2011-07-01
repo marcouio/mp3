@@ -14,6 +14,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import oggettiWrapper.Mp3;
 import business.Controllore;
 import business.Mp3ReaderUtil;
 import business.operazioni.ordinatore.Ordinatore;
@@ -27,12 +28,12 @@ public class Pannello extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private JTextField cartellaInput;
-	private JTextField txtCartellaOutput;
-	private static Pannello singleton;
-	private boolean perFile = false;
+	private JTextField        cartellaInput;
+	private JTextField        txtCartellaOutput;
+	private static Pannello   singleton;
+	private boolean           perFile          = false;
 
-	private JCheckBox chckbxPerFile;
+	private JCheckBox         chckbxPerFile;
 
 	public static Pannello getSingleton() {
 		if (singleton == null) {
@@ -87,7 +88,8 @@ public class Pannello extends JPanel {
 					final String[] nomiColonne = Controllore.getSingleton().getVista().getPlayList().getNomiColonne();
 					final JScrollPane scroll = Controllore.getSingleton().getVista().getPlayList().getScrollPane();
 					MyTable table = Controllore.getSingleton().getVista().getPlayList().getTable();
-					table = new MyTable(raccogli.getCanzoni(), nomiColonne);
+					Mp3[][] canzoni = raccogli.getCanzoni();
+					table = new MyTable(canzoni, nomiColonne);
 					Controllore.getSingleton().getVista().getPlayList().setTable(table);
 					scroll.setViewportView(table);
 					Controllore.getSingleton().getVista().repaint();
