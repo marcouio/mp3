@@ -1,0 +1,6 @@
+jid3lib-0.5.4.jar
+jl1.0.1.jar
+basicplayer3.0.jar
+commons-logging-api.jar
+tritonus_share.jar
+mp3spi1.9.4.jar
