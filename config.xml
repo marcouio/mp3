@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  -->
+<config>
+	
+	<estensioni>
+		<accettate valore=".mp3">
+			<estensione valore=".mp3"></estensione>
+		</accettate>
+		
+		<scompattare>
+			<estensione valore=".rar"></estensione>
+			<estensione valore=".zip"></estensione>
+		</scompattare>
+		
+		<ordinare>
+			<estensione valore=".m3u"></estensione>
+			<estensione valore=".jpg"></estensione>
+		</ordinare>
+		
+		<!-- <rifiutate>
+			<estensione valore=".doc"></estensione>
+			<estensione valore=".ini"></estensione>
+			<estensione valore=".db"></estensione>
+			<estensione valore=".sqlite"></estensione>
+			<estensione valore=".jsp"></estensione>
+			<estensione valore=".gif"></estensione>
+			<estensione valore=".js"></estensione>
+			<estensione valore=".css"></estensione>
+			<estensione valore=".epub"></estensione>
+			<estensione valore=".pdf"></estensione>
+			<estensione valore=".gz"></estensione>
+			<estensione valore=".bat"></estensione>
+			<estensione valore=".cmd"></estensione>
+			<estensione valore=".html"></estensione>
+			<estensione valore=".zip"></estensione>
+			<estensione valore=".url"></estensione>
+			<estensione valore=".jar"></estensione>
+			<estensione valore=".jpeg"></estensione>
+			<estensione valore=".jpg"></estensione>
+			<estensione valore=".exe"></estensione>
+			<estensione valore=".xls"></estensione>
+			<estensione valore=".xml"></estensione>
+			<estensione valore=".txt"></estensione>
+			<estensione valore=".nfo"></estensione>
+			<estensione valore=".m3u"></estensione>
+			<estensione valore=".odt"></estensione>
+		</rifiutate> -->
+	</estensioni>
+</config>
