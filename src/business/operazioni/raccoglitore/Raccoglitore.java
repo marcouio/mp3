@@ -17,13 +17,13 @@ import business.Controllore;
 import business.check.CheckFile;
 import business.operazioni.IOperazioni;
 import business.operazioni.OperazioniBaseTagFile;
+import business.player.MyBasicPlayer;
 
 public class Raccoglitore extends OperazioniBaseTagFile implements IRaccoglitore {
 
-	public Raccoglitore() {
-	}
+	public Raccoglitore() {}
 
-	ArrayList<Mp3> listaFile = new ArrayList<Mp3>();
+	ArrayList<Mp3>  listaFile = new ArrayList<Mp3>();
 
 	private Mp3[][] canzoni;
 
@@ -34,6 +34,7 @@ public class Raccoglitore extends OperazioniBaseTagFile implements IRaccoglitore
 
 	private Mp3[][] costruisciMatrice() {
 		final Mp3[][] dati = new Mp3[listaFile.size()][1];
+		MyBasicPlayer.setSize(listaFile.size());
 		for (int i = 0; i < listaFile.size(); i++) {
 			final Mp3 mp3 = listaFile.get(i);
 			dati[i][0] = mp3;
@@ -57,7 +58,8 @@ public class Raccoglitore extends OperazioniBaseTagFile implements IRaccoglitore
 	}
 
 	@Override
-	protected void operazioneTagPresenti(final String pathFile2, final File f, final Tag tag) throws IOException {
+	protected void operazioneTagPresenti(final String pathFile2, final File f, final Tag tag)
+	    throws IOException {
 		Mp3 mp3;
 		try {
 			mp3 = new Mp3(f);
