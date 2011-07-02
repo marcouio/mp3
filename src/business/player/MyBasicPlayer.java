@@ -30,6 +30,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 	protected boolean            continua = false;
 	private static int           index;
 	private static int           size     = 1;
+	private NewPlayList          playList;
 
 	/**
 	 * Entry point.
@@ -43,8 +44,9 @@ public class MyBasicPlayer implements BasicPlayerListener {
 	}
 
 	/** * Contructor. */
-	public MyBasicPlayer() {
+	public MyBasicPlayer(NewPlayList playList) {
 		out = System.out;
+		this.playList = playList;
 	}
 
 	public int getStato() {
@@ -78,7 +80,6 @@ public class MyBasicPlayer implements BasicPlayerListener {
 	public void salta(final int slider) {
 		try {
 			if (control != null) {
-				control.pause();
 				control.seek(setPosizioneCanzone(slider));
 				control.resume();
 			}
@@ -195,8 +196,6 @@ public class MyBasicPlayer implements BasicPlayerListener {
 	public int setPosizioneCanzone(final int posizioneSlider) {
 		// 100: lunghezzaMp3 = slider : x
 		properties.get("position.byte");
-		System.out.println("lunghezzaByteMp3: " + lunghezzaByteMp3);
-		System.out.println("posizione: " + lunghezzaByteMp3 * posizioneSlider / 100);
 		return lunghezzaByteMp3 * posizioneSlider / 100;
 
 	}
@@ -212,26 +211,17 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		// ...)
 		display("stateUpdated : " + event.toString());
 		if (continua) {
-			if (event.toString().equals("STOPPED:-1")) {
+			// TODO
+			if (event.toString().equals("STOPPED:-1") && ((Long) properties.get("mp3.position.byte")).intValue() >= (lunghezzaByteMp3 - 150000)) {
 				if (index < size) {
 					index++;
-					Mp3 mp3 = mappaMp3.get(index);
-					try {
-						control.play();
-						control.open(mp3.getMp3file());
-					} catch (BasicPlayerException e) {
-						e.printStackTrace();
-					}
 				} else {
 					index = 0;
-					Mp3 mp3 = mappaMp3.get(index);
-					try {
-						control.play();
-						control.open(mp3.getMp3file());
-					} catch (BasicPlayerException e) {
-						e.printStackTrace();
-					}
 				}
+				Mp3 mp3 = mappaMp3.get(Integer.toString(index));
+				opener(mp3.getMp3file().getAbsolutePath());
+				playList.getLabel().setText(mp3.getMp3file().getName());
+				play();
 			}
 		}
 	}
@@ -301,5 +291,13 @@ public class MyBasicPlayer implements BasicPlayerListener {
 
 	public void setMappaMp3(HashMap<String, Mp3> mappaMp3) {
 		this.mappaMp3 = mappaMp3;
+	}
+
+	public NewPlayList getPlayList() {
+		return playList;
+	}
+
+	public void setPlayList(NewPlayList playList) {
+		this.playList = playList;
 	}
 }
