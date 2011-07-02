@@ -8,6 +8,6 @@
 	<classpathentry kind="lib" path="/home/kiwi/Scaricati/Software/lib/jlgui3.0/lib/tritonus_share.jar"/>
 	<classpathentry kind="lib" path="/home/kiwi/Scaricati/Software/lib/jlgui3.0/lib/mp3spi1.9.4.jar"/>
 	<classpathentry kind="lib" path="/home/kiwi/Scaricati/Software/lib/jlgui3.0/lib/commons-logging-api.jar"/>
-	<classpathentry kind="lib" path="/home/kiwi/Scaricati/Software/lib/jlgui3.0/lib/basicplayer3.0.jar"/>
+	<classpathentry kind="lib" path="/home/kiwi/Scaricati/Software/lib/jlgui3.0/lib/basicplayer3.0.jar" sourcepath="/home/kiwi/Scaricati/Software/lib/basicplayer3.0.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

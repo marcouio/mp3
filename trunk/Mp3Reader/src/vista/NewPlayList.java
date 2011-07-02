@@ -28,7 +28,7 @@ public class NewPlayList extends JPanel {
 	final String[]             nomiColonne      = new String[] { "Titolo - Artista - Album" };
 	private static JScrollPane scrollPane;
 	HashMap<String, Mp3>       mappaMp3         = new HashMap<String, Mp3>();
-	protected MyBasicPlayer    player           = new MyBasicPlayer();
+	protected MyBasicPlayer    player           = new MyBasicPlayer(this);
 	private JLabel             label;
 	private JSlider            slider;
 
@@ -92,7 +92,8 @@ public class NewPlayList extends JPanel {
 					if (player != null) {
 						player.stop();
 					}
-					player.setIndex(riga);
+					player.setMappaMp3(mappaMp3);
+					MyBasicPlayer.setIndex(riga);
 					label.setText(fileMp3.getNome());
 					player.opener(fileMp3.getMp3file().getAbsolutePath());
 					player.play();
@@ -167,9 +168,13 @@ public class NewPlayList extends JPanel {
 			@Override
 			public void mouseReleased(final MouseEvent e) {
 				final int valore = slider.getValue();
-				player.stop();
 				player.salta(valore);
 			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				        // player.stop();
+			        }
 
 		});
 		add(slider);
