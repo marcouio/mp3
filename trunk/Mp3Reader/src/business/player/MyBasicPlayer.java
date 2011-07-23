@@ -21,16 +21,16 @@ import vista.NewPlayList;
  * Vorbis * SPI in your CLASSPATH to play MP3 and Ogg Vorbis file.
  */
 public class MyBasicPlayer implements BasicPlayerListener {
-	private PrintStream          out      = null;
-	private BasicPlayer          control;
+	private PrintStream out = null;
+	private BasicPlayer control;
 	private HashMap<String, Mp3> mappaMp3 = new HashMap<String, Mp3>();
-	private Map<String, Object>  properties;
-	private int                  lunghezzaFrameMp3;
-	private Integer              lunghezzaByteMp3;
-	protected boolean            continua = false;
-	private static int           index;
-	private static int           size     = 1;
-	private NewPlayList          playList;
+	private Map<String, Object> properties;
+	private int lunghezzaFrameMp3;
+	private Integer lunghezzaByteMp3;
+	protected boolean continua = false;
+	private static int index;
+	private static int size = 1;
+	private NewPlayList playList;
 
 	/**
 	 * Entry point.
@@ -44,11 +44,14 @@ public class MyBasicPlayer implements BasicPlayerListener {
 	}
 
 	/** * Contructor. */
-	public MyBasicPlayer(NewPlayList playList) {
+	public MyBasicPlayer(final NewPlayList playList) {
 		out = System.out;
 		this.playList = playList;
 	}
 
+	/**
+	 * @return lo stato del player
+	 */
 	public int getStato() {
 		int stato = 0;
 		if (control != null) {
@@ -57,6 +60,9 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		return stato;
 	}
 
+	/**
+	 * manda il player in pausa
+	 */
 	public void stop() {
 		try {
 			if (control != null) {
@@ -67,6 +73,11 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		}
 	}
 
+	/**
+	 * setta il volume (da 0.0 a 1.0)
+	 * 
+	 * @param volume
+	 */
 	public void setGain(final double volume) {
 		try {
 			if (control != null) {
@@ -77,6 +88,12 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		}
 	}
 
+	/**
+	 * manda il player alla posizione indicata dallo slider passato come
+	 * parametro
+	 * 
+	 * @param slider
+	 */
 	public void salta(final int slider) {
 		try {
 			if (control != null) {
@@ -88,10 +105,19 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		}
 	}
 
+	/**
+	 * @return il basicPlayer
+	 */
 	public BasicPlayer getControl() {
 		return control;
 	}
 
+	/**
+	 * Apre un file preparandolo ad essere suonato. chiamare il metodo prima di
+	 * play()
+	 * 
+	 * @param filename
+	 */
 	public void opener(final String filename) {
 		// Instantiate BasicPlayer.
 		final BasicPlayer player = new BasicPlayer();
@@ -119,7 +145,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 			// control.setGain(0.85);
 			// Set Pan (-1.0 to 1.0).
 			control.setPan(1.0);
-			control.setGain(0.5);
+			// control.setGain(0.5);
 		} catch (final BasicPlayerException e) {
 			e.printStackTrace();
 		}
@@ -185,6 +211,12 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		}
 	}
 
+	/**
+	 * trasforma la posizione della canzone in posizione dello slider della
+	 * durata
+	 * 
+	 * @return
+	 */
 	public int setLivelloSlider() {
 		final Long numeroFrame = (Long) properties.get("mp3.frame");
 		// lunghezzaMp3 : 100 = numeroFrame : x
@@ -218,7 +250,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 				} else {
 					index = 0;
 				}
-				Mp3 mp3 = mappaMp3.get(Integer.toString(index));
+				final Mp3 mp3 = mappaMp3.get(Integer.toString(index));
 				opener(mp3.getMp3file().getAbsolutePath());
 				playList.getLabel().setText(mp3.getMp3file().getName());
 				play();
@@ -230,7 +262,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		return index;
 	}
 
-	public static void setIndex(int index) {
+	public static void setIndex(final int index) {
 		MyBasicPlayer.index = index;
 	}
 
@@ -238,7 +270,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		return size;
 	}
 
-	public static void setSize(int size) {
+	public static void setSize(final int size) {
 		MyBasicPlayer.size = size;
 	}
 
@@ -289,7 +321,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		return mappaMp3;
 	}
 
-	public void setMappaMp3(HashMap<String, Mp3> mappaMp3) {
+	public void setMappaMp3(final HashMap<String, Mp3> mappaMp3) {
 		this.mappaMp3 = mappaMp3;
 	}
 
@@ -297,7 +329,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		return playList;
 	}
 
-	public void setPlayList(NewPlayList playList) {
+	public void setPlayList(final NewPlayList playList) {
 		this.playList = playList;
 	}
 }
