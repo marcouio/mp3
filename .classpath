@@ -2,12 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="/home/kiwi/Scaricati/Software/lib/jid3lib-0.5.4/dist/jid3lib-0.5.4.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Utility"/>
-	<classpathentry kind="lib" path="/home/kiwi/Scaricati/Software/lib/JLayer1.0.1/jl1.0.1.jar"/>
-	<classpathentry kind="lib" path="/home/kiwi/Scaricati/Software/lib/jlgui3.0/lib/tritonus_share.jar"/>
-	<classpathentry kind="lib" path="/home/kiwi/Scaricati/Software/lib/jlgui3.0/lib/mp3spi1.9.4.jar"/>
-	<classpathentry kind="lib" path="/home/kiwi/Scaricati/Software/lib/jlgui3.0/lib/commons-logging-api.jar"/>
-	<classpathentry kind="lib" path="/home/kiwi/Scaricati/Software/lib/jlgui3.0/lib/basicplayer3.0.jar" sourcepath="/home/kiwi/Scaricati/Software/lib/basicplayer3.0.zip"/>
+	<classpathentry kind="lib" path="/media/0C29-A879/lib/jid3lib-0.5.4.jar"/>
+	<classpathentry kind="lib" path="/media/0C29-A879/lib/jlgui3.0/lib/jl1.0.jar"/>
+	<classpathentry kind="lib" path="/media/0C29-A879/lib/jlgui3.0/lib/tritonus_share.jar"/>
+	<classpathentry kind="lib" path="/media/0C29-A879/lib/jlgui3.0/lib/mp3spi1.9.4.jar"/>
+	<classpathentry kind="lib" path="/media/0C29-A879/lib/jlgui3.0/lib/commons-logging-api.jar"/>
+	<classpathentry kind="lib" path="/media/0C29-A879/lib/jlgui3.0/lib/basicplayer3.0.jar" sourcepath="/home/kiwi/Scaricati/Software/lib/basicplayer3.0.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
