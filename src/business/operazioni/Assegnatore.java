@@ -37,42 +37,58 @@ public class Assegnatore {
 
 		final Tag tag = file.getTag() == null ? new TagTipo1() : file.getTag();
 
+
 		// verifico che il nome contiene il regex e il punto dell'estensione
 		if (nome != null && nome.contains(regex) && nome.contains(".")) {
 
 			// cerco l'indice del punto dell'estensione
 			final int punto = info[info.length - 1].lastIndexOf(".");
 
-			try {
-				// se la prima info è lunga due potrebbe essere il numero della
-				// traccia sull'album
-				if (info[0].length() == 2) {
+			boolean hasNumTrack = hasNumberTrack(info);
+			if(hasNumTrack){
 
-					// provo a castare la prima info in integer
-					Integer.parseInt(info[0]);
-				} else {
-					throw new Exception();
-				}
-				// la prima è la traccia e ha tre informazioni
+				//la prima è la traccia e ha tre informazioni
 				if (info.length == 3) {
 					setTagConTreInfo(info, tag, punto);
-					// se la prima è la traccia e ha due informazioni
+		        // se la prima è la traccia e ha due informazioni
 				} else if (info.length == 2) {
 					setTagConDueInfoNTraccia(info, tag, punto);
 				}
-			} catch (final Exception e) {
-				// la prima non è traccia e la seconda non ha info
-				if (info.length == 2) {
-					setTagConDueInfoAlbumSong(info, tag);
-				}
+			}
+		
+			// la prima non è traccia e la seconda non ha info
+			if (info.length == 2) {
+				setTagConDueInfoAlbumSong(info, tag, punto);
 			}
 
-			file.setTag(tag);
-
-			this.setTag(tag);
+			if(tag.getArtistaPrincipale() != null && !tag.getArtistaPrincipale().equals("") &&
+			   tag.getTitoloCanzone() != null && !tag.getTitoloCanzone().equals("")){
+				this.setTag(tag);
+			}
+		}else if(nome != null && !nome.contains(regex) && nome.contains(".")){
+			
+			// cerco l'indice del punto dell'estensione
+			final int punto = info[info.length - 1].lastIndexOf(".");
+			String traccia = info[0].substring(0, punto);
+			tag.setTitoloCanzone(traccia);
 		}
+		file.setTag(tag);
 		this.setFile(file);
 
+	}
+
+	private boolean hasNumberTrack(final String[] info) {
+		try{
+			// se la prima info è lunga due potrebbe essere il numero della traccia sull'album
+			if (info[0].length() == 2) {
+	
+				// provo a castare la prima info in integer
+				Integer.parseInt(info[0]);
+				return true;
+			}
+		}catch (Exception e) {
+		}
+		return false;
 	}
 
 	public void save(final File f) {
@@ -83,11 +99,11 @@ public class Assegnatore {
 		this.file = file;
 	}
 
-	private void setTagConDueInfoAlbumSong(final String[] info, final Tag tag) {
+	private void setTagConDueInfoAlbumSong(final String[] info, final Tag tag, final int punto) {
 		String artista;
 		String song;
 		artista = info[0];
-		song = info[1];
+		song = info[1].substring(0, punto);
 
 		if (Mp3ReaderUtil.noNull(new String[] { artista, song })) {
 			tag.setArtistaPrincipale(artista);

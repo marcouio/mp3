@@ -46,7 +46,7 @@ public class Ordinatore extends OperazioniBaseTagFile {
 				final Tag tag = assegna.getTag();
 				assegna.save(f);
 				if (tag != null) {
-					if (tag.getArtistaPrincipale() != null && tag.getNomeAlbum() != null && tag.getArtistaPrincipale() != "" && tag.getNomeAlbum() != "") {
+					if (isTagsValorizzati(tag)) {
 						operazioneTagPresenti(pathFile2, f, tag);
 					}
 				}
@@ -58,6 +58,10 @@ public class Ordinatore extends OperazioniBaseTagFile {
 			e.printStackTrace();
 		}
 
+	}
+
+	protected boolean isTagsValorizzati(final Tag tag) {
+		return tag.getArtistaPrincipale() != null && tag.getNomeAlbum() != null && tag.getArtistaPrincipale() != "" && tag.getNomeAlbum() != "";
 	}
 
 	@Override

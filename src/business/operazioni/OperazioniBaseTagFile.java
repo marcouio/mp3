@@ -2,7 +2,6 @@ package business.operazioni;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -20,8 +19,6 @@ import business.check.CheckFile;
 public abstract class OperazioniBaseTagFile extends OperazioniBase {
 
 	protected CheckFile checkFile;
-
-	protected ArrayList<String> cartelleDaScorrere = new ArrayList<String>();
 
 	public OperazioniBaseTagFile() {
 		initCheckFile();
