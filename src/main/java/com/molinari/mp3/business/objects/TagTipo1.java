@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.business.objects;
+package com.molinari.mp3.business.objects;
 
 import java.io.RandomAccessFile;
 

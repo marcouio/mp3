@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.views;
+package com.molinari.mp3.views;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -15,10 +15,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import main.java.com.molinari.mp3.business.Controllore;
-import main.java.com.molinari.mp3.business.objects.Mp3;
-import main.java.com.molinari.mp3.business.operation.binder.Raccoglitore;
-import main.java.com.molinari.mp3.business.player.MyBasicPlayer;
+import com.molinari.mp3.business.Controllore;
+import com.molinari.mp3.business.objects.Mp3;
+import com.molinari.mp3.business.operation.binder.Raccoglitore;
+import com.molinari.mp3.business.player.MyBasicPlayer;
 
 public class MyMenu extends JMenuBar {
 

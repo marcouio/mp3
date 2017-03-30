@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.views;
+package com.molinari.mp3.views;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;

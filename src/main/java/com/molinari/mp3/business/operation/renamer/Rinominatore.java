@@ -1,14 +1,14 @@
-package main.java.com.molinari.mp3.business.operation.renamer;
+package com.molinari.mp3.business.operation.renamer;
 
 import java.io.File;
 import java.io.IOException;
 
-import main.java.com.molinari.mp3.business.Controllore;
-import main.java.com.molinari.mp3.business.check.CheckFile;
-import main.java.com.molinari.mp3.business.objects.Tag;
-import main.java.com.molinari.mp3.business.operation.Assegnatore;
-import main.java.com.molinari.mp3.business.operation.IOperazioni;
-import main.java.com.molinari.mp3.business.operation.OperazioniBaseTagFile;
+import com.molinari.mp3.business.Controllore;
+import com.molinari.mp3.business.check.CheckFile;
+import com.molinari.mp3.business.objects.Tag;
+import com.molinari.mp3.business.operation.Assegnatore;
+import com.molinari.mp3.business.operation.IOperazioni;
+import com.molinari.mp3.business.operation.OperazioniBaseTagFile;
 
 public class Rinominatore extends OperazioniBaseTagFile {
 

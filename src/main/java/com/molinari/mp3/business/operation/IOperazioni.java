@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.business.operation;
+package com.molinari.mp3.business.operation;
 
 public interface IOperazioni {
 

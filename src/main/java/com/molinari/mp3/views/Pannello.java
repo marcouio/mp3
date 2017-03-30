@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.views;
+package com.molinari.mp3.views;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,15 +14,15 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import main.java.com.molinari.mp3.business.Controllore;
-import main.java.com.molinari.mp3.business.Mp3ReaderUtil;
-import main.java.com.molinari.mp3.business.objects.Mp3;
-import main.java.com.molinari.mp3.business.operation.binder.Raccoglitore;
-import main.java.com.molinari.mp3.business.operation.renamer.Rinominatore;
-import main.java.com.molinari.mp3.business.operation.tidier.Ordinatore;
-import main.java.com.molinari.mp3.business.operation.writer.Scrittore;
-import main.java.com.molinari.mp3.business.operation.writer.ScrittoreListaAlbumDaCartelle;
-import main.java.com.molinari.mp3.business.operation.writer.ScrittoreListaAlbumDaFile;
+import com.molinari.mp3.business.Controllore;
+import com.molinari.mp3.business.Mp3ReaderUtil;
+import com.molinari.mp3.business.objects.Mp3;
+import com.molinari.mp3.business.operation.binder.Raccoglitore;
+import com.molinari.mp3.business.operation.renamer.Rinominatore;
+import com.molinari.mp3.business.operation.tidier.Ordinatore;
+import com.molinari.mp3.business.operation.writer.Scrittore;
+import com.molinari.mp3.business.operation.writer.ScrittoreListaAlbumDaCartelle;
+import com.molinari.mp3.business.operation.writer.ScrittoreListaAlbumDaFile;
 
 public class Pannello extends JPanel {
 

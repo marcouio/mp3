@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.business.operation.tidier;
+package com.molinari.mp3.business.operation.tidier;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,16 +8,16 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-import main.java.com.molinari.mp3.business.Controllore;
-import main.java.com.molinari.mp3.business.Mp3ReaderUtil;
-import main.java.com.molinari.mp3.business.check.CheckFile;
-import main.java.com.molinari.mp3.business.check.CheckFileOrdina;
-import main.java.com.molinari.mp3.business.objects.Mp3;
-import main.java.com.molinari.mp3.business.objects.Tag;
-import main.java.com.molinari.mp3.business.operation.Assegnatore;
-import main.java.com.molinari.mp3.business.operation.IOperazioni;
-import main.java.com.molinari.mp3.business.operation.OperazioniBaseTagFile;
-import main.java.com.molinari.mp3.views.Alert;
+import com.molinari.mp3.business.Controllore;
+import com.molinari.mp3.business.Mp3ReaderUtil;
+import com.molinari.mp3.business.check.CheckFile;
+import com.molinari.mp3.business.check.CheckFileOrdina;
+import com.molinari.mp3.business.objects.Mp3;
+import com.molinari.mp3.business.objects.Tag;
+import com.molinari.mp3.business.operation.Assegnatore;
+import com.molinari.mp3.business.operation.IOperazioni;
+import com.molinari.mp3.business.operation.OperazioniBaseTagFile;
+import com.molinari.mp3.views.Alert;
 
 public class Ordinatore extends OperazioniBaseTagFile {
 

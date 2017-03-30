@@ -1,9 +1,9 @@
-package main.java.com.molinari.mp3.business;
+package com.molinari.mp3.business;
 
 import java.awt.EventQueue;
 
-import main.java.com.molinari.mp3.business.operation.IOperazioni;
-import main.java.com.molinari.mp3.views.Vista;
+import com.molinari.mp3.business.operation.IOperazioni;
+import com.molinari.mp3.views.Vista;
 
 public class Controllore {
 	private static int operazione = IOperazioni.DEFAULT;

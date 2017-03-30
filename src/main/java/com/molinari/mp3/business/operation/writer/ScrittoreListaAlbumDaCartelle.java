@@ -1,12 +1,12 @@
-package main.java.com.molinari.mp3.business.operation.writer;
+package com.molinari.mp3.business.operation.writer;
 
 import java.io.File;
 import java.io.IOException;
 
-import main.java.com.molinari.mp3.business.Mp3ReaderUtil;
-import main.java.com.molinari.mp3.business.objects.MyTagException;
-import main.java.com.molinari.mp3.business.operation.OperazioniBaseCartelle;
-import main.java.com.molinari.mp3.views.Alert;
+import com.molinari.mp3.business.Mp3ReaderUtil;
+import com.molinari.mp3.business.objects.MyTagException;
+import com.molinari.mp3.business.operation.OperazioniBaseCartelle;
+import com.molinari.mp3.views.Alert;
 
 public class ScrittoreListaAlbumDaCartelle extends OperazioniBaseCartelle implements Scrittore {
 

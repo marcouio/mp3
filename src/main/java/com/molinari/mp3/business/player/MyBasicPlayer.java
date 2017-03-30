@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.business.player;
+package com.molinari.mp3.business.player;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -10,8 +10,8 @@ import javazoom.jlgui.basicplayer.BasicPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayerEvent;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
 import javazoom.jlgui.basicplayer.BasicPlayerListener;
-import main.java.com.molinari.mp3.business.objects.Mp3;
-import main.java.com.molinari.mp3.views.NewPlayList;
+import com.molinari.mp3.business.objects.Mp3;
+import com.molinari.mp3.views.NewPlayList;
 
 /**
  * * This class implements a simple player based on BasicPlayer. * BasicPlayer

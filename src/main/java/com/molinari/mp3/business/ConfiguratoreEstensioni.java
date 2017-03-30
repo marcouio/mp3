@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.business;
+package com.molinari.mp3.business;
 
 import java.io.File;
 import java.io.IOException;

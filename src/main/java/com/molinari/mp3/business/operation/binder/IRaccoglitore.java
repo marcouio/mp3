@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.business.operation.binder;
+package com.molinari.mp3.business.operation.binder;
 
 public interface IRaccoglitore {
 

@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.views;
+package com.molinari.mp3.views;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,9 +17,9 @@ import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
-import main.java.com.molinari.mp3.business.Mp3ReaderUtil;
-import main.java.com.molinari.mp3.business.objects.Mp3;
-import main.java.com.molinari.mp3.business.player.MyBasicPlayer;
+import com.molinari.mp3.business.Mp3ReaderUtil;
+import com.molinari.mp3.business.objects.Mp3;
+import com.molinari.mp3.business.player.MyBasicPlayer;
 
 public class NewPlayList extends JPanel {
 

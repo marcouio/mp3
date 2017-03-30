@@ -1,10 +1,10 @@
-package main.java.com.molinari.mp3.business.operation;
+package com.molinari.mp3.business.operation;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import main.java.com.molinari.mp3.business.Mp3ReaderUtil;
+import com.molinari.mp3.business.Mp3ReaderUtil;
 
 public class OperazioniBase {
 	// per i file

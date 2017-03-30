@@ -1,8 +1,8 @@
-package main.java.com.molinari.mp3.views;
+package com.molinari.mp3.views;
 
 import javax.swing.JTable;
 
-import main.java.com.molinari.mp3.business.objects.Mp3;
+import com.molinari.mp3.business.objects.Mp3;
 
 public class MyTable extends JTable {
 

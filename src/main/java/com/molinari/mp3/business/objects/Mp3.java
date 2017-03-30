@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.business.objects;
+package com.molinari.mp3.business.objects;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +10,8 @@ import org.farng.mp3.id3.ID3v2_2;
 import org.farng.mp3.id3.ID3v2_3;
 import org.farng.mp3.id3.ID3v2_4;
 
-import main.java.com.molinari.mp3.business.Mp3ReaderUtil;
-import main.java.com.molinari.mp3.business.operation.OperazioniBase;
+import com.molinari.mp3.business.Mp3ReaderUtil;
+import com.molinari.mp3.business.operation.OperazioniBase;
 
 public class Mp3 extends MP3File {
 

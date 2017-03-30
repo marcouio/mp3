@@ -1,13 +1,13 @@
-package main.java.com.molinari.mp3.business.operation;
+package com.molinari.mp3.business.operation;
 
 import java.io.File;
 import java.io.IOException;
 
-import main.java.com.molinari.mp3.business.Mp3ReaderUtil;
-import main.java.com.molinari.mp3.business.objects.Mp3;
-import main.java.com.molinari.mp3.business.objects.MyTagException;
-import main.java.com.molinari.mp3.business.objects.Tag;
-import main.java.com.molinari.mp3.business.objects.TagTipo1;
+import com.molinari.mp3.business.Mp3ReaderUtil;
+import com.molinari.mp3.business.objects.Mp3;
+import com.molinari.mp3.business.objects.MyTagException;
+import com.molinari.mp3.business.objects.Tag;
+import com.molinari.mp3.business.objects.TagTipo1;
 
 public class Assegnatore {
 

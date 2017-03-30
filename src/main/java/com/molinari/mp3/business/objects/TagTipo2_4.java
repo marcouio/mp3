@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.business.objects;
+package com.molinari.mp3.business.objects;
 
 import org.farng.mp3.id3.AbstractID3v2;
 import org.farng.mp3.id3.ID3v2_4;

@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.business.check;
+package com.molinari.mp3.business.check;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-import main.java.com.molinari.mp3.business.objects.Mp3;
+import com.molinari.mp3.business.objects.Mp3;
 
 public class CheckFile {
 

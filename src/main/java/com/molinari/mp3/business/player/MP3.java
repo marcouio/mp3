@@ -1,4 +1,4 @@
-package main.java.com.molinari.mp3.business.player;
+package com.molinari.mp3.business.player;
 
 /*************************************************************************
  *  Compilation:  javac -classpath .:jl1.0.jar MP3.java         (OS X)
