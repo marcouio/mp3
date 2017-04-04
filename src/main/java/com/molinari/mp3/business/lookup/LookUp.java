@@ -90,10 +90,18 @@ public class LookUp {
 	}
 
 	public String getChromaprintCommand() {
-		System.setProperty("com.molinari.AcoustID.fpcalc", "C:/Users/Marco/workspace/Mp3Reader/lib/native/win32-x64/fpcalc.exe");
+//		System.setProperty("com.molinari.AcoustID.fpcalc", "C:/Users/Marco/workspace/Mp3Reader/lib/native/win32-x64/fpcalc.exe");
 		// use fpcalc executable path as specified by the cmdline or default to
 		// "fpcalc" and let the shell figure it out
-		return System.getProperty("com.molinari.AcoustID.fpcalc", "fpcalc");
+		String property = System.getProperty("com.molinari.AcoustID.fpcalc", "fpcalc");
+		if(property == null){
+			final String os = System.getProperty("os.name");
+			if (os.startsWith("Win")) {
+				property = "";
+				
+			}
+		}
+		return property;
 	}
 
 	public Map<ChromaprintField, String> fpcalc(File file) throws IOException, InterruptedException {
