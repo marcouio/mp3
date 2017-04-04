@@ -93,11 +93,12 @@ public class LookUp {
 //		System.setProperty("com.molinari.AcoustID.fpcalc", "C:/Users/Marco/workspace/Mp3Reader/lib/native/win32-x64/fpcalc.exe");
 		// use fpcalc executable path as specified by the cmdline or default to
 		// "fpcalc" and let the shell figure it out
-		String property = System.getProperty("com.molinari.AcoustID.fpcalc", "fpcalc");
+		String property = System.getProperty("com.molinari.AcoustID.fpcalc");
 		if(property == null){
 			final String os = System.getProperty("os.name");
 			if (os.startsWith("Win")) {
-				property = "";
+				URL resource = Thread.currentThread().getContextClassLoader().getResource("fpcalc/fpcalc.exe");
+				property = resource.getPath();
 				
 			}
 		}

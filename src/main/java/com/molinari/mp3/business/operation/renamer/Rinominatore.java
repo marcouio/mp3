@@ -15,13 +15,19 @@ import com.molinari.mp3.business.operation.IOperazioni;
 import com.molinari.mp3.business.operation.OperazioniBaseTagFile;
 
 public class Rinominatore extends OperazioniBaseTagFile {
+	
+	String key = "0B3qZnQc";
+	
+	public Rinominatore(String key) {
+		this.key = key;
+	}
 
 	private void valorizzaTag(final String pathFile, final File f, final Tag tag) {
 		String artista = CheckFile.checkSingleTag(tag.getArtistaPrincipale());
 		String title = CheckFile.checkSingleTag(tag.getTitoloCanzone());
 		if(title == null || artista == null || title == "" || artista == ""){
 			
-			LookUp lookUp = new LookUp("");
+			LookUp lookUp = new LookUp(key);
 			try {
 				TagAudioTrack tagFromUrl = lookUp.lookup(f);
 				title = tagFromUrl.getTrackName();

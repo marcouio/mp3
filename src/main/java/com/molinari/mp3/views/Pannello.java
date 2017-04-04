@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -179,8 +180,9 @@ public class Pannello extends JPanel {
 
 			@Override
 			public void actionPerformed(final ActionEvent e) {
+				String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
 				try {
-					final Rinominatore rinomina = new Rinominatore();
+					final Rinominatore rinomina = new Rinominatore(s);
 					if (rinomina.scorriEdEseguiSuTuttiIFile(cartellaInput.getText())) {
 						Alert.info("Ok, file mp3 rinominati correttamente", "Perfetto");
 					}
