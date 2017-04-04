@@ -6,21 +6,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.google.gson.Gson;
 import com.molinari.mp3.business.acoustid.AudioTrack;
+import com.molinari.mp3.business.acoustid.TagAudioTrack;
 
 public class LookUp {
 
@@ -68,29 +64,25 @@ public class LookUp {
 	public static void main(String[] args) throws Exception {
 
 //		LookUp client = new LookUp("hDMsDzihFA");
-		LookUp client = new LookUp("eRiLd6LkRAg");
+		LookUp client = new LookUp("5qZgj0WcWA0");
 		String pathname = "/temp/";
 		String[] list = new File(pathname).list();
-		List<File> files = new ArrayList<>();
 
 		for (String string : list) {
 			String pathnameFile = pathname + string;
 			File file = new File(pathnameFile);
-			files.add(file);
+			client.lookup(file);
 		}
-		client.lookup(files);
 	}
 
 	public AudioTrack parseResult(String json, final int targetDuration) throws IOException {
-		Object data = readJson(json);
-
-		return null;
+		System.out.println(json);
+		return readJson(json);
 	}
 
-	private Object readJson(String json) {
-		
-		// TODO Auto-generated method stub
-		return null;
+	private AudioTrack readJson(String json) {
+		Gson gson = new Gson();
+		return gson.fromJson(json, AudioTrack.class);
 	}
 
 	public enum ChromaprintField {
@@ -130,51 +122,29 @@ public class LookUp {
 		return output;
 	}
 
-	public Map<File, AudioTrack> lookup(Collection<File> files) throws Exception {
-		Map<File, AudioTrack> results = new LinkedHashMap<>();
+	public TagAudioTrack lookup(File file) throws Exception {
 
-		for (File file : files) {
-			Map<ChromaprintField, String> fp = fpcalc(file);
+		Map<ChromaprintField, String> fp = fpcalc(file);
 
-			// sanity check
-			if (!fp.containsKey(ChromaprintField.DURATION) || !fp.containsKey(ChromaprintField.FINGERPRINT))
-				continue;
-
-			int duration = Integer.parseInt(fp.get(ChromaprintField.DURATION));
-			String fingerprint = fp.get(ChromaprintField.FINGERPRINT);
-
-			// sanity check
-			if (duration < 10)
-				continue;
-
-			String response = lookup(duration, fingerprint);
-			if (response != null && response.length() > 0) {
-				results.put(file, parseResult(lookup(duration, fingerprint), duration));
-			}
+		// sanity check
+		if (!fp.containsKey(ChromaprintField.DURATION) || !fp.containsKey(ChromaprintField.FINGERPRINT)){
+			return null;
 		}
 
-		return results;
-	}
+		int duration = Integer.parseInt(fp.get(ChromaprintField.DURATION));
+		String fingerprint = fp.get(ChromaprintField.FINGERPRINT);
 
-	private static class MostFieldsNotNull implements Comparator<Object> {
-
-		@Override
-		public int compare(Object o1, Object o2) {
-			return Integer.compare(count(o2), count(o1));
+		// sanity check
+		if (duration < 10){
+			return null;
 		}
 
-		public int count(Object o) {
-			int n = 0;
-			try {
-				for (Field field : o.getClass().getDeclaredFields()) {
-					if (field.get(o) != null) {
-						n++;
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return n;
+		String response = lookup(duration, fingerprint);
+		if (response != null && response.length() > 0) {
+			 AudioTrack parseResult = parseResult(lookup(duration, fingerprint), duration);
+			 return new TagAudioTrack(parseResult);
 		}
+
+		return null;
 	}
 }
