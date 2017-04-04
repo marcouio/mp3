@@ -16,8 +16,16 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javazoom.jl.converter.Converter;
+import javazoom.jl.decoder.JavaLayerException;
+
 public class Mp3ReaderUtil {
 
+	public static void convert(String source, String target) throws JavaLayerException{
+		Converter c = new Converter();
+		c.convert(source, target);
+	}
+	
 	public static String slash() {
 		String slash = "";
 		final String os = System.getProperty("os.name");
