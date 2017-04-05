@@ -91,12 +91,13 @@ public class NewPlayList extends JPanel {
 				if (fileMp3 != null) {
 					if (player != null) {
 						player.stop();
+						player.setMappaMp3(mappaMp3);
+						player.opener(fileMp3.getMp3file().getAbsolutePath());
+						player.play();
 					}
-					player.setMappaMp3(mappaMp3);
+
 					MyBasicPlayer.setIndex(riga);
 					label.setText(fileMp3.getNome());
-					player.opener(fileMp3.getMp3file().getAbsolutePath());
-					player.play();
 				}else{
 					if(player.isInPause()){
 						player.resume();
