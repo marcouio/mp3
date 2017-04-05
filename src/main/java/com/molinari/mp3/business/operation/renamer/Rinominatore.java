@@ -8,7 +8,6 @@ import org.farng.mp3.id3.ID3v2_4;
 
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.acoustid.TagAudioTrack;
-import com.molinari.mp3.business.check.CheckFile;
 import com.molinari.mp3.business.lookup.LookUp;
 import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.Tag;
@@ -26,13 +25,8 @@ public class Rinominatore extends OperazioniBaseTagFile {
 	}
 
 	private void valorizzaTag(final String pathFile, final File f, final Tag tag) {
-		Tag tagNew = tag;
-		String artista = tagNew != null ? CheckFile.checkSingleTag(tagNew.getArtistaPrincipale()) : null;
-		String title = tagNew != null ? CheckFile.checkSingleTag(tagNew.getTitoloCanzone()) : null;
-		if(title == null || artista == null || title == "" || artista == ""){
-			
-			tagNew = findTag(f);
-		}
+		Tag tagNew = findTag(f);
+	
 		safeRename(pathFile, f, tagNew);
 	}
 
