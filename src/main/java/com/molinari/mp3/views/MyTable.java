@@ -2,7 +2,7 @@ package com.molinari.mp3.views;
 
 import javax.swing.JTable;
 
-import com.molinari.mp3.business.objects.Mp3;
+import com.molinari.mp3.business.operation.binder.Raccoglitore.Mp3File;
 
 public class MyTable extends JTable {
 
@@ -12,7 +12,7 @@ public class MyTable extends JTable {
 		super(costruisciMatriceVuota, nomiColonne);
 	}
 
-	public MyTable(final Mp3[][] canzoni, final String[] nomiColonne) {
+	public MyTable(final Mp3File[][] canzoni, final String[] nomiColonne) {
 		super(canzoni, nomiColonne);
 	}
 

@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,7 +19,7 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
 import com.molinari.mp3.business.Mp3ReaderUtil;
-import com.molinari.mp3.business.objects.Mp3;
+import com.molinari.mp3.business.operation.binder.Raccoglitore.Mp3File;
 import com.molinari.mp3.business.player.MyBasicPlayer;
 
 public class NewPlayList extends JPanel {
@@ -27,7 +28,7 @@ public class NewPlayList extends JPanel {
 	private static MyTable     table;
 	final String[]             nomiColonne      = new String[] { "Titolo - Artista - Album" };
 	private static JScrollPane scrollPane;
-	HashMap<String, Mp3>       mappaMp3         = new HashMap<String, Mp3>();
+	Map<String, Mp3File>       mappaMp3         = new HashMap<>();
 	protected MyBasicPlayer    player           = new MyBasicPlayer(this);
 	private JLabel             label;
 	private JSlider            slider;
@@ -87,14 +88,12 @@ public class NewPlayList extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent arg0) {
 				final int riga = table.getSelectedRow();
-				Mp3 fileMp3 = mappaMp3.get(Integer.toString(riga));
+				Mp3File fileMp3 = mappaMp3.get(Integer.toString(riga));
 				if (fileMp3 != null) {
-					if (player != null) {
-						player.stop();
-						player.setMappaMp3(mappaMp3);
-						player.opener(fileMp3.getMp3file().getAbsolutePath());
-						player.play();
-					}
+					player.stop();
+					player.setMappaMp3(mappaMp3);
+					player.opener(fileMp3.getPath());
+					player.play();
 
 					MyBasicPlayer.setIndex(riga);
 					label.setText(fileMp3.getNome());
@@ -220,15 +219,15 @@ public class NewPlayList extends JPanel {
 		NewPlayList.table = table;
 	}
 
-	public HashMap<String, Mp3> getMappaMp3() {
+	public Map<String, Mp3File> getMappaMp3() {
 		return mappaMp3;
 	}
 
-	public void put(final String key, final Mp3 value) {
+	public void put(final String key, final Mp3File value) {
 		mappaMp3.put(key, value);
 	}
 
-	public void setMappaMp3(final HashMap<String, Mp3> mappaMp3) {
+	public void setMappaMp3(final Map<String, Mp3File> mappaMp3) {
 		this.mappaMp3 = mappaMp3;
 	}
 

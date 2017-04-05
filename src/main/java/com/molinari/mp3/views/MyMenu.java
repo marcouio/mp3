@@ -7,13 +7,11 @@ import java.io.File;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.objects.Mp3;
@@ -59,10 +57,10 @@ public class MyMenu extends JMenuBar {
 						player = playlist.getPlayer();
 						if (player != null) {
 							player.stop();
+							player.opener(fileMp3.getMp3file().getAbsolutePath());
+							player.play();
 						}
 						playlist.getLabel().setText(fileMp3.getNome());
-						player.opener(fileMp3.getMp3file().getAbsolutePath());
-						player.play();
 					}
 				}
 			}
@@ -191,28 +189,11 @@ public class MyMenu extends JMenuBar {
 		add(help);
 
 		final JMenuItem info = new JMenuItem("Info");
-		// info.addActionListener(new AscoltatoreInfo());
 		help.add(info);
 
 		final JMenuItem manuale = new JMenuItem("Manuale");
 		help.add(manuale);
 
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(final String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				final JFrame frame = new JFrame();
-				frame.setSize(1000, 50);
-				frame.getContentPane().add(new MyMenu());
-				frame.setVisible(true);
-			}
-		});
 	}
 
 }

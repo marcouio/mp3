@@ -3,6 +3,7 @@ package com.molinari.mp3.business.operation.binder;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -19,23 +20,50 @@ import com.molinari.mp3.business.player.MyBasicPlayer;
 import com.molinari.mp3.views.NewPlayList;
 
 public class Raccoglitore extends OperazioniBaseTagFile implements IRaccoglitore {
+	
+	List<Mp3File>  listaFile = new ArrayList<>();
+	
+	private Mp3File[][] canzoni;
 
-	public Raccoglitore() {}
-
-	ArrayList<Mp3>  listaFile = new ArrayList<Mp3>();
-
-	private Mp3[][] canzoni;
+	public Raccoglitore() {
+		//do nothing
+	}
+	
+	public class Mp3File{
+		private String nome;
+		private String path;
+		
+		public String getNome() {
+			return nome;
+		}
+		public void setNome(String nome) {
+			this.nome = nome;
+		}
+		public String getPath() {
+			return path;
+		}
+		public void setPath(String path) {
+			this.path = path;
+		}
+		
+		@Override
+		public String toString() {
+			return nome;
+		}
+	}
 
 	@Override
 	protected void operazioneFinale() {
 		costruisciMatrice();
 	}
 
-	private Mp3[][] costruisciMatrice() {
-		final Mp3[][] dati = new Mp3[listaFile.size()][1];
+	private Mp3File[][] costruisciMatrice() {
+		final Mp3File[][] dati = new Mp3File[listaFile.size()][1];
+		
+		
 		MyBasicPlayer.setSize(listaFile.size());
 		for (int i = 0; i < listaFile.size(); i++) {
-			final Mp3 mp3 = listaFile.get(i);
+			final Mp3File mp3 = listaFile.get(i);
 			dati[i][0] = mp3;
 			NewPlayList.getSingleton().put(Integer.toString(i), mp3);
 		}
@@ -50,7 +78,8 @@ public class Raccoglitore extends OperazioniBaseTagFile implements IRaccoglitore
 		try {
 			final Mp3 mp3 = new Mp3(f);
 			mp3.setTag(t);
-			listaFile.add(mp3);
+			Mp3File e = new Mp3File();
+			addMp3ToList(f, mp3, e);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -63,17 +92,24 @@ public class Raccoglitore extends OperazioniBaseTagFile implements IRaccoglitore
 		try {
 			mp3 = new Mp3(f);
 			mp3.setTag(tag);
-			listaFile.add(mp3);
+			Mp3File mp3File = new Mp3File();
+			addMp3ToList(f, mp3, mp3File);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void setCanzoni(final Mp3[][] canzoni) {
+	private void addMp3ToList(final File f, Mp3 mp3, Mp3File mp3File) {
+		mp3File.setNome(mp3.toString());
+		mp3File.setPath(f.getAbsolutePath());
+		listaFile.add(mp3File);
+	}
+
+	public void setCanzoni(final Mp3File[][] canzoni) {
 		this.canzoni = canzoni;
 	}
 
-	public Mp3[][] getCanzoni() {
+	public Mp3File[][] getCanzoni() {
 		return canzoni;
 	}
 
@@ -86,14 +122,6 @@ public class Raccoglitore extends OperazioniBaseTagFile implements IRaccoglitore
 		} catch (final SAXException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public ArrayList<Mp3> getListaFile() {
-		return listaFile;
-	}
-
-	public void setListaFile(final ArrayList<Mp3> listaFile) {
-		this.listaFile = listaFile;
 	}
 
 	@Override

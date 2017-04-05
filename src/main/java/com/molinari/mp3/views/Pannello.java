@@ -17,8 +17,8 @@ import javax.swing.SwingUtilities;
 
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3ReaderUtil;
-import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.operation.binder.Raccoglitore;
+import com.molinari.mp3.business.operation.binder.Raccoglitore.Mp3File;
 import com.molinari.mp3.business.operation.renamer.Rinominatore;
 import com.molinari.mp3.business.operation.tidier.Ordinatore;
 import com.molinari.mp3.business.operation.writer.Scrittore;
@@ -89,7 +89,7 @@ public class Pannello extends JPanel {
 					final String[] nomiColonne = Controllore.getSingleton().getVista().getPlayList().getNomiColonne();
 					final JScrollPane scroll = Controllore.getSingleton().getVista().getPlayList().getScrollPane();
 					MyTable table = Controllore.getSingleton().getVista().getPlayList().getTable();
-					Mp3[][] canzoni = raccogli.getCanzoni();
+					Mp3File[][] canzoni = raccogli.getCanzoni();
 					table = new MyTable(canzoni, nomiColonne);
 					Controllore.getSingleton().getVista().getPlayList().setTable(table);
 					scroll.setViewportView(table);

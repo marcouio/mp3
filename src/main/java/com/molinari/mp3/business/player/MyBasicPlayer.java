@@ -1,11 +1,12 @@
 package com.molinari.mp3.business.player;
 
 import java.io.File;
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
-import com.molinari.mp3.business.objects.Mp3;
+import com.molinari.mp3.business.Controllore;
+import com.molinari.mp3.business.operation.binder.Raccoglitore.Mp3File;
 import com.molinari.mp3.views.NewPlayList;
 
 import javazoom.jlgui.basicplayer.BasicController;
@@ -22,9 +23,8 @@ import javazoom.jlgui.basicplayer.BasicPlayerListener;
  * Vorbis * SPI in your CLASSPATH to play MP3 and Ogg Vorbis file.
  */
 public class MyBasicPlayer implements BasicPlayerListener {
-	private PrintStream out = null;
-	private BasicPlayer control;
-	private HashMap<String, Mp3> mappaMp3 = new HashMap<String, Mp3>();
+	private BasicPlayer control = new BasicPlayer();
+	private Map<String, Mp3File> mappaMp3 = new HashMap<>();
 	private Map<String, Object> properties;
 	private int lunghezzaFrameMp3;
 	private Integer lunghezzaByteMp3;
@@ -33,24 +33,14 @@ public class MyBasicPlayer implements BasicPlayerListener {
 	private static int size = 1;
 	private NewPlayList playList;
 
-	public boolean isInPause(){
-		return control.getStatus() == BasicPlayer.PAUSED;
-	}
-	/**
-	 * Entry point.
-	 * 
-	 * @param args
-	 *            filename to play.
-	 */
-	public static void main(final String[] args) {
-		// final BasicPlayerTest test = new BasicPlayerTest();
-		// test.play(args[0]);
-	}
 
 	/** * Contructor. */
 	public MyBasicPlayer(final NewPlayList playList) {
-		out = System.out;
 		this.playList = playList;
+	}
+	
+	public boolean isInPause(){
+		return control.getStatus() == BasicPlayer.PAUSED;
 	}
 
 	/**
@@ -123,21 +113,17 @@ public class MyBasicPlayer implements BasicPlayerListener {
 	 * @param filename
 	 */
 	public void opener(final String filename) {
-		// Instantiate BasicPlayer.
-		final BasicPlayer player = new BasicPlayer();
-		// BasicPlayer is a BasicController.
-		control = player;
 		setController(control);
 		// Register BasicPlayerTest to BasicPlayerListener events.
 		// It means that this object will be notified on BasicPlayer
 		// events such as : opened(...), progress(...), stateUpdated(...)
-		player.addBasicPlayerListener(this);
+		control.addBasicPlayerListener(this);
 
 		try { // Open file, or URL or Stream (shoutcast, icecast) to play.
 			control.open(new File(filename));
 
-			// control.open(new URL("http://yourshoutcastserver.com:8000"));
-			// Start playback in a thread. control.play();
+			// control.open(new URL("http://yourshoutcastserver.com:8000"))
+			// Start playback in a thread. control.play()
 			// If you want to pause/resume/pause the played file then
 			// write a Swing player and just call control.pause(),
 			// control.resume() or control.stop().
@@ -146,10 +132,10 @@ public class MyBasicPlayer implements BasicPlayerListener {
 			// work only if underlying JavaSound SPI implements
 			// skip(...). True for MP3SPI and SUN SPI's
 			// (WAVE, AU, AIFF). // Set Volume (0 to 1.0).
-			// control.setGain(0.85);
+			// control.setGain(0.85)
 			// Set Pan (-1.0 to 1.0).
 			control.setPan(1.0);
-			// control.setGain(0.5);
+			// control.setGain(0.5)
 		} catch (final BasicPlayerException e) {
 			e.printStackTrace();
 		}
@@ -254,9 +240,9 @@ public class MyBasicPlayer implements BasicPlayerListener {
 				} else {
 					index = 0;
 				}
-				final Mp3 mp3 = mappaMp3.get(Integer.toString(index));
-				opener(mp3.getMp3file().getAbsolutePath());
-				playList.getLabel().setText(mp3.getMp3file().getName());
+				final Mp3File mp3 = mappaMp3.get(Integer.toString(index));
+				opener(mp3.getPath());
+				playList.getLabel().setText(mp3.getNome());
 				play();
 			}
 		}
@@ -291,16 +277,14 @@ public class MyBasicPlayer implements BasicPlayerListener {
 	}
 
 	public void display(final String msg) {
-		if (out != null) {
-			out.println(msg);
-		}
+		Controllore.getLog().info(msg);
 	}
 
 	public void play() {
 		try {
 			control.play();
 		} catch (final BasicPlayerException e) {
-			e.printStackTrace();
+			Controllore.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 	}
@@ -321,11 +305,11 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		this.continua = continua;
 	}
 
-	public HashMap<String, Mp3> getMappaMp3() {
+	public Map<String, Mp3File> getMappaMp3() {
 		return mappaMp3;
 	}
 
-	public void setMappaMp3(final HashMap<String, Mp3> mappaMp3) {
+	public void setMappaMp3(final Map<String, Mp3File> mappaMp3) {
 		this.mappaMp3 = mappaMp3;
 	}
 
