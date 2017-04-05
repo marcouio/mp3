@@ -5,13 +5,14 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.molinari.mp3.business.objects.Mp3;
+import com.molinari.mp3.views.NewPlayList;
+
 import javazoom.jlgui.basicplayer.BasicController;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayerEvent;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
 import javazoom.jlgui.basicplayer.BasicPlayerListener;
-import com.molinari.mp3.business.objects.Mp3;
-import com.molinari.mp3.views.NewPlayList;
 
 /**
  * * This class implements a simple player based on BasicPlayer. * BasicPlayer
@@ -32,6 +33,9 @@ public class MyBasicPlayer implements BasicPlayerListener {
 	private static int size = 1;
 	private NewPlayList playList;
 
+	public boolean isInPause(){
+		return control.getStatus() == BasicPlayer.PAUSED;
+	}
 	/**
 	 * Entry point.
 	 * 

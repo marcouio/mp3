@@ -97,6 +97,11 @@ public class NewPlayList extends JPanel {
 					label.setText(fileMp3.getNome());
 					player.opener(fileMp3.getMp3file().getAbsolutePath());
 					player.play();
+				}else{
+					if(player.isInPause()){
+						player.resume();
+					}
+					
 				}
 			}
 		});
