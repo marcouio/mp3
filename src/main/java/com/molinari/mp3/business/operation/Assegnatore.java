@@ -73,6 +73,7 @@ public class Assegnatore {
 			tag.setTitoloCanzone(traccia);
 		}
 		file.setTag(tag);
+		file.save(f);
 		this.setFile(file);
 
 	}
