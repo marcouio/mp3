@@ -43,7 +43,7 @@ public class TagAudioTrack {
 	public String getTrackName() {
 		Recordings recording = getRecording();
 		if(recording != null){
-			recording.getTitle();
+			return recording.getTitle();
 		}
 		return "";
 	}

@@ -1,7 +1,7 @@
 package com.molinari.mp3.business.objects;
 
 public interface Tag {
-
+	
 	public String getArtistaPrincipale();
 
 	public String getTitoloCanzone();

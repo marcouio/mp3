@@ -3,6 +3,7 @@ package com.molinari.mp3.business.objects;
 import java.io.File;
 import java.io.IOException;
 
+import org.farng.mp3.AbstractMP3Tag;
 import org.farng.mp3.MP3File;
 import org.farng.mp3.id3.AbstractID3v2;
 import org.farng.mp3.id3.ID3v1;
@@ -70,8 +71,7 @@ public class Mp3 extends MP3File {
 			final TagTipo2_2 tagv2 = new TagTipo2_2(mp3.getID3v2Tag());
 			setTag(tagv2);
 		} else {
-			// TODO
-			setTag(null);
+			setTag(new TagTipo2_4(new ID3v2_4()));
 		}
 	}
 
@@ -136,6 +136,12 @@ public class Mp3 extends MP3File {
 	}
 
 	public void setTag(final Tag tag) {
+		if(tag instanceof TagTipo1){
+			setID3v1Tag((AbstractMP3Tag) tag);
+		}else {
+			setID3v2Tag((AbstractMP3Tag) tag);
+		}
+		
 		this.tag = tag;
 	}
 

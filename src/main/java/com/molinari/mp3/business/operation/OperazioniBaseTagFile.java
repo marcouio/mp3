@@ -102,7 +102,6 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 	public void operazioniGenerica(final String pathFile, final File f) throws IOException, Exception {
 		final Mp3 file = new Mp3(f);
 		final Tag tag = file.getTag();
-
 		if (tag != null) {
 			operazioneTagPresenti(pathFile, f, tag);
 		} else {
