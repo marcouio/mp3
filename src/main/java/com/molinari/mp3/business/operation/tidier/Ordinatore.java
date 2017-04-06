@@ -17,7 +17,7 @@ import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.operation.Assegnatore;
 import com.molinari.mp3.business.operation.IOperazioni;
 import com.molinari.mp3.business.operation.OperazioniBaseTagFile;
-import com.molinari.mp3.views.Alert;
+import com.molinari.utility.graphic.component.alert.Alert;
 
 public class Ordinatore extends OperazioniBaseTagFile {
 

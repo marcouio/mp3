@@ -13,7 +13,7 @@ import com.molinari.mp3.business.check.CheckFile;
 import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.operation.IOperazioni;
 import com.molinari.mp3.business.operation.OperazioniBaseTagFile;
-import com.molinari.mp3.views.Alert;
+import com.molinari.utility.graphic.component.alert.Alert;
 
 public class ScrittoreListaAlbumDaFile extends OperazioniBaseTagFile implements Scrittore {
 

@@ -6,7 +6,7 @@ import java.io.IOException;
 import com.molinari.mp3.business.Mp3ReaderUtil;
 import com.molinari.mp3.business.objects.MyTagException;
 import com.molinari.mp3.business.operation.OperazioniBaseCartelle;
-import com.molinari.mp3.views.Alert;
+import com.molinari.utility.graphic.component.alert.Alert;
 
 public class ScrittoreListaAlbumDaCartelle extends OperazioniBaseCartelle implements Scrittore {
 

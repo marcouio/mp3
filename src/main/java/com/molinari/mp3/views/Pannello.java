@@ -24,6 +24,7 @@ import com.molinari.mp3.business.operation.tidier.Ordinatore;
 import com.molinari.mp3.business.operation.writer.Scrittore;
 import com.molinari.mp3.business.operation.writer.ScrittoreListaAlbumDaCartelle;
 import com.molinari.mp3.business.operation.writer.ScrittoreListaAlbumDaFile;
+import com.molinari.utility.graphic.component.alert.Alert;
 
 public class Pannello extends JPanel {
 
@@ -66,36 +67,29 @@ public class Pannello extends JPanel {
 	 */
 	private Pannello() {
 		setLayout(null);
-		// this.setPreferredSize(new Dimension(275, 268));
 		final JButton buttonInput = new JButton();
 		buttonInput.setText("input");
 		buttonInput.setBounds(181, 13, 73, 23);
 		add(buttonInput);
 
-		buttonInput.addActionListener(new ActionListener() {
+		buttonInput.addActionListener(e -> {
+			final JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+				final File file = fileChooser.getSelectedFile();
+				cartellaInput.setText(file.getAbsolutePath());
+				final Raccoglitore raccogli = new Raccoglitore();
 
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				final JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-					fileChooser.getSelectedFile();
-					final File file = fileChooser.getSelectedFile();
-					cartellaInput.setText(file.getAbsolutePath());
-					final Raccoglitore raccogli = new Raccoglitore();
-
-					raccogli.raccogli(cartellaInput.getText());
-					Controllore.getSingleton().getVista();
-					final String[] nomiColonne = Controllore.getSingleton().getVista().getPlayList().getNomiColonne();
-					final JScrollPane scroll = Controllore.getSingleton().getVista().getPlayList().getScrollPane();
-					MyTable table = Controllore.getSingleton().getVista().getPlayList().getTable();
-					Mp3File[][] canzoni = raccogli.getCanzoni();
-					table = new MyTable(canzoni, nomiColonne);
-					Controllore.getSingleton().getVista().getPlayList().setTable(table);
-					scroll.setViewportView(table);
-					Controllore.getSingleton().getVista().repaint();
-
-				}
+				raccogli.raccogli(cartellaInput.getText());
+				Controllore.getSingleton().getVista();
+				final String[] nomiColonne = Controllore.getSingleton().getVista().getPlayList().getNomiColonne();
+				final JScrollPane scroll = Controllore.getSingleton().getVista().getPlayList().getScrollPane();
+				MyTable table = Controllore.getSingleton().getVista().getPlayList().getTable();
+				Mp3File[][] canzoni = raccogli.getCanzoni();
+				table = new MyTable(canzoni, nomiColonne);
+				Controllore.getSingleton().getVista().getPlayList().setTable(table);
+				scroll.setViewportView(table);
+				Controllore.getSingleton().getVista().repaint();
 			}
 		});
 
