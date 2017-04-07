@@ -9,6 +9,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 import com.molinari.mp3.business.Controllore;
+import com.molinari.mp3.business.Mp3Exception;
 import com.molinari.mp3.business.Mp3ReaderUtil;
 import com.molinari.mp3.business.check.CheckFile;
 import com.molinari.mp3.business.check.CheckFileOrdina;
@@ -26,14 +27,14 @@ public class Ordinatore extends OperazioniBaseTagFile {
 	private ArrayList<File> fileDaSpostareAllaFine = new ArrayList<File>();;
 	private String pathCartellaAlbum;
 
-	public Ordinatore(final String input, final String output) throws Exception {
+	public Ordinatore(final String input, final String output) {
 		if (CheckFile.checkCartelle(input, output)) {
 			setInput(input);
 			setOutput(output);
 			setPathFile(getOutput());
 		} else {
 			Alert.errore("Errori presenti nella scelta delle cartelle", "Non va");
-			throw new Exception("Errori presenti nella scelta delle cartelle");
+			throw new Mp3Exception("Errori presenti nella scelta delle cartelle");
 		}
 	}
 
