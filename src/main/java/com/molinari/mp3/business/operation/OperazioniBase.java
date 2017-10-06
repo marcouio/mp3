@@ -17,8 +17,7 @@ public class OperazioniBase {
 	public static boolean rename(final File mp3, final String nome_dopo) throws IOException {
 		if(!mp3.getAbsolutePath().equals(nome_dopo)){
 			final File file2 = new File(nome_dopo);
-			final boolean success = mp3.renameTo(file2);
-			return success;
+			return mp3.renameTo(file2);
 		}
 		return true;
 	}
