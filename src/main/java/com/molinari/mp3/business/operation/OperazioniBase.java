@@ -15,9 +15,12 @@ public class OperazioniBase {
 	protected ArrayList<String> cartelleDaScorrere = new ArrayList<String>();
 
 	public static boolean rename(final File mp3, final String nome_dopo) throws IOException {
-		final File file2 = new File(nome_dopo);
-		final boolean success = mp3.renameTo(file2);
-		return success;
+		if(!mp3.getAbsolutePath().equals(nome_dopo)){
+			final File file2 = new File(nome_dopo);
+			final boolean success = mp3.renameTo(file2);
+			return success;
+		}
+		return true;
 	}
 
 	public static boolean move(final File mp3, final String path_dopo) {

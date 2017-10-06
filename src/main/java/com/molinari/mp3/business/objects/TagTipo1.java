@@ -7,6 +7,7 @@ import org.farng.mp3.id3.ID3v1;
 
 public class TagTipo1 extends ID3v1 implements Tag {
 
+	
 	public TagTipo1() {
 		super();
 
@@ -86,5 +87,10 @@ public class TagTipo1 extends ID3v1 implements Tag {
 	@Override
 	public void setTraccia(final String traccia) {
 		setTrackNumberOnAlbum(traccia);
+	}
+
+	@Override
+	public boolean hasTitleAndArtist() {
+		return TagUtil.hasTitleAndArtist(this);
 	}
 }

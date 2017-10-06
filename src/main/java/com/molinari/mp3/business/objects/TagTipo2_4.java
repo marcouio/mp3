@@ -71,4 +71,8 @@ public class TagTipo2_4 extends ID3v2_4 implements Tag {
 		setTrackNumberOnAlbum(traccia);
 	}
 
+	@Override
+	public boolean hasTitleAndArtist() {
+		return TagUtil.hasTitleAndArtist(this);
+	}
 }

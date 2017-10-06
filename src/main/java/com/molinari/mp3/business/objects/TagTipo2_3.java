@@ -70,5 +70,10 @@ public class TagTipo2_3 extends ID3v2_3 implements Tag {
 	public void setTraccia(String traccia) {
 		setTrackNumberOnAlbum(traccia);
 	}
+	
+	@Override
+	public boolean hasTitleAndArtist() {
+		return TagUtil.hasTitleAndArtist(this);
+	}
 
 }

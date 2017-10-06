@@ -2,6 +2,7 @@ package com.molinari.mp3.business.operation.renamer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import org.apache.commons.logging.LogFactory;
 import org.farng.mp3.id3.ID3v2_4;
@@ -25,22 +26,35 @@ public class Rinominatore extends OperazioniBaseTagFile {
 	}
 
 	private void valorizzaTag(final String pathFile, final File f, final Tag tag) {
-		Tag tagNew = findTag(f);
-	
-		safeRename(pathFile, f, tagNew);
+		if(tag.hasTitleAndArtist()){
+			safeRename(pathFile, f, tag);
+		}else{
+			Tag tagNew = findTag(f);
+			safeRename(pathFile, f, tagNew);
+		}
 	}
 
 	private void safeRename(final String pathFile, final File f, Tag tagNew) {
-		if (tagNew.getArtistaPrincipale() != null && tagNew.getTitoloCanzone() != null) {
+		if (tagNew.hasTitleAndArtist()) {
 			try {
-				rename(f, pathFile + tagNew.getArtistaPrincipale() + " - " + tagNew.getTitoloCanzone() + ".mp3");
+				rename(f, newName(pathFile, tagNew));
 					
 			} catch (final IOException e) {
-				LogFactory.getLog("mp3").error(null, e);
+				Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 			}
 		} else {
-			LogFactory.getLog("mp3").info("Impossibile trovare tag per rinominare il file " + file.getName());
+			Controllore.getLog().info("Impossibile trovare tag per rinominare il file " + file.getName());
 		}
+	}
+
+	public String newName(final String pathFile, Tag tagNew) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(pathFile);
+		sb.append(tagNew.getArtistaPrincipale());
+		sb.append(" - ");
+		sb.append(tagNew.getTitoloCanzone());
+		sb.append(".mp3");
+		return sb.toString();
 	}
 
 	private Tag findTag(final File f) {
@@ -50,11 +64,13 @@ public class Rinominatore extends OperazioniBaseTagFile {
 			TagAudioTrack tagFromUrl = lookUp.lookup(f);
 			Mp3 mp3 = new Mp3(f);
 			result = mp3.getTag() != null ? mp3.getTag() : new TagTipo2_4(new ID3v2_4());
-			result.setTitoloCanzone(tagFromUrl.getTrackName());
-			result.setArtistaPrincipale(tagFromUrl.getArtist());
-			result.setNomeAlbum(tagFromUrl.getAlbum());
-			mp3.setTag(result);
-			mp3.save(f);
+			if(tagFromUrl != null && tagFromUrl.getTrackName() != null && tagFromUrl.getArtist() != null){
+				result.setTitoloCanzone(tagFromUrl.getTrackName());
+				result.setArtistaPrincipale(tagFromUrl.getArtist());
+				result.setNomeAlbum(tagFromUrl.getAlbum());
+				mp3.setTag(result);
+				mp3.save(f);
+			}
 		} catch (Exception e) {
 			LogFactory.getLog("mp3").error(null, e);
 		}

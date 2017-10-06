@@ -14,16 +14,17 @@ public interface Tag {
 
 	public String getTraccia();
 
-	public void setArtistaPrincipale(String artistaPrincipale);
+	void setArtistaPrincipale(String artistaPrincipale);
 
-	public void setTitoloCanzone(String titoloCanzone);
+	void setTitoloCanzone(String titoloCanzone);
 
-	public void setNomeAlbum(String nomeAlbum);
+	void setNomeAlbum(String nomeAlbum);
 
-	public void setGenere(String genere);
+	void setGenere(String genere);
 
-	public void setCommenti(String commenti);
+	void setCommenti(String commenti);
 
-	public void setTraccia(String traccia);
+	void setTraccia(String traccia);
 
+	boolean hasTitleAndArtist();
 }

@@ -2,9 +2,11 @@ package com.molinari.mp3.business.operation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.logging.LogFactory;
 import org.farng.mp3.TagException;
 import org.xml.sax.SAXException;
 
@@ -131,7 +133,9 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 		try {
 			operazioniGenerica(pathFile, f);
 		} catch (final Exception e) {
-			System.out.println("Mi manda in negative offset il file: " + f.getAbsolutePath());
+			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
+			LogFactory.getLog("mp3").error("err", e);
+			System.err.println(" Eccezione durante la lettura del file: " + f.getAbsolutePath());
 			e.printStackTrace();
 		}
 	}
