@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
-import org.apache.commons.logging.LogFactory;
 import org.farng.mp3.id3.ID3v2_4;
 
 import com.molinari.mp3.business.Controllore;
+import com.molinari.mp3.business.Mp3Exception;
 import com.molinari.mp3.business.acoustid.TagAudioTrack;
 import com.molinari.mp3.business.lookup.LookUp;
 import com.molinari.mp3.business.objects.Mp3;
@@ -19,18 +19,33 @@ import com.molinari.mp3.business.operation.OperazioniBaseTagFile;
 
 public class Rinominatore extends OperazioniBaseTagFile {
 	
-	String key = "0B3qZnQc";
+	private String key = "0B3qZnQc";
+	private boolean forceFindTag = false;
 	
 	public Rinominatore(String key) {
 		this.key = key;
 	}
 
 	private void valorizzaTag(final String pathFile, final File f, final Tag tag) {
-		if(tag.hasTitleAndArtist()){
+		if(tag.hasTitleAndArtist() && !forceFindTag){
 			safeRename(pathFile, f, tag);
 		}else{
+			logCallInternet(tag);
+			
 			Tag tagNew = findTag(f);
-			safeRename(pathFile, f, tagNew);
+			if(tagNew != null){
+				safeRename(pathFile, f, tagNew);
+			}else{
+				throw new Mp3Exception("Tag non trovato in rete per il file: " + f.getAbsolutePath());
+			}
+		}
+	}
+
+	public void logCallInternet(final Tag tag) {
+		if(tag.hasTitleAndArtist() && forceFindTag){
+			Controllore.getLog().info("-> Tag interno completo ma recupero i tag su internet");
+		}else{
+			Controllore.getLog().info("-> Tag interno non completo provo su internet");
 		}
 	}
 
@@ -43,7 +58,7 @@ public class Rinominatore extends OperazioniBaseTagFile {
 				Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 			}
 		} else {
-			Controllore.getLog().info("Impossibile trovare tag per rinominare il file " + file.getName());
+			Controllore.getLog().info("Impossibile trovare tag per rinominare il file " + f.getName());
 		}
 	}
 
@@ -70,9 +85,13 @@ public class Rinominatore extends OperazioniBaseTagFile {
 				result.setNomeAlbum(tagFromUrl.getAlbum());
 				mp3.setTag(result);
 				mp3.save(f);
+				
+				Controllore.getLog().info("-> Memorizzazione tag");
+			}else{
+				Controllore.getLog().info("-> Tag da url non trovato o con informazioni mancanti");
 			}
 		} catch (Exception e) {
-			LogFactory.getLog("mp3").error(null, e);
+			Controllore.getLog().log(Level.SEVERE, "-> Eccezione durante la ricerca del tag", e);
 		}
 		return result;
 	}
@@ -103,5 +122,13 @@ public class Rinominatore extends OperazioniBaseTagFile {
 	protected void setTipoOperazione() {
 		Controllore.setOperazione(IOperazioni.RINOMINA);
 
+	}
+
+	public boolean isForceFindTag() {
+		return forceFindTag;
+	}
+
+	public void setForceFindTag(boolean forceFindTag) {
+		this.forceFindTag = forceFindTag;
 	}
 }

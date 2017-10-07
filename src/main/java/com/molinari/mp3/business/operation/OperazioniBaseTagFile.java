@@ -6,7 +6,6 @@ import java.util.logging.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.logging.LogFactory;
 import org.farng.mp3.TagException;
 import org.xml.sax.SAXException;
 
@@ -39,7 +38,8 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 */
-	public boolean scorriEdEseguiSuTuttiIFile(String pathFile) throws ParserConfigurationException, SAXException {
+	public boolean scorriEdEseguiSuTuttiIFile(String pathFilePar) throws ParserConfigurationException, SAXException {
+		String pathFile = pathFilePar;
 		setTipoOperazione();
 		boolean ok = true;
 		try {
@@ -55,18 +55,13 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 
 				if (checkFile(f, true)) {
 					if (f.isFile() && f.canRead()) {
-						try {
-							operazioneDaEseguireSulFile(pathFile, f);
-						} catch (final MyTagException e) {
-							// tag non presente
-							e.printStackTrace();
-						}
+						eseguiOperazioneSufile(pathFile, f);
 					} else if (f.isDirectory()) {
 						cartelleDaScorrere.add(f.getAbsolutePath());
 					}
 				}
 			}
-			if (cartelleDaScorrere != null && cartelleDaScorrere.size() > 0) {
+			if (cartelleDaScorrere != null && !cartelleDaScorrere.isEmpty()) {
 				for (int i = 0; i < cartelleDaScorrere.size(); i++) {
 					final String path = cartelleDaScorrere.get(i);
 					cartelleDaScorrere.remove(i);
@@ -78,9 +73,18 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 		} catch (final IOException e) {
 			// se il file non viene trovato o non è disponibile
 			ok = false;
-			e.printStackTrace();
+			Controllore.getLog().log(Level.SEVERE, "File non trovato o non disponibile", e);
 		}
 		return ok;
+	}
+
+	public void eseguiOperazioneSufile(String pathFile, final File f) throws IOException {
+		try {
+			Controllore.getLog().info("Sto analizzando il file: " + f.getAbsolutePath());
+			operazioneDaEseguireSulFile(pathFile, f);
+		} catch (final MyTagException e) {
+			Controllore.getLog().log(Level.SEVERE, "-> Errore non controllato durante l'operazione su file", e);
+		}
 	}
 
 	private boolean checkFile(final File f, final boolean b) {
@@ -105,8 +109,10 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 		final Mp3 file = new Mp3(f);
 		final Tag tag = file.getTag();
 		if (tag != null) {
+			Controllore.getLog().info("- > Tag già presenti su file");
 			operazioneTagPresenti(pathFile, f, tag);
 		} else {
+			Controllore.getLog().info(" -> Tag non presenti su file");
 			operazioneTagNonPresenti(pathFile, f);
 		}
 	}
@@ -133,10 +139,7 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 		try {
 			operazioniGenerica(pathFile, f);
 		} catch (final Exception e) {
-			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
-			LogFactory.getLog("mp3").error("err", e);
-			System.err.println(" Eccezione durante la lettura del file: " + f.getAbsolutePath());
-			e.printStackTrace();
+			Controllore.getLog().log(Level.SEVERE, "-> Eccezione durante la lettura del file! Guarda i log", e);
 		}
 	}
 

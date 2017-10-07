@@ -2,30 +2,43 @@ package com.molinari.mp3.business.operation;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
+import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3ReaderUtil;
 
 public class OperazioniBase {
 	// per i file
 	protected File file;
 	protected String pathFile = "";
-	protected ArrayList<String> righe = new ArrayList<String>();
+	protected ArrayList<String> righe = new ArrayList<>();
 
-	protected ArrayList<String> cartelleDaScorrere = new ArrayList<String>();
+	protected ArrayList<String> cartelleDaScorrere = new ArrayList<>();
 
-	public static boolean rename(final File mp3, final String nome_dopo) throws IOException {
-		if(!mp3.getAbsolutePath().equals(nome_dopo)){
-			final File file2 = new File(nome_dopo);
-			return mp3.renameTo(file2);
+	public static boolean rename(final File mp3, final String nomedopo) throws IOException {
+		if(!mp3.getAbsolutePath().equals(nomedopo)){
+			final File file2 = new File(nomedopo);
+			try{
+				com.google.common.io.Files.move(mp3, file2);
+				java.nio.file.Files.deleteIfExists(mp3.toPath());
+				java.nio.file.Files.deleteIfExists(new File(mp3.getAbsolutePath().replaceAll(".mp3", ".original.mp3")).toPath());
+				String format = MessageFormat.format("-> Mp3 rinominato in: {0}", nomedopo);
+				Controllore.getLog().info(format);
+				return true;
+			}catch (Exception e) {
+				Controllore.getLog().severe("-> Cambio nome non riuscito");
+				Controllore.getLog().severe(e.getMessage());
+				return false;
+			}
 		}
-		return true;
+		Controllore.getLog().info("-> Mp3 non rinominato perché già con lo stesso nome");
+		return false;
 	}
 
-	public static boolean move(final File mp3, final String path_dopo) {
-		final File file2 = new File(path_dopo + Mp3ReaderUtil.slash() + mp3.getName());
-		final boolean success = mp3.renameTo(file2);
-		return success;
+	public static boolean move(final File mp3, final String pathdopo) {
+		final File file2 = new File(pathdopo + Mp3ReaderUtil.slash() + mp3.getName());
+		return mp3.renameTo(file2);
 	}
 
 	public void setFile(final File file) {
