@@ -2,7 +2,9 @@ package com.molinari.mp3.business.operation.tidier;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -15,7 +17,7 @@ import com.molinari.mp3.business.check.CheckFile;
 import com.molinari.mp3.business.check.CheckFileOrdina;
 import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.Tag;
-import com.molinari.mp3.business.operation.Assegnatore;
+import com.molinari.mp3.business.objects.TagUtil;
 import com.molinari.mp3.business.operation.IOperazioni;
 import com.molinari.mp3.business.operation.OperazioniBaseTagFile;
 import com.molinari.utility.graphic.component.alert.Alert;
@@ -41,17 +43,15 @@ public class Ordinatore extends OperazioniBaseTagFile {
 	@Override
 	protected void operazioneTagNonPresenti(final String pathFile2, final File f) {
 		try {
-			final Assegnatore assegna = new Assegnatore(f, "-");
+			
 			if (f.getName().endsWith(CheckFile.ESTENSIONE_MP3)) {
-				final Tag tag = assegna.getTag();
-				assegna.save(f);
-				if (tag != null) {
-					if (isTagsValorizzati(tag)) {
+
+				Tag tag = findTag(f);
+				if (tag != null && isTagsValorizzati(tag)) {
 						operazioneTagPresenti(pathFile2, f, tag);
 					}
-				}
 			} else {
-				fileDaSpostareAllaFine.add(f);
+//				fileDaSpostareAllaFine.add(f);
 			}
 		} catch (final IOException e) {
 			// file non trovato
@@ -61,15 +61,21 @@ public class Ordinatore extends OperazioniBaseTagFile {
 	}
 
 	protected boolean isTagsValorizzati(final Tag tag) {
-		return tag.getArtistaPrincipale() != null && tag.getNomeAlbum() != null && tag.getArtistaPrincipale() != "" && tag.getNomeAlbum() != "";
+		return TagUtil.hasTitleAndArtist(tag);
 	}
 
 	@Override
 	protected void operazioneTagPresenti(final String pathFile2, final File f, final Tag tag) throws IOException {
 		try {
-			ordinaPerTag(pathFile2, f, tag);
+			if(TagUtil.hasTitleAndArtist(tag)){
+				Controllore.getLog().info("-> Tag validi procedo ad ordinare");
+				ordinaPerTag(pathFile2, f, tag);
+			}else{
+				Controllore.getLog().info("-> Tag non validi, li cerco");
+				operazioneTagNonPresenti(pathFile2, f);
+			}
 		} catch (final Exception e) {
-			e.printStackTrace();
+			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
 
 	}
@@ -100,9 +106,9 @@ public class Ordinatore extends OperazioniBaseTagFile {
 		try {
 			return scorriEdEseguiSuTuttiIFile(input);
 		} catch (final ParserConfigurationException e) {
-			e.printStackTrace();
+			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 		} catch (final SAXException e) {
-			e.printStackTrace();
+			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
 		return false;
 	}
@@ -125,8 +131,26 @@ public class Ordinatore extends OperazioniBaseTagFile {
 			final File cartellaArtista = creaCartellaArtista(tag, mp3, cartellaAlfabeto);
 			final File cartellaAlbum = creaCartellaAlbum(tag, mp3, cartellaArtista);
 			pathCartellaAlbum = cartellaAlbum.getAbsolutePath();
-			if (f.renameTo(new File(pathCartellaAlbum + Mp3ReaderUtil.slash() + mp3.getNome()))) {
+			String nome = mp3.getNome();
+			nome = nome.replaceAll(":", "");
+			nome = nome.replaceAll(">", "");
+			nome = nome.replaceAll("<", "");
+			nome = nome.replaceAll("'", " ");
+			nome = nome.replaceAll("\\?", "");
+			nome = nome.replaceAll("\"", "");
+			nome = nome.trim();
+			String pathname = pathCartellaAlbum + Mp3ReaderUtil.slash() + nome;
+			File fileTo = new File(pathname);
+			try{
+				java.nio.file.Files.move(f.toPath(), fileTo.toPath(),StandardCopyOption.REPLACE_EXISTING);
+				Controllore.getLog().info("File spostato in: " + pathname);
 				return true;
+			}catch (Exception e) {
+				boolean renameTo = f.renameTo(fileTo);
+				if(!renameTo){
+					Controllore.getLog().info("Non sono riuscito a spostare il file");
+					Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
+				}
 			}
 		}
 		return false;
@@ -135,12 +159,31 @@ public class Ordinatore extends OperazioniBaseTagFile {
 	private File creaCartellaAlbum(final Tag tag, final Mp3 mp3, final File cartellaArtista) {
 		File cartellaAlbum = null;
 		final String pathCartellaArtista = cartellaArtista.getAbsolutePath();
-		cartellaAlbum = new File(pathCartellaArtista + Mp3ReaderUtil.slash() + tag.getNomeAlbum());
+		String nome = tag.getNomeAlbum();
+		nome = nome.replaceAll(":", "");
+		nome = nome.replaceAll(">", "");
+		nome = nome.replaceAll("<", "");
+		nome = nome.replaceAll("'", " ");
+		nome = nome.replaceAll("\\?", "");
+		nome = nome.replaceAll("\"", "");
+		nome = nome.trim();
+		String pathname = pathCartellaArtista + Mp3ReaderUtil.slash() + nome;
+		cartellaAlbum = new File(pathname);
 		if (!cartellaAlbum.exists()) {
 			cartellaAlbum.mkdir();
 		}
 		return cartellaAlbum;
 
+	}
+	
+	@Override
+	public void doWithDirectory(File f) {
+		File[] listFiles = f.listFiles();
+		if(listFiles.length == 0){
+			f.delete();
+		}else{
+			super.doWithDirectory(f);
+		}
 	}
 
 	private File creaCartellaArtista(final Tag tag, final Mp3 mp3, final File cartellaAlfabeto) {
