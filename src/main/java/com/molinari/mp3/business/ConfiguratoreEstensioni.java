@@ -3,6 +3,7 @@ package com.molinari.mp3.business;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -15,21 +16,18 @@ import org.xml.sax.SAXException;
 public class ConfiguratoreEstensioni {
 
 	public static final String ESTENSIONI = "estensioni";
-	private static final String ACCETTATE = "accettate";
+	private static final String RINOMINARE = "rinominare";
 	private static final String SCOMPATTARE = "scompattare";
+	private static final String CANCELLARE = "cancellare";
 	private static final String VALORE = "valore";
 
 	private File xml;
 	private Document doc;
-	ArrayList<String> estensioneDaScompattare = new ArrayList<String>();
-	ArrayList<String> estensioneAccettate = new ArrayList<String>();
+	private List<String> estensioneDaScompattare = new ArrayList<>();
+	private List<String> estensioneRinominae = new ArrayList<>();
+	private List<String> estensioneCancellare = new ArrayList<>();
 
-	public static void main(final String[] args) throws ParserConfigurationException, SAXException, IOException {
-		// File xml = new
-		// File("/home/kiwi/Documenti/Workspace/Mp3Reader/config.xml");
-		// ConfiguratoreEstensioni config = new ConfiguratoreEstensioni();
-	}
-
+	
 	private static ConfiguratoreEstensioni singleton;
 
 	public static ConfiguratoreEstensioni getSingleton() throws ParserConfigurationException, SAXException, IOException {
@@ -57,15 +55,28 @@ public class ConfiguratoreEstensioni {
 		}
 
 	}
+	
+	public boolean containEstensione(File file, List<String> listToCheck){
+		if(listToCheck != null && file != null) {
+			for (String estensione : listToCheck) {
+				if(file.getAbsolutePath().endsWith(estensione)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	private void riempiListeEstensioni(final Node nodo) {
-		if (nodo.getNodeName().equals(ESTENSIONI)) {
+		if (ESTENSIONI.equals(nodo.getNodeName())) {
 			final NodeList figliNodoEstensioni = nodo.getChildNodes();
 			for (int x = 0; x < figliNodoEstensioni.getLength(); x++) {
 				final Node nodoEstensioni = figliNodoEstensioni.item(x);
-				if (nodoEstensioni.getNodeName().equals(ACCETTATE)) {
-					riempiLista(nodoEstensioni, estensioneAccettate);
-				} else if (nodoEstensioni.getNodeName().equals(SCOMPATTARE)) {
+				if (RINOMINARE.equals(nodoEstensioni.getNodeName())) {
+					riempiLista(nodoEstensioni, estensioneRinominae);
+				} else if (SCOMPATTARE.equals(nodoEstensioni.getNodeName())) {
+					riempiLista(nodoEstensioni, estensioneDaScompattare);
+				} else if (CANCELLARE.equals(nodoEstensioni.getNodeName())) {
 					riempiLista(nodoEstensioni, estensioneDaScompattare);
 				}
 			}
@@ -73,7 +84,7 @@ public class ConfiguratoreEstensioni {
 		}
 	}
 
-	private void riempiLista(final Node nodoEstensioni, final ArrayList<String> lista) {
+	private void riempiLista(final Node nodoEstensioni, final List<String> lista) {
 		final NodeList listaFigli = nodoEstensioni.getChildNodes();
 		if (listaFigli != null) {
 			for (int i = 0; i < listaFigli.getLength(); i++) {
@@ -90,8 +101,8 @@ public class ConfiguratoreEstensioni {
 		}
 	}
 
-	public ArrayList<String> getEstensioniPerOperazione(final String elemento) {
-		final ArrayList<String> estensioni = new ArrayList<String>();
+	public List<String> getEstensioniPerOperazione(final String elemento) {
+		final ArrayList<String> estensioni = new ArrayList<>();
 		final Element root = doc.getDocumentElement();
 		NodeList listaNodi = null;
 		listaNodi = (root.hasChildNodes()) ? root.getChildNodes() : null;
@@ -117,20 +128,20 @@ public class ConfiguratoreEstensioni {
 		}
 	}
 
-	public ArrayList<String> getEstensioneDaScompattare() {
+	public List<String> getEstensioneDaScompattare() {
 		return estensioneDaScompattare;
 	}
 
-	public void setEstensioneDaScompattare(final ArrayList<String> estensioneDaScompattare) {
+	public void setEstensioneDaScompattare(final List<String> estensioneDaScompattare) {
 		this.estensioneDaScompattare = estensioneDaScompattare;
 	}
 
-	public ArrayList<String> getEstensioneAccettate() {
-		return estensioneAccettate;
+	public List<String> getEstensioneRinominare() {
+		return estensioneRinominae;
 	}
 
-	public void setEstensioneAccettate(final ArrayList<String> estensioneAccettate) {
-		this.estensioneAccettate = estensioneAccettate;
+	public void setEstensioneAccettate(final List<String> estensioneAccettate) {
+		this.estensioneRinominae = estensioneAccettate;
 	}
 
 	public Document getDoc() {
@@ -147,5 +158,13 @@ public class ConfiguratoreEstensioni {
 
 	public void setXml(final File xml) {
 		this.xml = xml;
+	}
+	
+	public List<String> getEstensioneEliminare() {
+		return estensioneCancellare;
+	}
+
+	public void setEstensioneEliminare(List<String> estensioneEliminare) {
+		this.estensioneCancellare = estensioneEliminare;
 	}
 }

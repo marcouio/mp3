@@ -3,6 +3,7 @@ package com.molinari.mp3.business.check;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -14,7 +15,7 @@ public class CheckFileOrdina extends CheckFile {
 
 	public static final String OPERAZIONE_ORDINA = "ordinare";
 
-	ArrayList<String> estensioniPerOrdinatore = new ArrayList<String>();
+	List<String> estensioniPerOrdinatore = new ArrayList<String>();
 
 	public CheckFileOrdina() {
 		try {

@@ -14,8 +14,6 @@ import com.molinari.mp3.business.operation.OperazioniBaseTagFile;
 
 public class Rinominatore extends OperazioniBaseTagFile {
 		
-	private boolean forceFindTag = false;
-	
 	public Rinominatore() {
 		//do nothing
 	}
@@ -25,7 +23,7 @@ public class Rinominatore extends OperazioniBaseTagFile {
 	}
 
 	private void valorizzaTag(final String pathFile, final File f, final Tag tag) {
-		if(tag.hasTitleAndArtist() && !forceFindTag){
+		if(tag.hasTitleAndArtist() && !isForceFindTag()){
 			safeRename(pathFile, f, tag);
 		}else{
 			logCallInternet(tag);
@@ -40,7 +38,7 @@ public class Rinominatore extends OperazioniBaseTagFile {
 	}
 
 	private void logCallInternet(final Tag tag) {
-		if(tag.hasTitleAndArtist() && forceFindTag){
+		if(tag.hasTitleAndArtist() && isForceFindTag()){
 			Controllore.getLog().info("-> Tag interno completo ma recupero i tag su internet");
 		}else{
 			Controllore.getLog().info("-> Tag interno non completo provo su internet");
@@ -48,9 +46,11 @@ public class Rinominatore extends OperazioniBaseTagFile {
 	}
 
 	private void safeRename(final String pathFile, final File f, Tag tagNew) {
+		String newName = null;
 		if (tagNew.hasTitleAndArtist()) {
 			try {
-				rename(f, newName(pathFile, tagNew));
+				newName = newName(pathFile, tagNew);
+				rename(f, newName);
 					
 			} catch (final IOException e) {
 				Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
@@ -58,14 +58,28 @@ public class Rinominatore extends OperazioniBaseTagFile {
 		} else {
 			Controllore.getLog().info("Impossibile trovare tag per rinominare il file " + f.getName());
 		}
+		if(newName != null){
+			try {
+				java.nio.file.Files.deleteIfExists(new File(newName.replaceAll(".mp3", ".original.mp3")).toPath());
+				if(f.getAbsolutePath().contains(".mp3")){
+					java.nio.file.Files.deleteIfExists(new File(f.getAbsolutePath().replaceAll(".mp3", ".original.mp3")).toPath());
+				}
+				if(f.getAbsolutePath().contains(".MP3")){
+					java.nio.file.Files.deleteIfExists(new File(f.getAbsolutePath().replaceAll(".MP3", ".original.MP3")).toPath());
+				}
+			} catch (IOException e) {
+				Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
+			}
+		}
 	}
+		
 
 	public String newName(final String pathFile, Tag tagNew) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(pathFile);
-		sb.append(tagNew.getArtistaPrincipale());
+		sb.append(adjust(tagNew.getArtistaPrincipale()));
 		sb.append(" - ");
-		sb.append(tagNew.getTitoloCanzone());
+		sb.append(adjust(tagNew.getTitoloCanzone()));
 		sb.append(".mp3");
 		return sb.toString();
 	}
@@ -96,13 +110,5 @@ public class Rinominatore extends OperazioniBaseTagFile {
 	protected void setTipoOperazione() {
 		Controllore.setOperazione(IOperazioni.RINOMINA);
 
-	}
-
-	public boolean isForceFindTag() {
-		return forceFindTag;
-	}
-
-	public void setForceFindTag(boolean forceFindTag) {
-		this.forceFindTag = forceFindTag;
 	}
 }

@@ -113,7 +113,7 @@ public class CheckFile {
 	}
 
 	public boolean checkEstensione(final String estensione, final File file) {
-		if (file.getName().endsWith(estensione)) {
+		if (file.getName().toLowerCase().endsWith(estensione)) {
 			return true;
 		}
 		return false;

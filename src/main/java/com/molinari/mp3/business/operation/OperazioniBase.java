@@ -2,11 +2,13 @@ package com.molinari.mp3.business.operation;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3ReaderUtil;
+import com.molinari.utility.io.UtilIo;
 
 public class OperazioniBase {
 	// per i file
@@ -18,9 +20,8 @@ public class OperazioniBase {
 
 	public static boolean rename(final File mp3, final String nomedopo) throws IOException {
 		if(!mp3.getAbsolutePath().equals(nomedopo)){
-			final File file2 = new File(nomedopo);
 			try{
-				com.google.common.io.Files.move(mp3, file2);
+				UtilIo.moveFile(mp3, new File(nomedopo), StandardCopyOption.REPLACE_EXISTING);
 				java.nio.file.Files.deleteIfExists(mp3.toPath());
 				java.nio.file.Files.deleteIfExists(new File(mp3.getAbsolutePath().replaceAll(".mp3", ".original.mp3")).toPath());
 				String format = MessageFormat.format("-> Mp3 rinominato in: {0}", nomedopo);

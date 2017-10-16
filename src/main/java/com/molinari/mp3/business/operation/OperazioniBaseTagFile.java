@@ -20,10 +20,12 @@ import com.molinari.mp3.business.objects.MyTagException;
 import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.objects.TagTipo2_4;
 import com.molinari.mp3.business.objects.TagUtil;
+import com.molinari.utility.io.URLUTF8Encoder;
 
 public abstract class OperazioniBaseTagFile extends OperazioniBase {
 
 	protected CheckFile checkFile;
+	private boolean forceFindTag = true;
 
 	public OperazioniBaseTagFile() {
 		initCheckFile();
@@ -54,15 +56,16 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 			}
 			final File dir = new File(pathFile);
 			final String[] files = dir.list();
+			if(files != null){
+				for (int i = 0; i < files.length; i++) {
+					final File f = new File(pathFile + files[i]);
 
-			for (int i = 0; i < files.length; i++) {
-				final File f = new File(pathFile + files[i]);
-
-				if (checkFile(f, true)) {
-					if (f.isFile() && f.canRead()) {
-						eseguiOperazioneSufile(pathFile, f);
-					} else if (f.isDirectory()) {
-						doWithDirectory(f);
+					if (checkFile(f, true)) {
+						if (f.isFile() && f.canRead()) {
+							eseguiOperazioneSufile(pathFile, f);
+						} else if (f.isDirectory()) {
+							doWithDirectory(f);
+						}
 					}
 				}
 			}
@@ -115,14 +118,28 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 	 * @throws TagException
 	 */
 	public void operazioniGenerica(final String pathFile, final File f) throws IOException, Exception {
+		if(f.getAbsolutePath().toLowerCase().endsWith(CheckFile.ESTENSIONE_MP3)){
+			workOnMp3(pathFile, f);
+		}
+	}
+	
+	public String adjust(String nome){
+		return nome.replaceAll("/", "").replaceAll(":", "");
+	}
+
+	public void workOnMp3(final String pathFile, final File f) throws IOException, Exception {
 		final Mp3 file = new Mp3(f);
-		final Tag tag = file.getTag();
-		if (tag != null) {
-			Controllore.getLog().info("- > Tag già presenti su file");
-			operazioneTagPresenti(pathFile, f, tag);
-		} else {
-			Controllore.getLog().info(" -> Tag non presenti su file");
-			operazioneTagNonPresenti(pathFile, f);
+		if(f.getAbsolutePath().endsWith(".original.mp3")){
+			f.delete();
+		}else{
+			final Tag tag = file.getTag();
+			if (tag != null) {
+				Controllore.getLog().info("- > Tag già presenti su file");
+				operazioneTagPresenti(pathFile, f, tag);
+			} else {
+				Controllore.getLog().info(" -> Tag non presenti su file");
+				operazioneTagNonPresenti(pathFile, f);
+			}
 		}
 	}
 
@@ -161,7 +178,7 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 			result = mp3.getTag();
 			boolean hasTitleAndArtist = TagUtil.hasTitleAndArtist(result);
 
-			if (!hasTitleAndArtist) {
+			if (!hasTitleAndArtist || isForceFindTag()) {
 				result = findTagByWeb(f, mp3);
 			}
 
@@ -169,12 +186,18 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 				final Assegnatore assegna = new Assegnatore(f, "-");
 				assegna.save(f);
 				result = assegna.getFile().getTag();
+				if(result == null){
+					result =  new TagTipo2_4(new ID3v2_4());
+					
+				}
 			}
 
+			mp3.setTag(result);
+			mp3.save(f);
 		} catch (Exception e) {
 			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
-
+		
 		return result;
 	}
 
@@ -183,17 +206,48 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 		try {
 			LookUp lookUp = new LookUp(KeyHolder.getSingleton().getKey());
 			TagAudioTrack tagFromUrl = lookUp.lookup(f);
-			result = mp3.getTag() != null ? mp3.getTag() : new TagTipo2_4(new ID3v2_4());
-			if (tagFromUrl != null && tagFromUrl.getTrackName() != null && tagFromUrl.getArtist() != null) {
-				result.setTitoloCanzone(tagFromUrl.getTrackName());
-				result.setArtistaPrincipale(tagFromUrl.getArtist());
-				result.setNomeAlbum(tagFromUrl.getAlbum());
-				mp3.setTag(result);
-				mp3.save(f);
-
-				Controllore.getLog().info("-> Memorizzazione tag");
-			} else {
-				Controllore.getLog().info("-> Tag da url non trovato o con informazioni mancanti");
+			result = mp3.getTag();
+			if(tagFromUrl != null){
+				
+				String trackName = tagFromUrl.getTrackName();
+				String artist = tagFromUrl.getArtist();
+				
+				if (trackName != null && artist != null) {
+					
+					Tag webResult = new TagTipo2_4(new ID3v2_4());
+					
+					trackName = URLUTF8Encoder.unescape(URLUTF8Encoder.encode(tagFromUrl.getTrackName()));
+					artist = URLUTF8Encoder.unescape(URLUTF8Encoder.encode(tagFromUrl.getArtist()));
+					String album = tagFromUrl.getAlbum();
+					if(album != null){
+						album = URLUTF8Encoder.unescape(URLUTF8Encoder.encode(tagFromUrl.getAlbum()));
+					}
+					webResult.setTitoloCanzone(trackName);
+					webResult.setArtistaPrincipale(artist);
+					webResult.setNomeAlbum(album);
+					
+					if(result != null){
+						if(result.getCommenti() != null){
+							webResult.setCommenti(result.getCommenti());
+						}
+						if(result.getGenere() != null){
+							webResult.setGenere(result.getGenere());
+						}
+						if(result.getTraccia() != null){
+							webResult.setTraccia(result.getTraccia());
+						}
+					}
+					
+					
+					
+					mp3.setTag(webResult);
+					mp3.save(f);
+	
+					Controllore.getLog().info("-> Memorizzazione tag");
+					return webResult;
+				} else {
+					Controllore.getLog().info("-> Tag da url non trovato o con informazioni mancanti");
+				}
 			}
 		} catch (Exception e) {
 			Controllore.getLog().log(Level.SEVERE, "-> Eccezione durante la ricerca del tag via web", e);
@@ -201,4 +255,11 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 		return result;
 	}
 
+	public boolean isForceFindTag() {
+		return forceFindTag;
+	}
+
+	public void setForceFindTag(boolean forceFindTag) {
+		this.forceFindTag = forceFindTag;
+	}
 }

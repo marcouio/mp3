@@ -1,9 +1,12 @@
 package com.molinari.mp3.business.objects;
 
 import java.io.RandomAccessFile;
+import java.util.logging.Level;
 
 import org.farng.mp3.AbstractMP3Tag;
 import org.farng.mp3.id3.ID3v1;
+
+import com.molinari.mp3.business.Controllore;
 
 public class TagTipo1 extends ID3v1 implements Tag {
 
@@ -81,12 +84,22 @@ public class TagTipo1 extends ID3v1 implements Tag {
 
 	@Override
 	public String getTraccia() {
-		return getTrackNumberOnAlbum();
+		try{
+			return getTrackNumberOnAlbum();
+		}catch (Exception e) {
+			Controllore.getLog().log(Level.SEVERE, e.getMessage());
+		}
+		return null;
 	}
 
 	@Override
 	public void setTraccia(final String traccia) {
-		setTrackNumberOnAlbum(traccia);
+		try{
+			setTrackNumberOnAlbum(traccia);
+		}catch (Exception e) {
+			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
+		}
+		
 	}
 
 	@Override
