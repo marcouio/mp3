@@ -2,17 +2,17 @@ package com.molinari.mp3.business.objects;
 
 public interface Tag {
 	
-	public String getArtistaPrincipale();
+	String getArtistaPrincipale();
 
-	public String getTitoloCanzone();
+	String getTitoloCanzone();
 
-	public String getNomeAlbum();
+	String getNomeAlbum();
 
-	public String getGenere();
+	String getGenere();
 
-	public String getCommenti();
+	String getCommenti();
 
-	public String getTraccia();
+	String getTraccia();
 
 	void setArtistaPrincipale(String artistaPrincipale);
 

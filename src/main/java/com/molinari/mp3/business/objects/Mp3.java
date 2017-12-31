@@ -2,17 +2,18 @@ package com.molinari.mp3.business.objects;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import org.farng.mp3.AbstractMP3Tag;
 import org.farng.mp3.MP3File;
-import org.farng.mp3.id3.AbstractID3v2;
-import org.farng.mp3.id3.ID3v1;
+import org.farng.mp3.TagException;
 import org.farng.mp3.id3.ID3v2_2;
 import org.farng.mp3.id3.ID3v2_3;
 import org.farng.mp3.id3.ID3v2_4;
 
 import com.molinari.mp3.business.Mp3ReaderUtil;
 import com.molinari.mp3.business.operation.OperazioniBase;
+import com.molinari.utility.controller.ControlloreBase;
 
 public class Mp3 extends MP3File {
 
@@ -24,7 +25,7 @@ public class Mp3 extends MP3File {
 		super();
 	}
 
-	public Mp3(final File file) throws IOException, Exception {
+	public Mp3(final File file) throws IOException, TagException {
 		super(file);
 		init(file);
 	}
@@ -34,12 +35,12 @@ public class Mp3 extends MP3File {
 		init(mp3.getMp3file());
 	}
 
-	public Mp3(final String filename) throws IOException, Exception {
+	public Mp3(final String filename) throws IOException, TagException {
 		super(filename);
 		init(new File(filename));
 	}
 
-	public Mp3(final File file, final boolean parse) throws IOException, Exception {
+	public Mp3(final File file, final boolean parse) throws IOException, TagException {
 		super(file, parse);
 		init(file);
 
@@ -76,24 +77,11 @@ public class Mp3 extends MP3File {
 	}
 
 	@Override
-	public ID3v1 getID3v1Tag() {
-		return super.getID3v1Tag();
-	}
-
-	@Override
-	public AbstractID3v2 getID3v2Tag() {
-		return super.getID3v2Tag();
-
-	}
-
-	@Override
 	public void save(final File f) {
 		try {
 			super.save(f);
-		} catch (final IOException e) {
-			e.printStackTrace();
-		} catch (final Exception e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
 
 	}

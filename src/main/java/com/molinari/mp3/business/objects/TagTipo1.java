@@ -1,9 +1,11 @@
 package com.molinari.mp3.business.objects;
 
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.logging.Level;
 
 import org.farng.mp3.AbstractMP3Tag;
+import org.farng.mp3.TagNotFoundException;
 import org.farng.mp3.id3.ID3v1;
 
 import com.molinari.mp3.business.Controllore;
@@ -24,7 +26,7 @@ public class TagTipo1 extends ID3v1 implements Tag {
 		super(id3v1);
 	}
 
-	public TagTipo1(final RandomAccessFile raf) throws Exception {
+	public TagTipo1(final RandomAccessFile raf) throws TagNotFoundException, IOException {
 		super(raf);
 	}
 

@@ -7,12 +7,11 @@ public class AudioTrack implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private String status;
-	private List<Results> results;
+	private transient List<Results> results;
 	
 	@Override
 	public String toString() {
 		return super.toString();
-//		return String.format("%s - %s", getArtist(), getTitle());
 	}
 	
 	public String getStatus() {

@@ -2,11 +2,10 @@
 
 <!--  -->
 <config>
-	
 	<estensioni>
-		<accettate valore=".mp3">
+		 <rinominare>
 			<estensione valore=".mp3"></estensione>
-		</accettate>
+		</rinominare> 
 		
 		<scompattare>
 			<estensione valore=".rar"></estensione>
@@ -14,13 +13,19 @@
 		</scompattare>
 		
 		<ordinare>
+		    <estensione valore=".mp3"></estensione>
 			<estensione valore=".m3u"></estensione>
 			<estensione valore=".jpg"></estensione>
+			<estensione valore=".ini"></estensione>
+			<estensione valore=".db"></estensione>
 		</ordinare>
+		<cancellare>
+		    <estensione valore=".db"></estensione>
+		</cancellare>
 		
 		<!-- <rifiutate>
 			<estensione valore=".doc"></estensione>
-			<estensione valore=".ini"></estensione>
+			
 			<estensione valore=".db"></estensione>
 			<estensione valore=".sqlite"></estensione>
 			<estensione valore=".jsp"></estensione>
