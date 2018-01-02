@@ -2,7 +2,6 @@ package com.molinari.mp3.business.operation.tidier;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -158,7 +157,7 @@ public class Ordinatore extends OperazioniBaseTagFile {
 			String pathname = pathCartellaAlbum + Mp3ReaderUtil.slash() + nome;
 			File fileTo = new File(pathname);
 			try{
-				UtilIo.moveFile(f, fileTo, StandardCopyOption.REPLACE_EXISTING);
+				UtilIo.moveFile(f, fileTo);
 				String msg = MessageFormat.format("File spostato in: {0}", pathname);
 				Controllore.getLog().info(msg);
 				return true;
