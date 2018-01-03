@@ -189,7 +189,7 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 			if(result == null) {
 				result = mp3.getTag();
 			}
-			
+
 			if (result == null || !hasTitleAndArtist) {
 				final Assegnatore assegna = new Assegnatore(f, "-");
 				assegna.save(f);
