@@ -22,6 +22,7 @@ import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.objects.TagUtil;
 import com.molinari.mp3.business.operation.IOperazioni;
 import com.molinari.mp3.business.operation.OperazioniBaseTagFile;
+import com.molinari.mp3.business.operation.renamer.Rinominatore;
 import com.molinari.utility.graphic.component.alert.Alert;
 import com.molinari.utility.io.UtilIo;
 import com.molinari.utility.math.UtilMath;
@@ -71,30 +72,27 @@ public class Ordinatore extends OperazioniBaseTagFile {
 
 	@Override
 	protected void operazioneTagNonPresenti(final String pathFile2, final File f) {
-		try {
-			
-			if (f.getName().endsWith(CheckFile.ESTENSIONE_MP3)) {
 
-				Tag tag = findTag(f);
-				if (tag != null && isTagsValorizzati(tag)) {
-						operazioneTagPresenti(pathFile2, f, tag);
-					}
+		if (f.getName().endsWith(CheckFile.ESTENSIONE_MP3)) {
+
+			Tag tag = findTag(f);
+			if (tag != null && tag.hasTitleAndArtist()) {
+				
+				Controllore.getLog().info("-> Tag validi procedo ad ordinare");
+				ordinaPerTag(f, tag);
 			}
-		} catch (final IOException e) {
-			// file non trovato
-			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
 
 	}
 
 	protected boolean isTagsValorizzati(final Tag tag) {
-		return TagUtil.hasTitleAndArtist(tag);
+		return TagUtil.isValidTag(tag, isForceFindTag());
 	}
 
 	@Override
 	protected void operazioneTagPresenti(final String pathFile2, final File f, final Tag tag) throws IOException {
 		try {
-			if(TagUtil.hasTitleAndArtist(tag)){
+			if(TagUtil.isValidTag(tag, isForceFindTag())){
 				Controllore.getLog().info("-> Tag validi procedo ad ordinare");
 				ordinaPerTag(f, tag);
 			}else{
@@ -153,10 +151,8 @@ public class Ordinatore extends OperazioniBaseTagFile {
 				final File cartellaArtista = creaCartellaArtista(tag, mp3, cartellaAlfabeto);
 				final File cartellaAlbum = creaCartellaAlbum(tag, mp3, cartellaArtista);
 				pathCartellaAlbum = cartellaAlbum.getAbsolutePath();
-				String nome = adjust(mp3.getNome());
-				String pathname = pathCartellaAlbum + Mp3ReaderUtil.slash() + nome;
-				File fileTo = new File(pathname);
-				ret = moveMp3(f, pathname, fileTo);
+				
+				Rinominatore.safeRename(pathCartellaAlbum + Mp3ReaderUtil.slash(), f, tag);
 			}
 			
 		} catch (IOException | TagException e) {

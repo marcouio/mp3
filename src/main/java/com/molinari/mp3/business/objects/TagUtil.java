@@ -8,4 +8,8 @@ public class TagUtil {
 			   !"".equals(tag.getArtistaPrincipale()) && 
 			   !"".equals(tag.getTitoloCanzone());
 	}
+	
+	public static boolean isValidTag(Tag tag, boolean forceFind) {
+		return hasTitleAndArtist(tag) && !forceFind;
+	}
 }

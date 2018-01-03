@@ -2,12 +2,14 @@ package com.molinari.mp3.business.operation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import com.molinari.mp3.business.Mp3ReaderUtil;
 import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.MyTagException;
 import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.objects.TagTipo1;
+import com.molinari.utility.controller.ControlloreBase;
 
 public class Assegnatore {
 
@@ -18,24 +20,22 @@ public class Assegnatore {
 		final String[] info = f.getName().split(regex);
 		try {
 			dispatch(f, info, regex);
-		} catch (final IOException e) {
-			e.printStackTrace();
-		} catch (final MyTagException e) {
-			e.printStackTrace();
+		} catch (IOException | MyTagException e) {
+			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
 	private void dispatch(final File f, final String[] info, final String regex) throws IOException, MyTagException {
 		final String nome = f.getName();
-		Mp3 file = null;
+		Mp3 fileLoc = null;
 		try {
-			file = new Mp3(f);
+			fileLoc = new Mp3(f);
 		} catch (final Exception e1) {
-			e1.printStackTrace();
+			ControlloreBase.getLog().log(Level.SEVERE, e1.getMessage(), e1);
 			throw new MyTagException();
 		}
 
-		final Tag tag = file.getTag() == null ? new TagTipo1() : file.getTag();
+		final Tag tagLoc = fileLoc.getTag() == null ? new TagTipo1() : fileLoc.getTag();
 
 
 		// verifico che il nome contiene il regex e il punto dell'estensione
@@ -49,32 +49,32 @@ public class Assegnatore {
 
 				//la prima è la traccia e ha tre informazioni
 				if (info.length == 3) {
-					setTagConTreInfo(info, tag, punto);
+					setTagConTreInfo(info, tagLoc, punto);
 		        // se la prima è la traccia e ha due informazioni
 				} else if (info.length == 2) {
-					setTagConDueInfoNTraccia(info, tag, punto);
+					setTagConDueInfoNTraccia(info, tagLoc, punto);
 				}
 			}
 		
 			// la prima non è traccia e la seconda non ha info
 			if (info.length == 2) {
-				setTagConDueInfoAlbumSong(info, tag, punto);
+				setTagConDueInfoAlbumSong(info, tagLoc, punto);
 			}
 
-			if(tag.getArtistaPrincipale() != null && !tag.getArtistaPrincipale().equals("") &&
-			   tag.getTitoloCanzone() != null && !tag.getTitoloCanzone().equals("")){
-				this.setTag(tag);
+			if(tagLoc.getArtistaPrincipale() != null && !tagLoc.getArtistaPrincipale().equals("") &&
+			   tagLoc.getTitoloCanzone() != null && !tagLoc.getTitoloCanzone().equals("")){
+				this.setTag(tagLoc);
 			}
 		}else if(nome != null && !nome.contains(regex) && nome.contains(".")){
 			
 			// cerco l'indice del punto dell'estensione
 			final int punto = info[info.length - 1].lastIndexOf(".");
 			String traccia = info[0].substring(0, punto);
-			tag.setTitoloCanzone(traccia);
+			tagLoc.setTitoloCanzone(traccia);
 		}
-		file.setTag(tag);
-		file.save(f);
-		this.setFile(file);
+		fileLoc.setTag(tagLoc);
+		fileLoc.save(f);
+		this.setFile(fileLoc);
 
 	}
 

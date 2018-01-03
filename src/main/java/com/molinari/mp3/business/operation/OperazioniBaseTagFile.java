@@ -124,8 +124,10 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 		}
 	}
 	
-	public String adjust(String nome){
-		return nome.replaceAll("/", "").replaceAll(":", "");
+	public static String adjust(String nome){
+		return nome.replaceAll("/", "")
+				.replaceAll(":", "")
+				.replaceAll("\"", "");
 	}
 
 	public void workOnMp3(final String pathFile, final File f) {
@@ -177,20 +179,22 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 	public Tag findTag(final File f) {
 
 		Tag result = null;
+		Tag resultWeb = null;
 		try {
 			Mp3 mp3 = new Mp3(f);
 
-			boolean hasTitleAndArtist = TagUtil.hasTitleAndArtist(mp3.getTag());
+			boolean hasTitleAndArtist = TagUtil.isValidTag(mp3.getTag(), isForceFindTag());
 			
 			if (!hasTitleAndArtist || isForceFindTag()) {
-				result = findTagByWeb(f, mp3);
-			}
+				resultWeb = findTagByWeb(f, mp3);
+				result = resultWeb;
+			}	
 
 			if(result == null) {
 				result = mp3.getTag();
 			}
 
-			if (result == null || !hasTitleAndArtist) {
+			if (resultWeb == null && !hasTitleAndArtist) {
 				final Assegnatore assegna = new Assegnatore(f, "-");
 				assegna.save(f);
 				result = assegna.getFile().getTag();

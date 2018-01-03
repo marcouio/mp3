@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3Exception;
 import com.molinari.mp3.business.objects.Tag;
+import com.molinari.mp3.business.objects.TagUtil;
 import com.molinari.mp3.business.operation.Assegnatore;
 import com.molinari.mp3.business.operation.IOperazioni;
 import com.molinari.mp3.business.operation.KeyHolder;
@@ -23,29 +24,32 @@ public class Rinominatore extends OperazioniBaseTagFile {
 	}
 
 	private void valorizzaTag(final String pathFile, final File f, final Tag tag) {
-		if(tag.hasTitleAndArtist() && !isForceFindTag()){
-			safeRename(pathFile, f, tag);
-		}else{
+		
+		Tag tagNew = tag;
+		
+		if(!TagUtil.isValidTag(tag, isForceFindTag())){
+		
 			logCallInternet(tag);
 			
-			Tag tagNew = findTag(f);
-			if(tagNew != null){
-				safeRename(pathFile, f, tagNew);
-			}else{
+			tagNew = findTag(f);
+			if(tagNew == null) {
 				throw new Mp3Exception("Tag non trovato in rete per il file: " + f.getAbsolutePath());
-			}
+			}	
+			
 		}
+		
+		safeRename(pathFile, f, tagNew);	
 	}
 
 	private void logCallInternet(final Tag tag) {
-		if(tag.hasTitleAndArtist() && isForceFindTag()){
+		if(TagUtil.isValidTag(tag, isForceFindTag())){
 			Controllore.getLog().info("-> Tag interno completo ma recupero i tag su internet");
 		}else{
 			Controllore.getLog().info("-> Tag interno non completo provo su internet");
 		}
 	}
 
-	private void safeRename(final String pathFile, final File f, Tag tagNew) {
+	public static void safeRename(final String pathFile, final File f, Tag tagNew) {
 		String newName = null;
 		if (tagNew.hasTitleAndArtist()) {
 			try {
@@ -74,7 +78,7 @@ public class Rinominatore extends OperazioniBaseTagFile {
 	}
 		
 
-	public String newName(final String pathFile, Tag tagNew) {
+	public static String newName(final String pathFile, Tag tagNew) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(pathFile);
 		sb.append(adjust(tagNew.getArtistaPrincipale()));
