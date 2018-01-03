@@ -180,14 +180,17 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 		try {
 			Mp3 mp3 = new Mp3(f);
 
-			result = mp3.getTag();
-			boolean hasTitleAndArtist = TagUtil.hasTitleAndArtist(result);
-
+			boolean hasTitleAndArtist = TagUtil.hasTitleAndArtist(mp3.getTag());
+			
 			if (!hasTitleAndArtist || isForceFindTag()) {
 				result = findTagByWeb(f, mp3);
 			}
 
-			if (result == null) {
+			if(result == null) {
+				result = mp3.getTag();
+			}
+			
+			if (result == null || !hasTitleAndArtist) {
 				final Assegnatore assegna = new Assegnatore(f, "-");
 				assegna.save(f);
 				result = assegna.getFile().getTag();
