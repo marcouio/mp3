@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.operation.binder.Raccoglitore.Mp3File;
 import com.molinari.mp3.views.NewPlayList;
+import com.molinari.utility.controller.ControlloreBase;
 
 import javazoom.jlgui.basicplayer.BasicController;
 import javazoom.jlgui.basicplayer.BasicPlayer;
@@ -29,7 +30,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 	private int lunghezzaFrameMp3;
 	private Integer lunghezzaByteMp3;
 	protected boolean continua = false;
-	private static int index;
+	private int index;
 	private static int size = 1;
 	private NewPlayList playList;
 
@@ -63,7 +64,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 				control.pause();
 			}
 		} catch (final BasicPlayerException e) {
-			e.printStackTrace();
+			ControlloreBase.getLog().log(Level.SEVERE,e.getMessage(), e);
 		}
 	}
 
@@ -78,7 +79,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 				control.setGain(volume);
 			}
 		} catch (final BasicPlayerException e) {
-			e.printStackTrace();
+			ControlloreBase.getLog().log(Level.SEVERE,e.getMessage(), e);
 		}
 	}
 
@@ -95,7 +96,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 				control.resume();
 			}
 		} catch (final BasicPlayerException e) {
-			e.printStackTrace();
+			ControlloreBase.getLog().log(Level.SEVERE,e.getMessage(), e);
 		}
 	}
 
@@ -137,7 +138,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 			control.setPan(1.0);
 			// control.setGain(0.5)
 		} catch (final BasicPlayerException e) {
-			e.printStackTrace();
+			ControlloreBase.getLog().log(Level.SEVERE,e.getMessage(), e);
 		}
 	}
 
@@ -185,9 +186,9 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		this.properties = properties;
 		// Pay attention to properties. It depends on underlying JavaSound SPI
 		// MP3SPI provides mp3.equalizer.
-		// display("progress : " + properties.toString());
-		// System.out.println(properties.get("mp3.frame"));
-		// System.out.println(properties.get("mp3.frame.size.bytes"));
+		// display("progress : " + properties.toString())
+		// System.out.println(properties.get("mp3.frame"))
+		// System.out.println(properties.get("mp3.frame.size.bytes"))
 		if (properties.get("mp3.frame") != null && lunghezzaFrameMp3 != 0) {
 			NewPlayList.getSingleton().getSlider().setValue(setLivelloSlider());
 		}
@@ -197,7 +198,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		try {
 			control.resume();
 		} catch (final BasicPlayerException e) {
-			e.printStackTrace();
+			ControlloreBase.getLog().log(Level.SEVERE,e.getMessage(), e);
 		}
 	}
 
@@ -211,7 +212,7 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		final Long numeroFrame = (Long) properties.get("mp3.frame");
 		// lunghezzaMp3 : 100 = numeroFrame : x
 		// System.out.println("valore slider: " + numeroFrame.intValue() * 100 /
-		// lunghezzaMp3);
+		// lunghezzaMp3)
 		return numeroFrame.intValue() * 100 / lunghezzaFrameMp3;
 	}
 
@@ -232,28 +233,25 @@ public class MyBasicPlayer implements BasicPlayerListener {
 		// Notification of BasicPlayer states (opened, playing, end of media,
 		// ...)
 		display("stateUpdated : " + event.toString());
-		if (continua) {
-			// TODO
-			if (event.toString().equals("STOPPED:-1") && ((Long) properties.get("mp3.position.byte")).intValue() >= (lunghezzaByteMp3 - 150000)) {
-				if (index < size) {
-					index++;
-				} else {
-					index = 0;
-				}
-				final Mp3File mp3 = mappaMp3.get(Integer.toString(index));
-				opener(mp3.getPath());
-				playList.getLabel().setText(mp3.getNome());
-				play();
+		if (continua && event.toString().equals("STOPPED:-1") && ((Long) properties.get("mp3.position.byte")).intValue() >= (lunghezzaByteMp3 - 150000)) {
+			if (index < size) {
+				index++;
+			} else {
+				index = 0;
 			}
+			final Mp3File mp3 = mappaMp3.get(Integer.toString(index));
+			opener(mp3.getPath());
+			playList.getLabel().setText(mp3.getNome());
+			play();
 		}
 	}
 
-	public static int getIndex() {
+	public int getIndex() {
 		return index;
 	}
 
-	public static void setIndex(final int index) {
-		MyBasicPlayer.index = index;
+	public void setIndex(final int index) {
+		this.index = index;
 	}
 
 	public static int getSize() {

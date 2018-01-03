@@ -3,6 +3,7 @@ package com.molinari.mp3.views;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.logging.Level;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -14,6 +15,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3ReaderUtil;
 import com.molinari.mp3.business.operation.binder.Raccoglitore;
 import com.molinari.mp3.business.operation.renamer.Rinominatore;
@@ -159,7 +161,7 @@ public class Pannello extends JPanel {
 						Alert.info("Ok, file mp3 ordinati correttamente", "Perfetto");
 					}
 				} catch (final Exception e) {
-					e.printStackTrace();
+					Controllore.log(Level.SEVERE, e.getMessage(), e);
 				}
 			}
 		});

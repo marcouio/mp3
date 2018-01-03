@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
 import com.molinari.mp3.business.ConfiguratoreEstensioni;
+import com.molinari.mp3.business.Controllore;
 
 public class CheckFileOrdina extends CheckFile {
 
@@ -21,11 +23,11 @@ public class CheckFileOrdina extends CheckFile {
 		try {
 			estensioniPerOrdinatore = ConfiguratoreEstensioni.getSingleton().getEstensioniPerOperazione(OPERAZIONE_ORDINA);
 		} catch (final ParserConfigurationException e) {
-			e.printStackTrace();
+			Controllore.log(Level.SEVERE, e.getMessage(), e);
 		} catch (final SAXException e) {
-			e.printStackTrace();
+			Controllore.log(Level.SEVERE, e.getMessage(), e);
 		} catch (final IOException e) {
-			e.printStackTrace();
+			Controllore.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 

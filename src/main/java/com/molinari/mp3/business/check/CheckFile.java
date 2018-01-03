@@ -2,11 +2,13 @@ package com.molinari.mp3.business.check;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.objects.Mp3;
 
 public class CheckFile {
@@ -46,7 +48,7 @@ public class CheckFile {
 		try {
 			ok = correggi(estensione, file);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			Controllore.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return ok;
 	}
@@ -57,11 +59,11 @@ public class CheckFile {
 			try {
 				ok = correggi(estensione, file);
 			} catch (final IOException e) {
-				e.printStackTrace();
+				Controllore.log(Level.SEVERE, e.getMessage(), e);
 			} catch (final ParserConfigurationException e) {
-				e.printStackTrace();
+				Controllore.log(Level.SEVERE, e.getMessage(), e);
 			} catch (final SAXException e) {
-				e.printStackTrace();
+				Controllore.log(Level.SEVERE, e.getMessage(), e);
 			}
 		} else {
 			ok = true;

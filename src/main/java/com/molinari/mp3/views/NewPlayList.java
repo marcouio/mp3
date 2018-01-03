@@ -95,7 +95,7 @@ public class NewPlayList extends JPanel {
 					player.opener(fileMp3.getPath());
 					player.play();
 
-					MyBasicPlayer.setIndex(riga);
+					player.setIndex(riga);
 					label.setText(fileMp3.getNome());
 				}else{
 					if(player.isInPause()){

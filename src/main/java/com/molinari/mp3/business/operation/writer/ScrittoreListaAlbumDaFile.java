@@ -2,6 +2,7 @@ package com.molinari.mp3.business.operation.writer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -18,6 +19,7 @@ import com.molinari.utility.graphic.component.alert.Alert;
 public class ScrittoreListaAlbumDaFile extends OperazioniBaseTagFile implements Scrittore {
 
 	public ScrittoreListaAlbumDaFile() {
+		//do nothing
 	}
 
 	@Override
@@ -35,7 +37,7 @@ public class ScrittoreListaAlbumDaFile extends OperazioniBaseTagFile implements 
 
 	@Override
 	protected void operazioneTagNonPresenti(final String pathFile2, final File f) {
-
+		//do nothing
 	}
 
 	private void creaStringa(final String riga) {
@@ -67,10 +69,8 @@ public class ScrittoreListaAlbumDaFile extends OperazioniBaseTagFile implements 
 			if (scorriEdEseguiSuTuttiIFile(pathFileInput)) {
 				Alert.info("Lista Creata", Alert.TITLE_OK);
 			}
-		} catch (final ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (final SAXException e) {
-			e.printStackTrace();
+		} catch (ParserConfigurationException | SAXException e) {
+			Controllore.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 

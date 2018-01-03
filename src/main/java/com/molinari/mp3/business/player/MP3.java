@@ -21,6 +21,9 @@ package com.molinari.mp3.business.player;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.util.logging.Level;
+
+import com.molinari.utility.controller.ControlloreBase;
 
 import javazoom.jl.converter.Converter.ProgressListener;
 import javazoom.jl.decoder.Header;
@@ -44,13 +47,11 @@ public class MP3 implements ProgressListener {
 
 	// play the MP3 file to the sound card
 	public void play() {
-		try {
-			final FileInputStream fis = new FileInputStream(filename);
-			final BufferedInputStream bis = new BufferedInputStream(fis);
+		try(final FileInputStream fis = new FileInputStream(filename);
+			final BufferedInputStream bis = new BufferedInputStream(fis);){
 			player = new AdvancedPlayer(bis);
 		} catch (final Exception e) {
-			System.out.println("Problem playing file " + filename);
-			System.out.println(e);
+			ControlloreBase.getLog().log(Level.SEVERE,"Problem playing file " + filename, e);
 		}
 
 		// run in new thread to play in background
@@ -60,65 +61,41 @@ public class MP3 implements ProgressListener {
 				try {
 					player.play();
 				} catch (final Exception e) {
-					System.out.println(e);
+					ControlloreBase.getLog().log(Level.SEVERE,"Problem playing file " + filename, e);
 				}
 			}
 		}.start();
 
 	}
 
-	// test client
-	public static void main(final String[] args) {
-		final String filename = "/home/kiwi/Musica/AB - AB III/Alter Bridge - All Hope Is Gone.mp3";
-		MP3 mp3 = new MP3(filename);
-		mp3.play();
-
-		// do whatever computation you like, while music plays
-		final int N = 4000;
-		double sum = 0.0;
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				sum += Math.sin(i + j);
-			}
-		}
-		System.out.println(sum);
-
-		// when the computation is done, stop playing it
-		mp3.close();
-
-		// play from the beginning
-		mp3 = new MP3(filename);
-		mp3.play();
-
-	}
-
+	
 	@Override
 	public void converterUpdate(final int updateID, final int param1, final int param2) {
-		// TODO Auto-generated method stub
+		// not implemented
 
 	}
 
 	@Override
 	public void parsedFrame(final int frameNo, final Header header) {
-		// TODO Auto-generated method stub
+		// not implemented
 
 	}
 
 	@Override
 	public void readFrame(final int frameNo, final Header header) {
-		// TODO Auto-generated method stub
+		// not implemented
 
 	}
 
 	@Override
 	public void decodedFrame(final int frameNo, final Header header, final Obuffer o) {
-		// TODO Auto-generated method stub
+		// not implemented
 
 	}
 
 	@Override
 	public boolean converterException(final Throwable t) {
-		// TODO Auto-generated method stub
+		// not implemented
 		return false;
 	}
 

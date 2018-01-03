@@ -98,7 +98,7 @@ public class Controllore extends ControlloreBase {
 				try {
 					UIManager.setLookAndFeel(looks[i].getClassName());
 				} catch (final Exception e) {
-					e.printStackTrace();
+					Controllore.log(Level.SEVERE, e.getMessage(), e);
 				}
 			}
 		}

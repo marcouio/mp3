@@ -2,9 +2,11 @@ package com.molinari.mp3.business.operation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import org.farng.mp3.TagException;
 
+import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3ReaderUtil;
 import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.MyTagException;
@@ -39,7 +41,7 @@ public abstract class OperazioniBaseCartelle extends OperazioniBase {
 						cartelleDaScorrere.add(f.getAbsolutePath());
 					} catch (final MyTagException e) {
 						// tag non presente
-						e.printStackTrace();
+						Controllore.log(Level.SEVERE, e.getMessage(), e);
 					}
 					// valorizzaTagGenerale(pathFile, f);
 				}
@@ -55,7 +57,7 @@ public abstract class OperazioniBaseCartelle extends OperazioniBase {
 		} catch (final IOException e) {
 			// se il file non viene trovato o non è disponibile
 			ok = false;
-			e.printStackTrace();
+			Controllore.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return ok;
 	}
@@ -99,7 +101,7 @@ public abstract class OperazioniBaseCartelle extends OperazioniBase {
 			try {
 				file = new Mp3(f);
 			} catch (final Exception e) {
-				e.printStackTrace();
+				Controllore.log(Level.SEVERE, e.getMessage(), e);
 				throw new MyTagException();
 			}
 			TagTipo1 tagv1 = (TagTipo1) file.getTag();
