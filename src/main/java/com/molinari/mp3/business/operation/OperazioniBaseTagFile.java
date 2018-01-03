@@ -11,6 +11,7 @@ import org.farng.mp3.id3.ID3v2_4;
 import org.xml.sax.SAXException;
 
 import com.molinari.mp3.business.Controllore;
+import com.molinari.mp3.business.Mp3Exception;
 import com.molinari.mp3.business.Mp3ReaderUtil;
 import com.molinari.mp3.business.acoustid.TagAudioTrack;
 import com.molinari.mp3.business.check.CheckFile;
@@ -127,19 +128,23 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 		return nome.replaceAll("/", "").replaceAll(":", "");
 	}
 
-	public void workOnMp3(final String pathFile, final File f) throws IOException, Exception {
-		final Mp3 file = new Mp3(f);
-		if(f.getAbsolutePath().endsWith(".original.mp3")){
-			f.delete();
-		}else{
-			final Tag tag = file.getTag();
-			if (tag != null) {
-				Controllore.getLog().info("- > Tag già presenti su file");
-				operazioneTagPresenti(pathFile, f, tag);
-			} else {
-				Controllore.getLog().info(" -> Tag non presenti su file");
-				operazioneTagNonPresenti(pathFile, f);
+	public void workOnMp3(final String pathFile, final File f) {
+		try {
+			final Mp3 file = new Mp3(f);
+			if(f.getAbsolutePath().endsWith(".original.mp3") || f.getName().equals(".mp3")){
+				f.delete();
+			}else{
+				final Tag tag = file.getTag();
+				if (tag != null) {
+					Controllore.getLog().info("- > Tag già presenti su file");
+					operazioneTagPresenti(pathFile, f, tag);
+				} else {
+					Controllore.getLog().info(" -> Tag non presenti su file");
+					operazioneTagNonPresenti(pathFile, f);
+				}
 			}
+		} catch (IOException | TagException e) {
+			throw new Mp3Exception(e);
 		}
 	}
 

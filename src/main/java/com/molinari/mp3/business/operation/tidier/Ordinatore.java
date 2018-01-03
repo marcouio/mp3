@@ -2,13 +2,13 @@ package com.molinari.mp3.business.operation.tidier;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.farng.mp3.TagException;
 import org.xml.sax.SAXException;
 
 import com.molinari.mp3.business.ConfiguratoreEstensioni;
@@ -45,7 +45,7 @@ public class Ordinatore extends OperazioniBaseTagFile {
 	}
 	
 	@Override
-	public void operazioniGenerica(String pathFile, File f) throws IOException, Exception {
+	public void operazioniGenerica(String pathFile, File f) throws Exception {
 		super.operazioniGenerica(pathFile, f);
 		
 		List<String> estensioneDaScompattare = ConfiguratoreEstensioni.getSingleton().getEstensioneDaScompattare();
@@ -96,7 +96,7 @@ public class Ordinatore extends OperazioniBaseTagFile {
 		try {
 			if(TagUtil.hasTitleAndArtist(tag)){
 				Controllore.getLog().info("-> Tag validi procedo ad ordinare");
-				ordinaPerTag(pathFile2, f, tag);
+				ordinaPerTag(f, tag);
 			}else{
 				Controllore.getLog().info("-> Tag non validi, li cerco");
 				operazioneTagNonPresenti(pathFile2, f);
@@ -132,9 +132,7 @@ public class Ordinatore extends OperazioniBaseTagFile {
 	public boolean ordina() {
 		try {
 			return scorriEdEseguiSuTuttiIFile(input);
-		} catch (final ParserConfigurationException e) {
-			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
-		} catch (final SAXException e) {
+		} catch (ParserConfigurationException | SAXException e) {
 			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
 		return false;
@@ -144,32 +142,41 @@ public class Ordinatore extends OperazioniBaseTagFile {
 		return origine.renameTo(destinazione);
 	}
 
-	private boolean ordinaPerTag(final String pathFile2, final File f, final Tag tag) throws Exception {
-		Mp3 mp3 = null;
-		if (checkFile.checkFile(f, true)) {
-			mp3 = new Mp3(f);
-			mp3.setTag(tag);
-			final File cartellaAlfabeto = creaCartellaAlfabeto(tag, mp3);
-			final File cartellaArtista = creaCartellaArtista(tag, mp3, cartellaAlfabeto);
-			final File cartellaAlbum = creaCartellaAlbum(tag, mp3, cartellaArtista);
-			pathCartellaAlbum = cartellaAlbum.getAbsolutePath();
-			String nome = adjust(mp3.getNome());
-			String pathname = pathCartellaAlbum + Mp3ReaderUtil.slash() + nome;
-			File fileTo = new File(pathname);
-			try{
-				UtilIo.moveFile(f, fileTo);
-				String msg = MessageFormat.format("File spostato in: {0}", pathname);
-				Controllore.getLog().info(msg);
-				return true;
-			}catch (Exception e) {
-				boolean renameTo = f.renameTo(fileTo);
-				if(!renameTo){
-					Controllore.getLog().info("Non sono riuscito a spostare il file");
-					Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
-				}
+	private boolean ordinaPerTag(final File f, final Tag tag) {
+		boolean ret = false;
+		try {
+			Mp3 mp3 = null;
+			if (checkFile.checkFile(f, true)) {
+				mp3 = new Mp3(f);
+				mp3.setTag(tag);
+				final File cartellaAlfabeto = creaCartellaAlfabeto(tag);
+				final File cartellaArtista = creaCartellaArtista(tag, mp3, cartellaAlfabeto);
+				final File cartellaAlbum = creaCartellaAlbum(tag, mp3, cartellaArtista);
+				pathCartellaAlbum = cartellaAlbum.getAbsolutePath();
+				String nome = adjust(mp3.getNome());
+				String pathname = pathCartellaAlbum + Mp3ReaderUtil.slash() + nome;
+				File fileTo = new File(pathname);
+				ret = moveMp3(f, pathname, fileTo);
 			}
+			
+		} catch (IOException | TagException e) {
+			throw new Mp3Exception(e);
 		}
-		return false;
+		return ret;
+	}
+
+	public boolean moveMp3(final File f, String pathname, File fileTo) {
+		try{
+			UtilIo.moveFile(f, fileTo);
+			Controllore.getLog().info(() -> "File spostato in: " + pathname);
+			return true;
+		}catch (Exception e) {
+			boolean renameTo = f.renameTo(fileTo);
+			if(!renameTo){
+				Controllore.getLog().log(Level.SEVERE, "Non sono riuscito a spostare il file", e);
+			}
+			return false;
+		}
 	}
 
 	private File creaCartellaAlbum(final Tag tag, final Mp3 mp3, final File cartellaArtista) {
@@ -208,32 +215,39 @@ public class Ordinatore extends OperazioniBaseTagFile {
 
 	}
 
-	private File creaCartellaAlfabeto(final Tag tag, final Mp3 mp3) {
+	private File creaCartellaAlfabeto(final Tag tag) {
 		File dir = null;
 		final String nomeAlfa = tag.getArtistaPrincipale();
-		String lettera = "";
 
 		StringBuilder pathname = new StringBuilder();
 		pathname.append(output);
 
-		if (nomeAlfa != null && nomeAlfa.length() > 1) {
-			lettera = nomeAlfa.substring(0, 1).toUpperCase();
-			boolean number = UtilMath.isNumber(lettera);
-			if(number){
-				pathname.append(Mp3ReaderUtil.slash() + "0_9");
-
-			}else{
-				pathname.append(Mp3ReaderUtil.slash() + lettera);
-			}
-		} else {
-			pathname.append(Mp3ReaderUtil.slash() + "NoLetter");
-
-		}
+		pathname.append(createAlphabetDirName(nomeAlfa));
 		dir = new File(pathname.toString().trim());
 		if (!dir.exists()) {
 			dir.mkdir();
 		}
 		return dir;
+	}
+	
+	public String createAlphabetDirName(String nomeAlfa) {
+		String ret = "";
+
+		if (nomeAlfa != null && nomeAlfa.length() > 1) {
+			String lettera = nomeAlfa.substring(0, 1).toUpperCase();
+			boolean number = UtilMath.isNumber(lettera);
+			if(number){
+				ret = Mp3ReaderUtil.slash() + "0_9";
+
+			}else{
+				ret = Mp3ReaderUtil.slash() + lettera;
+			}
+		} else {
+			ret =  Mp3ReaderUtil.slash() + "NoLetter";
+
+		}
+		return ret;
+
 	}
 
 	public void setOutput(final String output) {
