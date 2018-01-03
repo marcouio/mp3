@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -18,6 +19,7 @@ import com.molinari.mp3.business.operation.IOperazioni;
 import com.molinari.mp3.business.operation.OperazioniBaseTagFile;
 import com.molinari.mp3.business.player.MyBasicPlayer;
 import com.molinari.mp3.views.NewPlayList;
+import com.molinari.utility.controller.ControlloreBase;
 
 public class Raccoglitore extends OperazioniBaseTagFile implements IRaccoglitore {
 	
@@ -81,7 +83,7 @@ public class Raccoglitore extends OperazioniBaseTagFile implements IRaccoglitore
 			Mp3File e = new Mp3File();
 			addMp3ToList(f, mp3, e);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -95,7 +97,7 @@ public class Raccoglitore extends OperazioniBaseTagFile implements IRaccoglitore
 			Mp3File mp3File = new Mp3File();
 			addMp3ToList(f, mp3, mp3File);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -117,10 +119,8 @@ public class Raccoglitore extends OperazioniBaseTagFile implements IRaccoglitore
 	public void raccogli(final String pathFileInput) {
 		try {
 			scorriEdEseguiSuTuttiIFile(pathFileInput);
-		} catch (final ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (final SAXException e) {
-			e.printStackTrace();
+		} catch (ParserConfigurationException | SAXException e) {
+			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 

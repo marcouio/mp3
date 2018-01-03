@@ -8,15 +8,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
 
 import com.google.gson.Gson;
 import com.molinari.mp3.business.acoustid.AudioTrack;
 import com.molinari.mp3.business.acoustid.TagAudioTrack;
+import com.molinari.utility.controller.ControlloreBase;
 
 public class LookUp {
 
@@ -43,7 +44,7 @@ public class LookUp {
 		return new URL(sb.toString());
 	}
 
-	private String getInputStreamFromUrl(URL url) throws IOException, ProtocolException {
+	private String getInputStreamFromUrl(URL url) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Content-Type", "application/json");
@@ -61,21 +62,7 @@ public class LookUp {
         return results.toString();
 	}
 
-	public static void main(String[] args) throws Exception {
-
-//		LookUp client = new LookUp("hDMsDzihFA");
-		LookUp client = new LookUp("5qZgj0WcWA0");
-		String pathname = "/temp/";
-		String[] list = new File(pathname).list();
-
-		for (String string : list) {
-			String pathnameFile = pathname + string;
-			File file = new File(pathnameFile);
-			client.lookup(file);
-		}
-	}
-
-	public AudioTrack parseResult(String json, final int targetDuration) throws IOException {
+	public AudioTrack parseResult(String json) {
 		System.out.println(json);
 		return readJson(json);
 	}
@@ -116,13 +103,12 @@ public class LookUp {
 		try (Scanner scanner = new Scanner(new InputStreamReader(fpcalcProc.getInputStream(), UTF_8))) {
 			while (scanner.hasNextLine()) {
 				String nextLine = scanner.nextLine();
-				System.out.println(nextLine);
 				String[] value = RegularExpressions.EQUALS.split(nextLine, 2);
 				if (value.length == 2) {
 					try {
 						output.put(ChromaprintField.valueOf(value[0]), value[1]);
 					} catch (Exception e) {
-						e.printStackTrace();
+						ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
 					}
 				}
 			}
@@ -150,7 +136,7 @@ public class LookUp {
 
 		String response = lookup(duration, fingerprint);
 		if (response != null && response.length() > 0) {
-			 AudioTrack parseResult = parseResult(lookup(duration, fingerprint), duration);
+			 AudioTrack parseResult = parseResult(lookup(duration, fingerprint));
 			 return new TagAudioTrack(parseResult);
 		}
 

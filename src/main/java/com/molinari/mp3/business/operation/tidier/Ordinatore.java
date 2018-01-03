@@ -120,7 +120,7 @@ public class Ordinatore extends OperazioniBaseTagFile {
 		if (pathCartellaAlbum != null && !pathCartellaAlbum.equals("")) {
 			for (int i = 0; i < fileDaSpostareAllaFine.size(); i++) {
 				final File f = fileDaSpostareAllaFine.get(i);
-				f.renameTo(new File(pathCartellaAlbum + Mp3ReaderUtil.slash() + f.getName()));
+				UtilIo.moveFile(f, new File(pathCartellaAlbum + Mp3ReaderUtil.slash() + f.getName()));
 			}
 		}
 		// TODO generaReport();
@@ -148,8 +148,8 @@ public class Ordinatore extends OperazioniBaseTagFile {
 				mp3 = new Mp3(f);
 				mp3.setTag(tag);
 				final File cartellaAlfabeto = creaCartellaAlfabeto(tag);
-				final File cartellaArtista = creaCartellaArtista(tag, mp3, cartellaAlfabeto);
-				final File cartellaAlbum = creaCartellaAlbum(tag, mp3, cartellaArtista);
+				final File cartellaArtista = creaCartellaArtista(tag, cartellaAlfabeto);
+				final File cartellaAlbum = creaCartellaAlbum(tag, cartellaArtista);
 				pathCartellaAlbum = cartellaAlbum.getAbsolutePath();
 				
 				Rinominatore.safeRename(pathCartellaAlbum + Mp3ReaderUtil.slash(), f, tag);
@@ -175,7 +175,7 @@ public class Ordinatore extends OperazioniBaseTagFile {
 		}
 	}
 
-	private File creaCartellaAlbum(final Tag tag, final Mp3 mp3, final File cartellaArtista) {
+	private File creaCartellaAlbum(final Tag tag, final File cartellaArtista) {
 		File cartellaAlbum = null;
 		final String pathCartellaArtista = cartellaArtista.getAbsolutePath();
 		String nome = adjust(tag.getNomeAlbum());
@@ -198,7 +198,7 @@ public class Ordinatore extends OperazioniBaseTagFile {
 		}
 	}
 
-	private File creaCartellaArtista(final Tag tag, final Mp3 mp3, final File cartellaAlfabeto) {
+	private File creaCartellaArtista(final Tag tag, final File cartellaAlfabeto) {
 		File cartellaArtista = null;
 		final String pathCartellaAlfabeto = cartellaAlfabeto.getAbsolutePath();
 		String artistaPrincipale = adjust(tag.getArtistaPrincipale());

@@ -2,6 +2,10 @@ package com.molinari.mp3.business.objects;
 
 public class TagUtil {
 
+	private TagUtil() {
+		// do nothing
+	}
+	
 	public static boolean hasTitleAndArtist(Tag tag) {
 		return tag.getTitoloCanzone() != null && 
 			   tag.getArtistaPrincipale() != null && 
