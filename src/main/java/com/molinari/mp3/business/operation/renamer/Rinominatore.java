@@ -62,22 +62,30 @@ public class Rinominatore extends OperazioniBaseTagFile {
 		} else {
 			Controllore.getLog().info("Impossibile trovare tag per rinominare il file " + f.getName());
 		}
-		if(newName != null){
-			try {
-				java.nio.file.Files.deleteIfExists(new File(newName.replaceAll(".mp3", ".original.mp3")).toPath());
-				if(f.getAbsolutePath().contains(".mp3")){
-					java.nio.file.Files.deleteIfExists(new File(f.getAbsolutePath().replaceAll(".mp3", ".original.mp3")).toPath());
-				}
-				if(f.getAbsolutePath().contains(".MP3")){
-					java.nio.file.Files.deleteIfExists(new File(f.getAbsolutePath().replaceAll(".MP3", ".original.MP3")).toPath());
-				}
-			} catch (IOException e) {
-				Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
+		try {
+
+			if(f.getAbsolutePath().contains(".mp3")){
+				java.nio.file.Files.deleteIfExists(new File(getNamePlusOriginal(f.getName())).toPath());
 			}
+			if(f.getAbsolutePath().contains(".MP3")){
+				java.nio.file.Files.deleteIfExists(new File(f.getAbsolutePath().replaceAll(".MP3", ".original.MP3")).toPath());
+			}
+			
+			if(newName != null){
+				java.nio.file.Files.deleteIfExists(new File(getNamePlusOriginal(newName)).toPath());
+			}
+		} catch (IOException e) {
+			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
-		
-
+	
+	public static String getNamePlusOriginal(String fileName){
+		StringBuilder sb = new StringBuilder();
+		sb.append(fileName.substring(0, fileName.length()-4));
+		sb.append(".original.mp3");
+		return sb.toString();
+	}
+	
 	public static String newName(final String pathFile, Tag tagNew) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(pathFile);

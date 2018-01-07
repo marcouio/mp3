@@ -6,6 +6,7 @@ import java.util.logging.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.farng.mp3.TagConstant;
 import org.farng.mp3.TagException;
 import org.farng.mp3.id3.ID3v2_4;
 import org.xml.sax.SAXException;
@@ -21,6 +22,9 @@ import com.molinari.mp3.business.objects.MyTagException;
 import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.objects.TagTipo2_4;
 import com.molinari.mp3.business.objects.TagUtil;
+import com.molinari.mp3.views.ConfirmAssignTag;
+import com.molinari.mp3.views.ConfirmAssignTag.BeanAssign;
+import com.molinari.mp3.views.LoaderDialog;
 import com.molinari.utility.io.URLUTF8Encoder;
 
 public abstract class OperazioniBaseTagFile extends OperazioniBase {
@@ -194,7 +198,7 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 				result = mp3.getTag();
 			}
 
-			if (resultWeb == null && !hasTitleAndArtist) {
+			if ((resultWeb == null && !hasTitleAndArtist) || !TagUtil.hasTitleAndArtist(resultWeb)) {
 				final Assegnatore assegna = new Assegnatore(f, "-");
 				assegna.save(f);
 				result = assegna.getFile().getTag();
@@ -202,10 +206,21 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 					result =  new TagTipo2_4(new ID3v2_4());
 					
 				}
+				final Tag resultToPass = result;
+				ConfirmAssignTag confirm = new ConfirmAssignTag(Controllore.getApplicationframe(), resultToPass, f.getAbsolutePath());
+				
+				LoaderDialog ld = new LoaderDialog(confirm);
+				ld.execute();
+				BeanAssign beanAssign = confirm.getBeanAssign();
+				
+				result.setArtistaPrincipale(beanAssign.getArtist());
+				result.setTitoloCanzone(beanAssign.getSong());
+				result.setNomeAlbum(beanAssign.getAlbum());
+				result.setTraccia(beanAssign.getTrack());
 			}
 
 			mp3.setTag(result);
-			mp3.save(f);
+			mp3.save(f, TagConstant.MP3_FILE_SAVE_APPEND);
 		} catch (Exception e) {
 			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
@@ -237,6 +252,7 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 					webResult.setTitoloCanzone(trackName);
 					webResult.setArtistaPrincipale(artist);
 					webResult.setNomeAlbum(album);
+					webResult.setTraccia(tagFromUrl.getTrackName());
 					
 					if(result != null){
 						if(result.getCommenti() != null){
@@ -245,16 +261,11 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 						if(result.getGenere() != null){
 							webResult.setGenere(result.getGenere());
 						}
-						if(result.getTraccia() != null){
+						if(result.getTraccia() != null && !result.getTraccia().equals("")){
 							webResult.setTraccia(result.getTraccia());
 						}
 					}
 					
-					
-					
-					mp3.setTag(webResult);
-					mp3.save(f);
-	
 					Controllore.getLog().info("-> Memorizzazione tag");
 					return webResult;
 				} else {

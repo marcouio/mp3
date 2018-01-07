@@ -106,7 +106,7 @@ public class Controllore extends ControlloreBase {
 	}
 	
 	public static void main(final String[] args) {
-		Controllore.getSingleton().myMain(Controllore.getSingleton(), false, "myApplication");
+		Controllore.getSingleton().myMain(Controllore.getSingleton(), true, "myApplication");
 	}
 
 	@Override

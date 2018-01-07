@@ -24,30 +24,26 @@ import com.molinari.mp3.business.player.MyBasicPlayer;
 
 public class NewPlayList extends JPanel {
 
-	private static final long  serialVersionUID = 1L;
-	private static MyTable     table;
-	final String[]             nomiColonne      = new String[] { "Titolo - Artista - Album" };
+	private static final long serialVersionUID = 1L;
+	private static MyTable table;
+	private static final String[] nomiColonne = new String[] { "Titolo - Artista - Album" };
 	private static JScrollPane scrollPane;
-	Map<String, Mp3File>       mappaMp3         = new HashMap<>();
-	protected MyBasicPlayer    player           = new MyBasicPlayer(this);
-	private JLabel             label;
-	private JSlider            slider;
+	private Map<String, Mp3File> mappaMp3 = new HashMap<>();
+	protected transient MyBasicPlayer player = new MyBasicPlayer(this);
+	private JLabel label;
+	private JSlider slider;
 
 	public static void main(final String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
+		SwingUtilities.invokeLater(() -> {
 
-				final JFrame inst = new JFrame();
-				final NewPlayList p = new NewPlayList();
-				inst.setBounds(10, 10, 275, 268);
-				inst.getContentPane().add(p);
-				inst.setTitle("MP3 Manager");
-				inst.setLocationRelativeTo(null);
-				inst.setVisible(true);
-				inst.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			}
-
+			final JFrame inst = new JFrame();
+			final NewPlayList p = new NewPlayList();
+			inst.setBounds(10, 10, 275, 268);
+			inst.getContentPane().add(p);
+			inst.setTitle("MP3 Manager");
+			inst.setLocationRelativeTo(null);
+			inst.setVisible(true);
+			inst.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		});
 	}
 
@@ -97,11 +93,11 @@ public class NewPlayList extends JPanel {
 
 					player.setIndex(riga);
 					label.setText(fileMp3.getNome());
-				}else{
-					if(player.isInPause()){
+				} else {
+					if (player.isInPause()) {
 						player.resume();
 					}
-					
+
 				}
 			}
 		});
@@ -111,13 +107,9 @@ public class NewPlayList extends JPanel {
 		stopButton.setBounds(50, 10, 30, 30);
 		stopButton.setBorder(null);
 		stopButton.setRolloverIcon(stoprosso);
-		stopButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				if (player != null) {
-					player.stop();
-				}
+		stopButton.addActionListener(e -> {
+			if (player != null) {
+				player.stop();
 			}
 		});
 		add(stopButton);
@@ -160,7 +152,7 @@ public class NewPlayList extends JPanel {
 			public void mouseReleased(final MouseEvent arg0) {
 
 				final Integer valore = sliderVolume.getValue();
-				final Double valoreDouble = new Double(valore.doubleValue());
+				final Double valoreDouble = Double.valueOf(valore.doubleValue());
 				final double valoreVolume = valoreDouble / 70;
 				player.setGain(valoreVolume);
 			}
@@ -178,17 +170,17 @@ public class NewPlayList extends JPanel {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				        // player.stop();
-			        }
+				// do nothing
+			}
 
 		});
 		add(slider);
 	}
 
 	public void creaPlayList(final String[][] canzoni) {
-		final MyTable table = new MyTable(canzoni, nomiColonne);
-		getScrollPane().setViewportView(table);
-		table.setBounds(10, 39, 430, 250);
+		final MyTable tableLoc = new MyTable(canzoni, nomiColonne);
+		getScrollPane().setViewportView(tableLoc);
+		tableLoc.setBounds(10, 39, 430, 250);
 	}
 
 	public JScrollPane getScrollPane() {
