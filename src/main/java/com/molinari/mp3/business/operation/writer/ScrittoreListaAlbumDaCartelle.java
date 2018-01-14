@@ -19,7 +19,7 @@ public class ScrittoreListaAlbumDaCartelle extends OperazioniBaseCartelle implem
 	}
 
 	@Override
-	protected void operazioneTagNonPresenti(final String pathFile2, final File f) {
+	protected void operazione(final String pathFile2, final File f) {
 		String artista = null;
 		String album = null;
 		if (f != null && pathFile2 != null) {

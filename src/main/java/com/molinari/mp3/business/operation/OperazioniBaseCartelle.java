@@ -8,9 +8,7 @@ import org.farng.mp3.TagException;
 
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3ReaderUtil;
-import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.MyTagException;
-import com.molinari.mp3.business.objects.TagTipo1;
 
 public abstract class OperazioniBaseCartelle extends OperazioniBase {
 
@@ -75,7 +73,7 @@ public abstract class OperazioniBaseCartelle extends OperazioniBase {
 	 * @throws TagException
 	 */
 	public void operazioniGenerica(final String pathFile, final File f) throws IOException, MyTagException {
-		operazioneTagNonPresenti(pathFile, f);
+		operazione(pathFile, f);
 	}
 
 	/**
@@ -85,42 +83,8 @@ public abstract class OperazioniBaseCartelle extends OperazioniBase {
 	 * @param pathFile2
 	 * @param f
 	 */
-	protected abstract void operazioneTagNonPresenti(String pathFile2, File f);
+	protected abstract void operazione(String pathFile2, File f);
 
 	protected abstract void operazioneDaEseguireSulFile(final String pathFile, final File f) throws IOException, MyTagException;
-
-	public void assegnaTagDaNome(final File f) throws IOException, MyTagException {
-		final String nome = f.getName();
-		if (nome != null && nome.contains("-") && nome.contains(".")) {
-			final int trattino = nome.indexOf("-");
-			final int punto = nome.indexOf(".");
-
-			final String artista = nome.substring(0, trattino).trim();
-			final String song = nome.substring(trattino + 1, punto).trim();
-			Mp3 file;
-			try {
-				file = new Mp3(f);
-			} catch (final Exception e) {
-				Controllore.log(Level.SEVERE, e.getMessage(), e);
-				throw new MyTagException();
-			}
-			TagTipo1 tagv1 = (TagTipo1) file.getTag();
-			if (tagv1 == null) {
-				tagv1 = new TagTipo1();
-			}
-			file.setTag(tagv1);
-
-			tagv1.setArtistaPrincipale(artista);
-			tagv1.setTitoloCanzone(song);
-			file.save(f);
-
-		}
-
-	}
-
-	protected static String checkSingleTag(final String tag) {
-		final String nuovoTag = tag.replaceAll("�", "");
-		return nuovoTag;
-
-	}
+	
 }

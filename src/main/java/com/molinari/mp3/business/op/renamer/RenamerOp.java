@@ -1,4 +1,4 @@
-package com.molinari.mp3.business.operation.renamer;
+package com.molinari.mp3.business.op.renamer;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,20 +8,30 @@ import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3Exception;
 import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.objects.TagUtil;
-import com.molinari.mp3.business.operation.IOperazioni;
-import com.molinari.mp3.business.operation.KeyHolder;
-import com.molinari.mp3.business.operation.OperazioniBaseTagFile;
+import com.molinari.mp3.business.op.GenericTagOp;
+import com.molinari.mp3.business.op.UtilOp;
 
-public class Rinominatore extends OperazioniBaseTagFile {
+public class RenamerOp extends GenericTagOp{
+
+	@Override
+	protected void operazioneTagNonPresenti(String pathFile2, File f) {
+		Tag tag = getFinderTag().find(f);
+		boolean validTag = TagUtil.isValidTag(tag, isForceFindTag());
 		
-	public Rinominatore() {
-		//do nothing
+		if(validTag){
+			
+			safeRename(pathFile2, f, tag);
+			
+		}
+		
+	}
+
+	@Override
+	protected void operazioneTagPresenti(String pathFile2, File f, Tag tag) throws IOException {
+		valorizzaTag(pathFile2, f, tag);
+		
 	}
 	
-	public Rinominatore(String key) {
-		KeyHolder.getSingleton().setKey(key);
-	}
-
 	private void valorizzaTag(final String pathFile, final File f, final Tag tag) {
 		
 		Tag tagNew = tag;
@@ -30,7 +40,7 @@ public class Rinominatore extends OperazioniBaseTagFile {
 		
 			logCallInternet(tag);
 			
-			tagNew = findTag(f);
+			tagNew = getFinderTag().find(f);
 			if(tagNew == null) {
 				throw new Mp3Exception("Tag non trovato in rete per il file: " + f.getAbsolutePath());
 			}	
@@ -39,7 +49,7 @@ public class Rinominatore extends OperazioniBaseTagFile {
 		
 		safeRename(pathFile, f, tagNew);	
 	}
-
+	
 	private void logCallInternet(final Tag tag) {
 		if(TagUtil.isValidTag(tag, isForceFindTag())){
 			Controllore.getLog().info("-> Tag interno completo ma recupero i tag su internet");
@@ -47,13 +57,13 @@ public class Rinominatore extends OperazioniBaseTagFile {
 			Controllore.getLog().info("-> Tag interno non completo provo su internet");
 		}
 	}
-
+	
 	public static void safeRename(final String pathFile, final File f, Tag tagNew) {
 		String newName = null;
 		if (tagNew.hasTitleAndArtist()) {
 			try {
 				newName = newName(pathFile, tagNew);
-				rename(f, newName);
+				UtilOp.rename(f, newName);
 					
 			} catch (final IOException e) {
 				Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
@@ -77,7 +87,7 @@ public class Rinominatore extends OperazioniBaseTagFile {
 			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
-	
+
 	public static String getNamePlusOriginal(String fileName){
 		StringBuilder sb = new StringBuilder();
 		sb.append(fileName.substring(0, fileName.length()-4));
@@ -88,38 +98,10 @@ public class Rinominatore extends OperazioniBaseTagFile {
 	public static String newName(final String pathFile, Tag tagNew) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(pathFile);
-		sb.append(adjust(tagNew.getArtistaPrincipale()));
+		sb.append(UtilOp.adjust(tagNew.getArtistaPrincipale()));
 		sb.append(" - ");
-		sb.append(adjust(tagNew.getTitoloCanzone()));
+		sb.append(UtilOp.adjust(tagNew.getTitoloCanzone()));
 		sb.append(".mp3");
 		return sb.toString();
-	}
-	
-	@Override
-	protected void operazioneTagNonPresenti(final String pathFile2, final File f) {
-		Tag tag = findTag(f);
-		boolean validTag = TagUtil.isValidTag(tag, isForceFindTag());
-		
-		if(validTag){
-			
-			safeRename(pathFile2, f, tag);
-			
-		}
-	}
-
-	@Override
-	protected void operazioneFinale() {
-		// non fa nulla
-	}
-
-	@Override
-	protected void operazioneTagPresenti(final String pathFile2, final File f, final Tag tag) throws IOException {
-		valorizzaTag(pathFile2, f, tag);
-	}
-
-	@Override
-	protected void setTipoOperazione() {
-		Controllore.setOperazione(IOperazioni.RINOMINA);
-
 	}
 }

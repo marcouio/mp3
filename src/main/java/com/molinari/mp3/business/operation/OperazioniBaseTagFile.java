@@ -6,38 +6,56 @@ import java.util.logging.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.farng.mp3.TagConstant;
 import org.farng.mp3.TagException;
-import org.farng.mp3.id3.ID3v2_4;
 import org.xml.sax.SAXException;
 
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3Exception;
 import com.molinari.mp3.business.Mp3ReaderUtil;
-import com.molinari.mp3.business.acoustid.TagAudioTrack;
 import com.molinari.mp3.business.check.CheckFile;
-import com.molinari.mp3.business.lookup.LookUp;
 import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.MyTagException;
 import com.molinari.mp3.business.objects.Tag;
-import com.molinari.mp3.business.objects.TagTipo2_4;
-import com.molinari.mp3.business.objects.TagUtil;
-import com.molinari.mp3.views.ConfirmAssignTag;
-import com.molinari.mp3.views.ConfirmAssignTag.BeanAssign;
-import com.molinari.mp3.views.LoaderDialog;
-import com.molinari.utility.io.URLUTF8Encoder;
+import com.molinari.utility.io.ExecutorFiles;
+import com.molinari.utility.io.ExecutorFilesBase;
 
 public abstract class OperazioniBaseTagFile extends OperazioniBase {
 
+	private FinderMp3Tag finderTag;
+	private ExecutorFiles execFiles;
 	protected CheckFile checkFile;
 	private boolean forceFindTag = true;
-
+	
 	public OperazioniBaseTagFile() {
 		initCheckFile();
+		this.finderTag = new FinderMp3Tag(forceFindTag);
+	}
+	
+	public class ExecTagBase extends ExecutorFilesBase{
+		@Override
+		public void before(String startingPathFile) {
+			super.before(startingPathFile);
+			
+			setTipoOperazione();
+		}
+		
+		@Override
+		public void after() {
+			// TODO Auto-generated method stub
+			super.after();
+		}
+	}
+	
+	public ExecutorFiles getExecFiles() {
+		return execFiles;
 	}
 
 	protected void initCheckFile() {
 		checkFile = new CheckFile();
+	}
+	
+	public boolean executeOnFiles(String pathFilePar) throws ParserConfigurationException, SAXException {
+		return execFiles.start(pathFilePar);
 	}
 
 	/**
@@ -69,18 +87,19 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 						if (f.isFile() && f.canRead()) {
 							eseguiOperazioneSufile(pathFile, f);
 						} else if (f.isDirectory()) {
-							doWithDirectory(f);
+							scorriEdEseguiSuTuttiIFile(f.getAbsolutePath());
+//							doWithDirectory(f);
 						}
 					}
 				}
 			}
-			if (cartelleDaScorrere != null && !cartelleDaScorrere.isEmpty()) {
-				for (int i = 0; i < cartelleDaScorrere.size(); i++) {
-					final String path = cartelleDaScorrere.get(i);
-					cartelleDaScorrere.remove(i);
-					scorriEdEseguiSuTuttiIFile(path);
-				}
-			}
+//			if (cartelleDaScorrere != null && !cartelleDaScorrere.isEmpty()) {
+//				for (int i = 0; i < cartelleDaScorrere.size(); i++) {
+//					final String path = cartelleDaScorrere.get(i);
+//					cartelleDaScorrere.remove(i);
+//					scorriEdEseguiSuTuttiIFile(path);
+//				}
+//			}
 			operazioneFinale();
 			Controllore.setOperazione(IOperazioni.DEFAULT);
 		} catch (final IOException e) {
@@ -181,101 +200,7 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 	}
 
 	public Tag findTag(final File f) {
-
-		Tag result = null;
-		Tag resultWeb = null;
-		try {
-			Mp3 mp3 = new Mp3(f);
-
-			boolean hasTitleAndArtist = TagUtil.isValidTag(mp3.getTag(), isForceFindTag());
-			
-			if (!hasTitleAndArtist || isForceFindTag()) {
-				resultWeb = findTagByWeb(f, mp3);
-				result = resultWeb;
-			}	
-
-			if(result == null) {
-				result = mp3.getTag();
-			}
-
-			if ((resultWeb == null && !hasTitleAndArtist) || !TagUtil.hasTitleAndArtist(resultWeb)) {
-				final Assegnatore assegna = new Assegnatore(f, "-");
-				assegna.save(f);
-				result = assegna.getFile().getTag();
-				if(result == null){
-					result =  new TagTipo2_4(new ID3v2_4());
-					
-				}
-				final Tag resultToPass = result;
-				ConfirmAssignTag confirm = new ConfirmAssignTag(Controllore.getApplicationframe(), resultToPass, f.getAbsolutePath());
-				
-				LoaderDialog ld = new LoaderDialog(confirm);
-				ld.execute();
-				BeanAssign beanAssign = confirm.getBeanAssign();
-				
-				result.setArtistaPrincipale(beanAssign.getArtist());
-				result.setTitoloCanzone(beanAssign.getSong());
-				result.setNomeAlbum(beanAssign.getAlbum());
-				result.setTraccia(beanAssign.getTrack());
-			}
-
-			mp3.setTag(result);
-			mp3.save(f, TagConstant.MP3_FILE_SAVE_APPEND);
-		} catch (Exception e) {
-			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
-		}
-		
-		return result;
-	}
-
-	public Tag findTagByWeb(final File f, Mp3 mp3) {
-		Tag result = null;
-		try {
-			LookUp lookUp = new LookUp(KeyHolder.getSingleton().getKey());
-			TagAudioTrack tagFromUrl = lookUp.lookup(f);
-			result = mp3.getTag();
-			if(tagFromUrl != null){
-				
-				String trackName = tagFromUrl.getTrackName();
-				String artist = tagFromUrl.getArtist();
-				
-				if (trackName != null && artist != null) {
-					
-					Tag webResult = new TagTipo2_4(new ID3v2_4());
-					
-					trackName = URLUTF8Encoder.unescape(URLUTF8Encoder.encode(tagFromUrl.getTrackName()));
-					artist = URLUTF8Encoder.unescape(URLUTF8Encoder.encode(tagFromUrl.getArtist()));
-					String album = tagFromUrl.getAlbum();
-					if(album != null){
-						album = URLUTF8Encoder.unescape(URLUTF8Encoder.encode(tagFromUrl.getAlbum()));
-					}
-					webResult.setTitoloCanzone(trackName);
-					webResult.setArtistaPrincipale(artist);
-					webResult.setNomeAlbum(album);
-					webResult.setTraccia(tagFromUrl.getTrackName());
-					
-					if(result != null){
-						if(result.getCommenti() != null){
-							webResult.setCommenti(result.getCommenti());
-						}
-						if(result.getGenere() != null){
-							webResult.setGenere(result.getGenere());
-						}
-						if(result.getTraccia() != null && !result.getTraccia().equals("")){
-							webResult.setTraccia(result.getTraccia());
-						}
-					}
-					
-					Controllore.getLog().info("-> Memorizzazione tag");
-					return webResult;
-				} else {
-					Controllore.getLog().info("-> Tag da url non trovato o con informazioni mancanti");
-				}
-			}
-		} catch (Exception e) {
-			Controllore.getLog().log(Level.SEVERE, "-> Eccezione durante la ricerca del tag via web", e);
-		}
-		return result;
+		return finderTag.find(f);
 	}
 
 	public boolean isForceFindTag() {
