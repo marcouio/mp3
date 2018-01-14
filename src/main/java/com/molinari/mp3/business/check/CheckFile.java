@@ -27,20 +27,12 @@ public class CheckFile {
 		}
 	}
 
-	public static boolean checkCartelle(final String input2, final String output2) {
-		final File input = new File(input2);
+	public static boolean checkCartelle(final String output2) {
 		final File output = new File(output2);
-		if (!input.exists() || !input.isDirectory()) {
-			return false;
-		}
-		if (output.exists() && !output.isDirectory()) {
-			return false;
-		} else if (!output.exists()) {
-			if (!output.mkdir()) {
-				return false;
-			}
-		}
-		return true;
+
+		boolean isNotDirectory = output.exists() && !output.isDirectory();
+		boolean notExistAndCannotCreate = !output.exists() && !output.mkdir();
+		return !(isNotDirectory || notExistAndCannotCreate);
 	}
 
 	public boolean checkCorreggiERiposiziona(final String estensione, final File file, final String pathFile) throws IOException {

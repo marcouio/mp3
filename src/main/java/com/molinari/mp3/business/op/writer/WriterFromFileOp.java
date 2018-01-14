@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.molinari.mp3.business.Mp3ReaderUtil;
 import com.molinari.mp3.business.check.CheckFile;
 import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.op.GenericTagOp;
@@ -11,6 +12,19 @@ import com.molinari.mp3.business.op.GenericTagOp;
 public class WriterFromFileOp extends GenericTagOp{
 
 	protected ArrayList<String> righe = new ArrayList<>();
+	
+	private String fileToWrite;
+	
+	public WriterFromFileOp(String string) {
+		fileToWrite = string;
+	}
+	
+	@Override
+	public void after() {
+		super.after();
+		
+		Mp3ReaderUtil.scriviFileSuPiuRighe(new File(fileToWrite), righe);
+	}
 	
 	@Override
 	protected void operazioneTagNonPresenti(String pathFile2, File f) {

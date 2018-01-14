@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import com.molinari.mp3.business.Controllore;
-import com.molinari.mp3.business.operation.binder.Raccoglitore.Mp3File;
+import com.molinari.mp3.business.op.binder.Mp3File;
 import com.molinari.mp3.views.NewPlayList;
 import com.molinari.utility.controller.ControlloreBase;
 

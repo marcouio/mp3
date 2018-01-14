@@ -10,9 +10,15 @@ import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.objects.TagUtil;
 import com.molinari.mp3.business.op.GenericTagOp;
 import com.molinari.mp3.business.op.UtilOp;
+import com.molinari.mp3.business.operation.KeyHolder;
 
 public class RenamerOp extends GenericTagOp{
 
+	
+	public RenamerOp(String key) {
+		KeyHolder.getSingleton().setKey(key);
+	}
+	
 	@Override
 	protected void operazioneTagNonPresenti(String pathFile2, File f) {
 		Tag tag = getFinderTag().find(f);
@@ -74,7 +80,9 @@ public class RenamerOp extends GenericTagOp{
 		try {
 
 			if(f.getAbsolutePath().contains(".mp3")){
-				java.nio.file.Files.deleteIfExists(new File(getNamePlusOriginal(f.getName())).toPath());
+				String namePlusOriginal = getNamePlusOriginal(f.getName());
+				File filePlusOriginal = new File(pathFile + namePlusOriginal);
+				java.nio.file.Files.deleteIfExists(filePlusOriginal.toPath());
 			}
 			if(f.getAbsolutePath().contains(".MP3")){
 				java.nio.file.Files.deleteIfExists(new File(f.getAbsolutePath().replaceAll(".MP3", ".original.MP3")).toPath());

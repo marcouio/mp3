@@ -34,7 +34,7 @@ public class OperazioniBase {
 		Controllore.getLog().info("-> Mp3 non rinominato perché già con lo stesso nome");
 		return false;
 	}
-
+	
 	public static boolean move(final File mp3, final String pathdopo) {
 		final File file2 = new File(pathdopo + Mp3ReaderUtil.slash() + mp3.getName());
 		return mp3.renameTo(file2);

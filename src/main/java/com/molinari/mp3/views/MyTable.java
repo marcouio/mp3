@@ -2,7 +2,7 @@ package com.molinari.mp3.views;
 
 import javax.swing.JTable;
 
-import com.molinari.mp3.business.operation.binder.Raccoglitore.Mp3File;
+import com.molinari.mp3.business.op.binder.Mp3File;
 
 public class MyTable extends JTable {
 

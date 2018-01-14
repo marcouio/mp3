@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.farng.mp3.TagException;
+import javax.xml.parsers.ParserConfigurationException;
 
+import org.farng.mp3.TagException;
+import org.xml.sax.SAXException;
+
+import com.molinari.mp3.business.ConfiguratoreEstensioni;
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3Exception;
 import com.molinari.mp3.business.Mp3ReaderUtil;
@@ -17,26 +21,62 @@ import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.objects.TagUtil;
 import com.molinari.mp3.business.op.GenericTagOp;
 import com.molinari.mp3.business.op.UtilOp;
-import com.molinari.mp3.business.operation.renamer.Rinominatore;
+import com.molinari.mp3.business.op.renamer.RenamerOp;
+import com.molinari.mp3.business.operation.KeyHolder;
+import com.molinari.utility.GenericException;
 import com.molinari.utility.graphic.component.alert.Alert;
+import com.molinari.utility.io.UtilIo;
 import com.molinari.utility.math.UtilMath;
 
 public class TidierOp extends GenericTagOp {
 
 	private static final String MP3 = ".mp3";
-	private String input;
 	private String output;
 	
-	public TidierOp(final String input, final String output) {
+	public TidierOp(final String output, String key) {
 		super();
-		if (CheckFile.checkCartelle(input, output)) {
-			setInput(input);
+		KeyHolder.getSingleton().setKey(key);
+		if (CheckFile.checkCartelle(output)) {
 			setOutput(output);
 		} else {
 			Alert.errore("Errori presenti nella scelta delle cartelle", "Non va");
 			throw new Mp3Exception("Errori presenti nella scelta delle cartelle");
 		}
 		
+	}
+	
+	@Override
+	public void execute(String pathFile, File f) {
+		super.execute(pathFile, f);
+		
+		manageOtherFile(pathFile, f);
+		
+	}
+
+	public void manageOtherFile(String pathFile, File f) {
+		try {
+			List<String> estensioneDaScompattare = ConfiguratoreEstensioni.getSingleton().getEstensioneDaScompattare();
+			boolean daScompattare = ConfiguratoreEstensioni.getSingleton().containEstensione(f, estensioneDaScompattare);
+			if(daScompattare){
+				UtilIo.unZipIt(f.getAbsolutePath(), pathFile);
+			}
+			
+			List<String> estensioneEliminare = ConfiguratoreEstensioni.getSingleton().getEstensioneEliminare();
+			boolean daEliminare = ConfiguratoreEstensioni.getSingleton().containEstensione(f, estensioneEliminare);
+			if(daEliminare){
+				f.deleteOnExit();
+			}
+			
+			File dir = new File(pathFile);
+			if(dir.isDirectory()){
+				File[] listFiles = dir.listFiles();
+				if(listFiles == null || listFiles.length == 0){
+					dir.deleteOnExit();
+				}
+			}
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			throw new GenericException(e);
+		}
 	}
 	
 	@Override
@@ -101,7 +141,7 @@ public class TidierOp extends GenericTagOp {
 			final File cartellaArtista = creaCartellaArtista(tag, cartellaAlfabeto);
 			final File cartellaAlbum = creaCartellaAlbum(tag, cartellaArtista);
 			String pathCartellaAlbum = cartellaAlbum.getAbsolutePath();
-			Rinominatore.safeRename(pathCartellaAlbum + Mp3ReaderUtil.slash(), f, tag);
+			RenamerOp.safeRename(pathCartellaAlbum + Mp3ReaderUtil.slash(), f, tag);
 			
 		} catch (IOException | TagException e) {
 			throw new Mp3Exception(e);
@@ -169,15 +209,6 @@ public class TidierOp extends GenericTagOp {
 		}
 		return ret;
 
-	}
-
-
-	public String getInput() {
-		return input;
-	}
-
-	public void setInput(String input) {
-		this.input = input;
 	}
 
 	public String getOutput() {

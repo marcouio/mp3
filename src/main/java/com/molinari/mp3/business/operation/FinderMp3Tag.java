@@ -3,7 +3,6 @@ package com.molinari.mp3.business.operation;
 import java.io.File;
 import java.util.logging.Level;
 
-import org.farng.mp3.TagConstant;
 import org.farng.mp3.id3.ID3v2_4;
 
 import com.molinari.mp3.business.Controllore;
@@ -16,6 +15,7 @@ import com.molinari.mp3.business.objects.TagUtil;
 import com.molinari.mp3.views.ConfirmAssignTag;
 import com.molinari.mp3.views.ConfirmAssignTag.BeanAssign;
 import com.molinari.mp3.views.LoaderDialog;
+import com.molinari.utility.controller.ControlloreBase;
 import com.molinari.utility.io.URLUTF8Encoder;
 
 public class FinderMp3Tag {
@@ -63,10 +63,11 @@ public class FinderMp3Tag {
 				result.setTitoloCanzone(beanAssign.getSong());
 				result.setNomeAlbum(beanAssign.getAlbum());
 				result.setTraccia(beanAssign.getTrack());
+				ControlloreBase.getLog().info("Assegnati tag da info sul nome");
 			}
 
 			mp3.setTag(result);
-			mp3.save(f, TagConstant.MP3_FILE_SAVE_APPEND);
+			mp3.save();
 		} catch (Exception e) {
 			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}

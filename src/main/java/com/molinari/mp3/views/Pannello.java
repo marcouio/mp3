@@ -14,16 +14,21 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3ReaderUtil;
-import com.molinari.mp3.business.operation.binder.Raccoglitore;
-import com.molinari.mp3.business.operation.renamer.Rinominatore;
-import com.molinari.mp3.business.operation.tidier.Ordinatore;
-import com.molinari.mp3.business.operation.writer.Scrittore;
-import com.molinari.mp3.business.operation.writer.ScrittoreListaAlbumDaCartelle;
-import com.molinari.mp3.business.operation.writer.ScrittoreListaAlbumDaFile;
+import com.molinari.mp3.business.op.renamer.RenamerOp;
+import com.molinari.mp3.business.op.tidier.TidierOp;
+import com.molinari.mp3.business.op.writer.WriterFromDirectoryOp;
+import com.molinari.mp3.business.op.writer.WriterFromFileOp;
+import com.molinari.utility.controller.ControlloreBase;
 import com.molinari.utility.graphic.component.alert.Alert;
+import com.molinari.utility.io.ExecutorFiles;
+import com.molinari.utility.io.FactoryExecutorFiles;
+import com.molinari.utility.io.FileOperation;
 
 public class Pannello extends JPanel {
 
@@ -77,8 +82,8 @@ public class Pannello extends JPanel {
 			if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 				final File file = fileChooser.getSelectedFile();
 				cartellaInput.setText(file.getAbsolutePath());
-				final Raccoglitore raccogli = new Raccoglitore();
-
+				
+//				final Raccoglitore raccogli = new Raccoglitore();
 //				raccogli.raccogli(cartellaInput.getText());
 //				Controllore.getSingleton().getVista();
 //				final String[] nomiColonne = Controllore.getSingleton().getVista().getPlayList().getNomiColonne();
@@ -131,16 +136,19 @@ public class Pannello extends JPanel {
 		add(separator);
 
 		final JButton btnCrealista = new JButton();
-		btnCrealista.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent arg0) {
-				Scrittore scrittore = null;
-				if (isPerFile()) {
-					scrittore = new ScrittoreListaAlbumDaFile();
-				} else {
-					scrittore = new ScrittoreListaAlbumDaCartelle();
-				}
-				scrittore.write(cartellaInput.getText(), txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt");
+		btnCrealista.addActionListener(arg0 -> {
+			FileOperation fileOperation = null;
+			if (isPerFile()) {
+				fileOperation = new WriterFromFileOp(txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt");
+			} else {
+				fileOperation = new WriterFromDirectoryOp(txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt");
+			}
+			
+			ExecutorFiles executorFiles = FactoryExecutorFiles.createExecutorFiles(fileOperation);
+			try {
+				executorFiles.start(cartellaInput.getText());
+			} catch (ParserConfigurationException | SAXException e) {
+				ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
 			}
 		});
 		btnCrealista.setText("crea lista");
@@ -152,17 +160,18 @@ public class Pannello extends JPanel {
 		add(chckbxPerFile);
 
 		final JButton buttonOrdina = new JButton();
-		buttonOrdina.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent arg0) {
-				try {
-					final Ordinatore ordina = new Ordinatore(cartellaInput.getText(), txtCartellaOutput.getText());
-					if (ordina.ordina()) {
-						Alert.info("Ok, file mp3 ordinati correttamente", "Perfetto");
-					}
-				} catch (final Exception e) {
-					Controllore.log(Level.SEVERE, e.getMessage(), e);
+		buttonOrdina.addActionListener(arg0 -> {
+			try {
+				String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
+				TidierOp ordina = new TidierOp(txtCartellaOutput.getText(), s);
+
+				ExecutorFiles executorFiles = FactoryExecutorFiles.createExecutorFiles(ordina);
+				boolean ok = executorFiles.start(cartellaInput.getText());
+				if(ok) {
+					Alert.info("Ok, file mp3 ordinati correttamente", "Perfetto");
 				}
+			} catch (final Exception e) {
+				Controllore.log(Level.SEVERE, e.getMessage(), e);
 			}
 		});
 		buttonOrdina.setText("ordina");
@@ -175,8 +184,11 @@ public class Pannello extends JPanel {
 			public void actionPerformed(final ActionEvent e) {
 				String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
 				try {
-					final Rinominatore rinomina = new Rinominatore(s);
-					if (rinomina.scorriEdEseguiSuTuttiIFile(cartellaInput.getText())) {
+					
+					RenamerOp renamerOp = new RenamerOp(s);
+					ExecutorFiles executorFiles = FactoryExecutorFiles.createExecutorFiles(renamerOp);
+					boolean ok = executorFiles.start(cartellaInput.getText());
+					if (ok) {
 						Alert.info("Ok, file mp3 rinominati correttamente", "Perfetto");
 					}
 

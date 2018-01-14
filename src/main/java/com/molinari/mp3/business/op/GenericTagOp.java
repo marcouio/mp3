@@ -7,6 +7,7 @@ import org.farng.mp3.TagException;
 
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3Exception;
+import com.molinari.mp3.business.check.CheckFile;
 import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.operation.FinderMp3Tag;
@@ -20,6 +21,14 @@ public abstract class GenericTagOp extends FileOperationBase {
 	
 	public GenericTagOp() {
 		setFinderTag(new FinderMp3Tag(forceFindTag));
+	}
+	
+	@Override
+	public void execute(String pathFile, File f) {
+		super.execute(pathFile, f);
+		if(f.getAbsolutePath().toLowerCase().endsWith(CheckFile.ESTENSIONE_MP3)){
+			workOnMp3(pathFile, f);
+		}
 	}
 
 	public void workOnMp3(final String pathFile, final File f) {

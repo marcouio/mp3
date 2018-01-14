@@ -3,12 +3,26 @@ package com.molinari.mp3.business.op.writer;
 import java.io.File;
 import java.util.ArrayList;
 
+import com.molinari.mp3.business.Mp3ReaderUtil;
 import com.molinari.utility.io.FileOperationBase;
 
 public class WriterFromDirectoryOp extends FileOperationBase {
 	
 	protected ArrayList<String> righe = new ArrayList<>();
 	
+	private String fileToWrite;
+	
+	public WriterFromDirectoryOp(String string) {
+		fileToWrite = string;
+	}
+	
+	@Override
+	public void after() {
+		super.after();
+		
+		Mp3ReaderUtil.scriviFileSuPiuRighe(new File(fileToWrite), righe);
+	}
+
 	@Override
 	public boolean checkFile(File f) {
 		return false;

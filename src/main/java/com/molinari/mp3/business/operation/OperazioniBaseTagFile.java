@@ -16,13 +16,10 @@ import com.molinari.mp3.business.check.CheckFile;
 import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.MyTagException;
 import com.molinari.mp3.business.objects.Tag;
-import com.molinari.utility.io.ExecutorFiles;
-import com.molinari.utility.io.ExecutorFilesBase;
 
 public abstract class OperazioniBaseTagFile extends OperazioniBase {
 
 	private FinderMp3Tag finderTag;
-	private ExecutorFiles execFiles;
 	protected CheckFile checkFile;
 	private boolean forceFindTag = true;
 	
@@ -31,33 +28,10 @@ public abstract class OperazioniBaseTagFile extends OperazioniBase {
 		this.finderTag = new FinderMp3Tag(forceFindTag);
 	}
 	
-	public class ExecTagBase extends ExecutorFilesBase{
-		@Override
-		public void before(String startingPathFile) {
-			super.before(startingPathFile);
-			
-			setTipoOperazione();
-		}
-		
-		@Override
-		public void after() {
-			// TODO Auto-generated method stub
-			super.after();
-		}
-	}
-	
-	public ExecutorFiles getExecFiles() {
-		return execFiles;
-	}
-
 	protected void initCheckFile() {
 		checkFile = new CheckFile();
 	}
 	
-	public boolean executeOnFiles(String pathFilePar) throws ParserConfigurationException, SAXException {
-		return execFiles.start(pathFilePar);
-	}
-
 	/**
 	 * Questo metodo è solo una parte di codice ricorrente che scorre tutte le
 	 * cartelle in profondità per tutti i file che raggiunge eseguo un metodo

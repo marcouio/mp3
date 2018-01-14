@@ -19,7 +19,7 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
 import com.molinari.mp3.business.Mp3ReaderUtil;
-import com.molinari.mp3.business.operation.binder.Raccoglitore.Mp3File;
+import com.molinari.mp3.business.op.binder.Mp3File;
 import com.molinari.mp3.business.player.MyBasicPlayer;
 
 public class NewPlayList extends JPanel {
