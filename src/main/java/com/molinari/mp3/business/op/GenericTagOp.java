@@ -34,10 +34,7 @@ public abstract class GenericTagOp extends FileOperationBase {
 	public void workOnMp3(final String pathFile, final File f) {
 		try {
 			final Mp3 file = new Mp3(f);
-			if(f.getAbsolutePath().endsWith(".original.mp3")){
-				ControlloreBase.getLog().info(() -> "Cancellazione dei file (" + f.getName() + ") avvenuta: " + f.delete());
-				return;
-			}
+			
 			
 			final Tag tag = file.getTag();
 			if (tag != null) {
@@ -46,6 +43,11 @@ public abstract class GenericTagOp extends FileOperationBase {
 			} else {
 				Controllore.getLog().info(" -> Tag non presenti su file");
 				operazioneTagNonPresenti(pathFile, f);
+			}
+			
+			if(f.getAbsolutePath().endsWith(".original.mp3")){
+				ControlloreBase.getLog().info(() -> "Cancellazione dei file (" + f.getName() + ") avvenuta: " + f.delete());
+				return;
 			}
 			
 		} catch (IOException | TagException e) {

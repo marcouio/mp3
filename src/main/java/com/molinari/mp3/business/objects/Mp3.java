@@ -12,7 +12,7 @@ import org.farng.mp3.id3.ID3v2_3;
 import org.farng.mp3.id3.ID3v2_4;
 
 import com.molinari.mp3.business.Mp3ReaderUtil;
-import com.molinari.mp3.business.operation.OperazioniBase;
+import com.molinari.mp3.business.op.UtilOp;
 import com.molinari.utility.controller.ControlloreBase;
 
 public class Mp3 extends MP3File {
@@ -100,7 +100,7 @@ public class Mp3 extends MP3File {
 	}
 
 	public void rename(final String nome_dopo) throws IOException {
-		OperazioniBase.rename(this.getMp3file(), nome_dopo);
+		UtilOp.rename(this.getMp3file(), nome_dopo);
 	}
 
 	/**
