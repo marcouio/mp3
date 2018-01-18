@@ -3,3 +3,5 @@
 /config-core.xml
 /config-style.xml
 /bin/
+/.settings/
+/.classpath
