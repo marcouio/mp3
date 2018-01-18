@@ -1,1 +1,5 @@
 /target/
+/MyLog.txt
+/config-core.xml
+/config-style.xml
+/bin/
