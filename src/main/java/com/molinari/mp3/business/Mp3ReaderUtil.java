@@ -1,6 +1,5 @@
 package com.molinari.mp3.business;
 
-import java.awt.Image;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -9,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.swing.ImageIcon;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -52,11 +50,6 @@ public class Mp3ReaderUtil {
 			}
 		}
 		return true;
-	}
-
-	public static ImageIcon resizeImage(final int nuovaLarghezza, final int nuovaAltezza, final ImageIcon imageicon) {
-		final Image newimg = imageicon.getImage().getScaledInstance(nuovaLarghezza, nuovaAltezza, Image.SCALE_SMOOTH);
-		return new ImageIcon(newimg);
 	}
 
 	public static void scriviFileSuPiuRighe(final File file, final List<String> righe) {

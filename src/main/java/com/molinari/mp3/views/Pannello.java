@@ -1,7 +1,5 @@
 package com.molinari.mp3.views;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.logging.Level;
 
@@ -49,20 +47,16 @@ public class Pannello extends JPanel {
 	}
 
 	public static void main(final String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
+		SwingUtilities.invokeLater(() -> {
 
-				final JFrame inst = new JFrame();
-				final Pannello p = new Pannello();
-				inst.setBounds(10, 10, 275, 268);
-				inst.getContentPane().add(p);
-				inst.setTitle("MP3 Manager");
-				inst.setLocationRelativeTo(null);
-				inst.setVisible(true);
-				inst.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			}
-
+			final JFrame inst = new JFrame();
+			final Pannello p = new Pannello();
+			inst.setBounds(10, 10, 275, 268);
+			inst.getContentPane().add(p);
+			inst.setTitle("MP3 Manager");
+			inst.setLocationRelativeTo(null);
+			inst.setVisible(true);
+			inst.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		});
 	}
 
@@ -112,17 +106,13 @@ public class Pannello extends JPanel {
 		buttonCaricaOutput.setBounds(181, 59, 73, 23);
 		add(buttonCaricaOutput);
 
-		buttonCaricaOutput.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				final JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-					fileChooser.getSelectedFile();
-					final File file = fileChooser.getSelectedFile();
-					txtCartellaOutput.setText(file.getAbsolutePath());
-				}
+		buttonCaricaOutput.addActionListener(e -> {
+			final JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+				fileChooser.getSelectedFile();
+				final File file = fileChooser.getSelectedFile();
+				txtCartellaOutput.setText(file.getAbsolutePath());
 			}
 		});
 
@@ -178,31 +168,27 @@ public class Pannello extends JPanel {
 		buttonOrdina.setBounds(22, 174, 112, 23);
 		add(buttonOrdina);
 
-		buttonRinomina.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
-				try {
-					
-					RenamerOp renamerOp = new RenamerOp(s);
-					ExecutorFiles executorFiles = FactoryExecutorFiles.createExecutorFiles(renamerOp);
-					boolean ok = executorFiles.start(cartellaInput.getText());
-					if (ok) {
-						Alert.info("Ok, file mp3 rinominati correttamente", "Perfetto");
-					}
-
-				} catch (final Exception e1) {
-					e1.printStackTrace();
+		buttonRinomina.addActionListener(e -> {
+			String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
+			try {
+				
+				RenamerOp renamerOp = new RenamerOp(s);
+				ExecutorFiles executorFiles = FactoryExecutorFiles.createExecutorFiles(renamerOp);
+				boolean ok = executorFiles.start(cartellaInput.getText());
+				if (ok) {
+					Alert.info("Ok, file mp3 rinominati correttamente", "Perfetto");
 				}
 
+			} catch (final Exception e1) {
+				e1.printStackTrace();
 			}
+
 		});
 	}
 
 	protected String[][] creaCanzoni() {
 
-		return null;
+		return new String[][] {};
 	}
 
 	/**

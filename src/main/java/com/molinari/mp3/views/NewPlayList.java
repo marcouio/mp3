@@ -1,7 +1,6 @@
 package com.molinari.mp3.views;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -18,9 +17,9 @@ import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
-import com.molinari.mp3.business.Mp3ReaderUtil;
 import com.molinari.mp3.business.op.binder.Mp3File;
 import com.molinari.mp3.business.player.MyBasicPlayer;
+import com.molinari.utility.paint.images.UtilImage;
 
 public class NewPlayList extends JPanel {
 
@@ -67,40 +66,19 @@ public class NewPlayList extends JPanel {
 		table.setBorder(null);
 		scrollPane.setViewportView(table);
 		ImageIcon play = new ImageIcon("ImgUtil/play.jpg");
-		play = Mp3ReaderUtil.resizeImage(30, 30, play);
+		play = UtilImage.resizeImage(30, 30, play);
 		ImageIcon playrosso = new ImageIcon("ImgUtil/playrosso.jpg");
-		playrosso = Mp3ReaderUtil.resizeImage(30, 30, playrosso);
+		playrosso = UtilImage.resizeImage(30, 30, playrosso);
 		final JToggleButton playButton = new JToggleButton(play);
 		playButton.setRolloverIcon(playrosso);
 
 		ImageIcon stop = new ImageIcon("ImgUtil/stop.jpg");
-		stop = Mp3ReaderUtil.resizeImage(30, 30, stop);
+		stop = UtilImage.resizeImage(30, 30, stop);
 		ImageIcon stoprosso = new ImageIcon("ImgUtil/stoprosso.jpg");
-		stoprosso = Mp3ReaderUtil.resizeImage(30, 30, stoprosso);
+		stoprosso = UtilImage.resizeImage(30, 30, stoprosso);
 		playButton.setBounds(10, 10, 30, 30);
 		playButton.setBorder(null);
-		playButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(final ActionEvent arg0) {
-				final int riga = table.getSelectedRow();
-				Mp3File fileMp3 = mappaMp3.get(Integer.toString(riga));
-				if (fileMp3 != null) {
-					player.stop();
-					player.setMappaMp3(mappaMp3);
-					player.opener(fileMp3.getPath());
-					player.play();
-
-					player.setIndex(riga);
-					label.setText(fileMp3.getNome());
-				} else {
-					if (player.isInPause()) {
-						player.resume();
-					}
-
-				}
-			}
-		});
+		playButton.addActionListener(this::play);
 		add(playButton);
 
 		final JButton stopButton = new JButton(stop);
@@ -119,7 +97,7 @@ public class NewPlayList extends JPanel {
 		add(label);
 
 		ImageIcon volume = new ImageIcon("ImgUtil/volume.jpg");
-		volume = Mp3ReaderUtil.resizeImage(20, 8, volume);
+		volume = UtilImage.resizeImage(20, 8, volume);
 		final JLabel labelImage = new JLabel();
 		labelImage.setBounds(350, 9, 35, 14);
 		labelImage.setIcon(volume);
@@ -175,6 +153,25 @@ public class NewPlayList extends JPanel {
 
 		});
 		add(slider);
+	}
+
+	public void play(ActionEvent e) {
+		final int riga = table.getSelectedRow();
+		Mp3File fileMp3 = mappaMp3.get(Integer.toString(riga));
+		if (fileMp3 != null) {
+			player.stop();
+			player.setMappaMp3(mappaMp3);
+			player.opener(fileMp3.getPath());
+			player.play();
+
+			player.setIndex(riga);
+			label.setText(fileMp3.getNome());
+		} else {
+			if (player.isInPause()) {
+				player.resume();
+			}
+
+		}
 	}
 
 	public void creaPlayList(final String[][] canzoni) {
