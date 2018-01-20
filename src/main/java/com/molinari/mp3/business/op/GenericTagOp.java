@@ -24,11 +24,12 @@ public abstract class GenericTagOp extends FileOperationBase {
 	}
 	
 	@Override
-	public void execute(String pathFile, File f) {
+	public <T> T execute(String pathFile, File f) {
 		super.execute(pathFile, f);
 		if(f.getAbsolutePath().toLowerCase().endsWith(CheckFile.ESTENSIONE_MP3)){
 			workOnMp3(pathFile, f);
 		}
+		return null;
 	}
 
 	public void workOnMp3(final String pathFile, final File f) {

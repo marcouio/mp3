@@ -6,7 +6,7 @@ public class CheckFile {
 
 	public static final String ESTENSIONE_MP3 = ".mp3";
 
-	public CheckFile() {
+	private CheckFile() {
 		//do nothing
 	}
 

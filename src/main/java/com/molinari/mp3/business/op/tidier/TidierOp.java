@@ -46,11 +46,11 @@ public class TidierOp extends GenericTagOp {
 	}
 	
 	@Override
-	public void execute(String pathFile, File f) {
+	public <T> T execute(String pathFile, File f) {
 		super.execute(pathFile, f);
 		
 		manageOtherFile(pathFile, f);
-		
+		return null;
 	}
 
 	public void manageOtherFile(String pathFile, File f) {
