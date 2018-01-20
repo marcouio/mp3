@@ -180,7 +180,7 @@ public class Pannello extends JPanel {
 				}
 
 			} catch (final Exception e1) {
-				e1.printStackTrace();
+				ControlloreBase.getLog().log(Level.SEVERE, e1.getMessage(), e1);
 			}
 
 		});
