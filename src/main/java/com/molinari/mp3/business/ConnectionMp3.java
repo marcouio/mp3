@@ -8,7 +8,8 @@ public class ConnectionMp3 extends ConnectionPool {
 
 	public static final String DB_URL_WORKSPACE = "../mp3.sqlite";
 	public static final String DB_URL_JAR = "./mp3.sqlite";
-	private static String url = "jdbc:sqlite:" + DB_URL_WORKSPACE;
+//	private static String url = "jdbc:sqlite:" + DB_URL_WORKSPACE;
+	private static String url = "jdbc:sqlite:C:/Users/molinaris/workspace/mp3.sqlite" ;
 	
 	@Override
 	protected String getPassword() {

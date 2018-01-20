@@ -1,11 +1,9 @@
 package com.molinari.mp3.domain.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.molinari.mp3.domain.IAlbum;
-import com.molinari.mp3.domain.IArtist;
 import com.molinari.mp3.domain.ISong;
-import com.molinari.mp3.domain.Song;
 import com.molinari.utility.database.Clausola;
 import com.molinari.utility.database.dao.GenericDAO;
 import com.molinari.utility.database.dao.IDAO;
@@ -79,22 +77,22 @@ public class SongDAO implements ISong, IDAO<ISong>{
 	}
 
 	@Override
-	public IAlbum getAlbum() {
+	public String getAlbum() {
 		return dao.getEntita().getAlbum();
 	}
 
 	@Override
-	public void setAlbum(IAlbum album) {
+	public void setAlbum(String album) {
 		dao.getEntita().setAlbum(album);
 	}
 
 	@Override
-	public IArtist getArtist() {
+	public String getArtist() {
 		return dao.getEntita().getArtist();
 	}
 
 	@Override
-	public void setArtist(IArtist artist) {
+	public void setArtist(String artist) {
 		dao.getEntita().setArtist(artist);
 	}
 
@@ -108,19 +106,10 @@ public class SongDAO implements ISong, IDAO<ISong>{
 		return dao.selectAll();
 	}
 
-	public boolean insert(Song oggettoEntita) {
-		return dao.insert(oggettoEntita);
-	}
-
 	@Override
 	public boolean delete(int id) {
 		return dao.delete(id);
 	}
-
-	public boolean update(Song oggettoEntita) {
-		return dao.update(oggettoEntita);
-	}
-
 	@Override
 	public boolean deleteAll() {
 		return dao.deleteAll();
@@ -164,4 +153,26 @@ public class SongDAO implements ISong, IDAO<ISong>{
 	public String getNome() {
 		return dao.getEntita().getNome();
 	}
+	
+	@Override
+	public int getFpduration() {
+		return dao.getEntita().getFpduration();
+	}
+
+	@Override
+	public void setFpduration(int fpduration) {
+		dao.getEntita().setFpduration(fpduration);
+	}
+	
+	public ISong selectByKey(String key, int duration){
+		List<Clausola> lst = new ArrayList<>();
+		lst.add(new Clausola(null, "KEY", "=", key));
+		lst.add(new Clausola(null, "FPDURATION", "=", Integer.toString(duration)));
+		List<ISong> songs = selectWhere(lst, null);
+		if(songs != null && !songs.isEmpty()) {
+			return songs.get(0);
+		}
+		return null;
+	}
+
 }

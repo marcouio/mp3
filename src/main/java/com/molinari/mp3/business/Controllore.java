@@ -65,7 +65,7 @@ public class Controllore extends ControlloreBase {
 			@Override
 			public void run() {
 				try {
-					
+					ControlloreBase.getSingleton().setConnectionClassName(ConnectionMp3.class.getName());
 					Controllore.getSingleton();
 					
 					frame.getContentPane().setLayout(null);

@@ -28,12 +28,16 @@ public interface ISong extends AbstractOggettoEntita{
 
 	void setTracknumber(int tracknumber);
 
-	IAlbum getAlbum();
+	String getAlbum();
 
-	void setAlbum(IAlbum album);
+	void setAlbum(String album);
 
-	IArtist getArtist();
+	String getArtist();
 
-	void setArtist(IArtist artist);
+	void setArtist(String artist);
+	
+	public int getFpduration();
+
+	public void setFpduration(int fpduration);
 
 }

@@ -116,6 +116,38 @@ public class LookUp {
 
 		return output;
 	}
+	
+	public Map<ChromaprintField, String> getFingerPrint(File file) throws IOException, InterruptedException {
+		Map<ChromaprintField, String> fp = fpcalc(file);
+
+		// sanity check
+		if (!fp.containsKey(ChromaprintField.DURATION) || !fp.containsKey(ChromaprintField.FINGERPRINT)){
+			return null;
+		}
+		
+		int duration = Integer.parseInt(fp.get(ChromaprintField.DURATION));
+		if(duration < 10) {
+			return null;
+		}
+		
+		return fp;
+
+	}
+	
+	public TagAudioTrack lookup(Map<ChromaprintField, String> fp) throws Exception {
+		if(fp != null) {
+			int duration = Integer.parseInt(fp.get(ChromaprintField.DURATION));
+			String fingerprint = fp.get(ChromaprintField.FINGERPRINT);
+	
+			String response = lookup(duration, fingerprint);
+			if (response != null && response.length() > 0) {
+				 AudioTrack parseResult = parseResult(lookup(duration, fingerprint));
+				 return new TagAudioTrack(parseResult);
+			}
+		}
+
+		return null;
+	}
 
 	public TagAudioTrack lookup(File file) throws Exception {
 
