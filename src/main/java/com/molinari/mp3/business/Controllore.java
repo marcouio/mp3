@@ -111,7 +111,7 @@ public class Controllore extends ControlloreBase {
 
 	@Override
 	public String getConnectionClassName() {
-		return null;
+		return ConnectionMp3.class.getName();
 	}
 
 }
