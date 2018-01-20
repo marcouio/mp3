@@ -7,13 +7,17 @@ import static java.util.regex.Pattern.compile;
 import java.util.regex.Pattern;
 
 public class RegularExpressions {
+	
+	private RegularExpressions() {
+		// do nothing
+	}
 
 	public static final Pattern DIGIT = compile("\\d+");
 	public static final Pattern NON_DIGIT = compile("\\D+");
 	public static final Pattern NON_WORD = compile("[\\P{Alnum}]+");
 
 	public static final Pattern PIPE = compile("|", LITERAL);
-	public static final Pattern EQUALS = compile("=", LITERAL);
+	public static final Pattern EQ = compile("=", LITERAL);
 	public static final Pattern TAB = compile("\t", LITERAL);
 	public static final Pattern SEMICOLON = compile(";", LITERAL);
 

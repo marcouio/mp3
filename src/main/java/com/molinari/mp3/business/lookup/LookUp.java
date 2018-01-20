@@ -103,7 +103,7 @@ public class LookUp {
 		try (Scanner scanner = new Scanner(new InputStreamReader(fpcalcProc.getInputStream(), UTF_8))) {
 			while (scanner.hasNextLine()) {
 				String nextLine = scanner.nextLine();
-				String[] value = RegularExpressions.EQUALS.split(nextLine, 2);
+				String[] value = RegularExpressions.EQ.split(nextLine, 2);
 				if (value.length == 2) {
 					try {
 						output.put(ChromaprintField.valueOf(value[0]), value[1]);
