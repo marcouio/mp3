@@ -2,6 +2,7 @@ package com.molinari.mp3.business.op.tidier;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -24,7 +25,9 @@ import com.molinari.mp3.business.op.UtilOp;
 import com.molinari.mp3.business.op.renamer.RenamerOp;
 import com.molinari.mp3.business.operation.KeyHolder;
 import com.molinari.utility.GenericException;
+import com.molinari.utility.controller.ControlloreBase;
 import com.molinari.utility.graphic.component.alert.Alert;
+import com.molinari.utility.io.ReturnFileOperation;
 import com.molinari.utility.io.UtilIo;
 import com.molinari.utility.math.UtilMath;
 
@@ -32,6 +35,8 @@ public class TidierOp extends GenericTagOp {
 
 	private static final String MP3 = ".mp3";
 	private String output;
+	
+	private ReturnFileOperation retOp = new ReturnFileOperation();
 	
 	public TidierOp(final String output, String key) {
 		super();
@@ -50,7 +55,7 @@ public class TidierOp extends GenericTagOp {
 		super.execute(pathFile, f);
 		
 		manageOtherFile(pathFile, f);
-		return null;
+		return (T) retOp;
 	}
 
 	public void manageOtherFile(String pathFile, File f) {
@@ -64,14 +69,14 @@ public class TidierOp extends GenericTagOp {
 			List<String> estensioneEliminare = ConfiguratoreEstensioni.getSingleton().getEstensioneEliminare();
 			boolean daEliminare = ConfiguratoreEstensioni.getSingleton().containEstensione(f, estensioneEliminare);
 			if(daEliminare){
-				f.deleteOnExit();
+				f.delete();
 			}
 			
 			File dir = new File(pathFile);
 			if(dir.isDirectory()){
 				File[] listFiles = dir.listFiles();
 				if(listFiles == null || listFiles.length == 0){
-					dir.deleteOnExit();
+					dir.delete();
 				}
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
@@ -141,12 +146,27 @@ public class TidierOp extends GenericTagOp {
 			final File cartellaArtista = creaCartellaArtista(tag, cartellaAlfabeto);
 			final File cartellaAlbum = creaCartellaAlbum(tag, cartellaArtista);
 			String pathCartellaAlbum = cartellaAlbum.getAbsolutePath();
-			RenamerOp.safeRename(pathCartellaAlbum + Mp3ReaderUtil.slash(), f, tag);
+			String name = RenamerOp.safeRename(pathCartellaAlbum + Mp3ReaderUtil.slash(), f, tag);
+			
+			retOp.setResponse(name);
 			
 		} catch (IOException | TagException e) {
+			List<String> errs = new ArrayList<>();
+			errs.add(e.getMessage());
+ 			retOp.setErrors(errs);
 			throw new Mp3Exception(e);
 		}
 		return ret;
+	}
+	
+	@Override
+	public void before(String startingPathFile) {
+		super.before(startingPathFile);
+		try {
+			Files.deleteIfExists(new File(startingPathFile + File.separator +"Report.csv").toPath());
+		} catch (IOException e) {
+			ControlloreBase.getLog().log(Level.SEVERE, "Report is impossible to delete", e);
+		}
 	}
 	
 	private File creaCartellaAlbum(final Tag tag, final File cartellaArtista) {

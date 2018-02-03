@@ -2,6 +2,7 @@ package com.molinari.mp3.business.op;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.farng.mp3.TagException;
 
@@ -50,10 +51,19 @@ public abstract class GenericTagOp extends FileOperationBase {
 				ControlloreBase.getLog().info(() -> "Cancellazione dei file (" + f.getName() + ") avvenuta: " + f.delete());
 				return;
 			}
+			String namePlusOriginal = getNamePlusOriginal(f.getAbsolutePath());
+			Files.deleteIfExists(new File(namePlusOriginal).toPath());
 			
 		} catch (IOException | TagException e) {
 			throw new Mp3Exception(e);
 		}
+	}
+	
+	public static String getNamePlusOriginal(String fileName){
+		StringBuilder sb = new StringBuilder();
+		sb.append(fileName.substring(0, fileName.length()-4));
+		sb.append(".original.mp3");
+		return sb.toString();
 	}
 
 	/**

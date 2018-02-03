@@ -64,12 +64,13 @@ public class RenamerOp extends GenericTagOp{
 		}
 	}
 	
-	public static void safeRename(final String pathFile, final File f, Tag tagNew) {
+	public static String safeRename(final String pathFile, final File f, Tag tagNew) {
 		String newName = null;
 		if (tagNew.hasTitleAndArtist()) {
 			try {
 				newName = newName(pathFile, tagNew);
 				UtilOp.rename(f, newName);
+				return newName;
 					
 			} catch (final IOException e) {
 				Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
@@ -94,13 +95,8 @@ public class RenamerOp extends GenericTagOp{
 		} catch (IOException e) {
 			Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
-	}
-
-	public static String getNamePlusOriginal(String fileName){
-		StringBuilder sb = new StringBuilder();
-		sb.append(fileName.substring(0, fileName.length()-4));
-		sb.append(".original.mp3");
-		return sb.toString();
+		
+		return null;
 	}
 	
 	public static String newName(final String pathFile, Tag tagNew) {
