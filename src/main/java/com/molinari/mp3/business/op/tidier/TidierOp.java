@@ -21,9 +21,9 @@ import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.objects.TagUtil;
 import com.molinari.mp3.business.op.GenericTagOp;
+import com.molinari.mp3.business.op.KeyHolder;
 import com.molinari.mp3.business.op.UtilOp;
 import com.molinari.mp3.business.op.renamer.RenamerOp;
-import com.molinari.mp3.business.operation.KeyHolder;
 import com.molinari.utility.GenericException;
 import com.molinari.utility.controller.ControlloreBase;
 import com.molinari.utility.graphic.component.alert.Alert;
@@ -169,7 +169,7 @@ public class TidierOp extends GenericTagOp {
 		}
 	}
 	
-	private File creaCartellaAlbum(final Tag tag, final File cartellaArtista) {
+	private static File creaCartellaAlbum(final Tag tag, final File cartellaArtista) {
 		File cartellaAlbum = null;
 		final String pathCartellaArtista = cartellaArtista.getAbsolutePath();
 		String nome = UtilOp.adjust(tag.getNomeAlbum());

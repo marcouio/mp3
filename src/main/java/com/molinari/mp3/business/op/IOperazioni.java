@@ -1,4 +1,4 @@
-package com.molinari.mp3.business.operation;
+package com.molinari.mp3.business.op;
 
 public interface IOperazioni {
 

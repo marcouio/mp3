@@ -1,4 +1,4 @@
-package com.molinari.mp3.business.operation;
+package com.molinari.mp3.business.op;
 
 import java.io.File;
 import java.util.Map;
@@ -26,6 +26,7 @@ import com.molinari.utility.io.URLUTF8Encoder;
 public class FinderMp3Tag {
 
 	private boolean forceFindTag = true;
+	final Object lock = new Object();
 	
 	public FinderMp3Tag(boolean forceFindOnWeb) {
 		this.forceFindTag = forceFindOnWeb;
@@ -67,16 +68,18 @@ public class FinderMp3Tag {
 					
 				}
 				final Tag resultToPass = result;
-				ConfirmAssignTag confirm = new ConfirmAssignTag(Controllore.getApplicationframe(), resultToPass, f.getAbsolutePath());
+				synchronized (lock) {
+					ConfirmAssignTag confirm = new ConfirmAssignTag(Controllore.getApplicationframe(), resultToPass, f.getAbsolutePath());
+					LoaderDialog ld = new LoaderDialog(confirm);
+					BeanAssign beanAssign = confirm.getBeanAssign();
+					ld.execute();
+					result.setArtistaPrincipale(beanAssign.getArtist());
+					result.setTitoloCanzone(beanAssign.getSong());
+					result.setNomeAlbum(beanAssign.getAlbum());
+					result.setTraccia(beanAssign.getTrack());
+				}
 				
-				LoaderDialog ld = new LoaderDialog(confirm);
-				ld.execute();
-				BeanAssign beanAssign = confirm.getBeanAssign();
 				
-				result.setArtistaPrincipale(beanAssign.getArtist());
-				result.setTitoloCanzone(beanAssign.getSong());
-				result.setNomeAlbum(beanAssign.getAlbum());
-				result.setTraccia(beanAssign.getTrack());
 				ControlloreBase.getLog().info("Assegnati tag da info sul nome");
 			}
 
@@ -115,7 +118,7 @@ public class FinderMp3Tag {
 		
 	}
 
-	private Tag findTagByDb(Map<ChromaprintField, String> fp) {
+	private synchronized Tag findTagByDb(Map<ChromaprintField, String> fp) {
 		if(fp != null) {
 			SongDAO songDAO = new SongDAO(new Song());
 			int duration = Integer.parseInt(fp.get(ChromaprintField.DURATION));

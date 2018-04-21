@@ -11,7 +11,6 @@ import com.molinari.mp3.business.Mp3Exception;
 import com.molinari.mp3.business.check.CheckFile;
 import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.Tag;
-import com.molinari.mp3.business.operation.FinderMp3Tag;
 import com.molinari.utility.controller.ControlloreBase;
 import com.molinari.utility.io.FileOperationBase;
 

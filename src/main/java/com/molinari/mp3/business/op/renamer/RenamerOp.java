@@ -9,8 +9,8 @@ import com.molinari.mp3.business.Mp3Exception;
 import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.objects.TagUtil;
 import com.molinari.mp3.business.op.GenericTagOp;
+import com.molinari.mp3.business.op.KeyHolder;
 import com.molinari.mp3.business.op.UtilOp;
-import com.molinari.mp3.business.operation.KeyHolder;
 
 public class RenamerOp extends GenericTagOp{
 

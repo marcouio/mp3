@@ -14,7 +14,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 
-import com.molinari.mp3.business.operation.IOperazioni;
+import com.molinari.mp3.business.op.IOperazioni;
 import com.molinari.mp3.views.Vista;
 import com.molinari.utility.controller.ControlloreBase;
 import com.molinari.utility.database.ConnectionPool;
