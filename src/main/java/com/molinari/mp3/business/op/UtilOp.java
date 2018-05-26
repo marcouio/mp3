@@ -1,10 +1,10 @@
 package com.molinari.mp3.business.op;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.MessageFormat;
 
 import com.molinari.mp3.business.Controllore;
+import com.molinari.mp3.business.Mp3Exception;
 import com.molinari.utility.io.UtilIo;
 
 public class UtilOp {
@@ -21,7 +21,7 @@ public class UtilOp {
 				.replace(")", "");
 	}
 	
-	public static boolean rename(final File mp3, final String nomedopo) throws IOException {
+	public static boolean rename(final File mp3, final String nomedopo) {
 		if(!mp3.getAbsolutePath().equals(nomedopo)){
 			try{
 				UtilIo.moveFile(mp3, new File(nomedopo));
@@ -32,7 +32,7 @@ public class UtilOp {
 			}catch (Exception e) {
 				Controllore.getLog().severe("-> Cambio nome non riuscito");
 				Controllore.getLog().severe(e.getMessage());
-				return false;
+				throw new Mp3Exception(e);
 			}
 		}
 		Controllore.getLog().info("-> Mp3 non rinominato perché già con lo stesso nome");

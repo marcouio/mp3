@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.logging.Level;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -18,15 +17,16 @@ import org.xml.sax.SAXException;
 
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3ReaderUtil;
-import com.molinari.mp3.business.op.renamer.RenamerOp;
-import com.molinari.mp3.business.op.tidier.TidierOp;
-import com.molinari.mp3.business.op.writer.WriterFromDirectoryOp;
+import com.molinari.mp3.business.op.renamer.Renamer;
+import com.molinari.mp3.business.op.tidier.Tidier;
+import com.molinari.mp3.business.op.writer.Writer;
 import com.molinari.mp3.business.op.writer.WriterFromFileOp;
 import com.molinari.utility.controller.ControlloreBase;
 import com.molinari.utility.graphic.component.alert.Alert;
 import com.molinari.utility.io.ExecutorFiles;
 import com.molinari.utility.io.FactoryExecutorFiles;
 import com.molinari.utility.io.FileOperation;
+import com.molinari.utility.io.func.CrosserFiles;
 
 public class Pannello extends JPanel {
 
@@ -36,8 +36,6 @@ public class Pannello extends JPanel {
 	private JTextField        txtCartellaOutput;
 	private static Pannello   singleton;
 	private boolean           perFile          = false;
-
-	private JCheckBox         chckbxPerFile;
 
 	public static Pannello getSingleton() {
 		if (singleton == null) {
@@ -127,13 +125,9 @@ public class Pannello extends JPanel {
 
 		final JButton btnCrealista = new JButton();
 		btnCrealista.addActionListener(arg0 -> {
-			FileOperation fileOperation = null;
-			if (isPerFile()) {
-				fileOperation = new WriterFromFileOp(txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt");
-			} else {
-				fileOperation = new WriterFromDirectoryOp(txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt");
-			}
-			
+			String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
+			new CrosserFiles().execute(cartellaInput.getText(), new Writer(txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt", s)::apply);
+			FileOperation fileOperation = fileOperation = new WriterFromFileOp(txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt");
 			ExecutorFiles executorFiles = FactoryExecutorFiles.createExecutorFiles(fileOperation);
 			try {
 				executorFiles.start(cartellaInput.getText());
@@ -145,21 +139,12 @@ public class Pannello extends JPanel {
 		btnCrealista.setBounds(22, 106, 110, 23);
 		add(btnCrealista);
 
-		chckbxPerFile = new JCheckBox("Per File");
-		chckbxPerFile.setBounds(133, 106, 97, 23);
-		add(chckbxPerFile);
-
 		final JButton buttonOrdina = new JButton();
 		buttonOrdina.addActionListener(arg0 -> {
 			try {
 				String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
-				TidierOp ordina = new TidierOp(txtCartellaOutput.getText(), s);
-
-				ExecutorFiles executorFiles = FactoryExecutorFiles.createExecutorFiles(ordina);
-				boolean ok = executorFiles.start(cartellaInput.getText());
-				if(ok) {
-					Alert.info("Ok, file mp3 ordinati correttamente", "Perfetto");
-				}
+				new CrosserFiles().execute(cartellaInput.getText(), new Tidier(s, txtCartellaOutput.getText())::apply);
+				Alert.info("Ok, file mp3 ordinati correttamente", "Perfetto");
 			} catch (final Exception e) {
 				Controllore.log(Level.SEVERE, e.getMessage(), e);
 			}
@@ -172,12 +157,8 @@ public class Pannello extends JPanel {
 			String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
 			try {
 				
-				RenamerOp renamerOp = new RenamerOp(s);
-				ExecutorFiles executorFiles = FactoryExecutorFiles.createExecutorFiles(renamerOp);
-				boolean ok = executorFiles.start(cartellaInput.getText());
-				if (ok) {
-					Alert.info("Ok, file mp3 rinominati correttamente", "Perfetto");
-				}
+				new CrosserFiles().execute(cartellaInput.getText(), new Renamer(s)::apply);
+				Alert.info("Ok, file mp3 rinominati correttamente", "Perfetto");
 
 			} catch (final Exception e1) {
 				ControlloreBase.getLog().log(Level.SEVERE, e1.getMessage(), e1);
@@ -223,14 +204,5 @@ public class Pannello extends JPanel {
 
 	public void setPerFile(final boolean perFile) {
 		this.perFile = perFile;
-	}
-
-	public boolean isPerFile() {
-		if (chckbxPerFile.isSelected()) {
-			perFile = true;
-		} else {
-			perFile = false;
-		}
-		return perFile;
 	}
 }

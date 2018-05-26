@@ -2,6 +2,7 @@ package com.molinari.mp3.views;
 
 import java.awt.Point;
 import java.io.File;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.swing.JCheckBoxMenuItem;
@@ -11,17 +12,14 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.objects.Mp3;
-import com.molinari.mp3.business.op.binder.BinderOp;
+import com.molinari.mp3.business.op.binder.Binder;
+import com.molinari.mp3.business.op.binder.Mp3File;
 import com.molinari.mp3.business.player.MyBasicPlayer;
 import com.molinari.utility.controller.ControlloreBase;
-import com.molinari.utility.io.ExecutorFiles;
-import com.molinari.utility.io.FactoryExecutorFiles;
+import com.molinari.utility.io.func.CrosserFiles;
 
 public class MyMenu extends JMenuBar {
 
@@ -143,23 +141,32 @@ public class MyMenu extends JMenuBar {
 			final Pannello pannello = Controllore.getSingleton().getVista().getPannello();
 			pannello.getCartellaInput().setText(file1.getAbsolutePath());
 			
-			BinderOp binderOp = new BinderOp();
-			ExecutorFiles executorFiles = FactoryExecutorFiles.createExecutorFiles(binderOp);
-			try {
-				executorFiles.start(pannello.getCartellaInput().getText());
-			} catch (ParserConfigurationException | SAXException e1) {
-				ControlloreBase.getLog().log(Level.SEVERE, e1.getMessage(), e1);
-			}
+			Binder binder = new Binder();
+			new CrosserFiles().execute(pannello.getCartellaInput().getText(), binder::apply);
 			
 			Controllore.getSingleton().getVista();
 			final String[] nomiColonne = Controllore.getSingleton().getVista().getPlayList().getNomiColonne();
 			final JScrollPane scroll = Controllore.getSingleton().getVista().getPlayList().getScrollPane();
-			MyTable table = new MyTable(binderOp.getCanzoni(), nomiColonne);
+			MyTable table = new MyTable(makeMatrix(binder), nomiColonne);
 			Controllore.getSingleton().getVista().getPlayList().setTable(table);
 			scroll.setViewportView(table);
 			Controllore.getSingleton().getVista().repaint();
 
 		}
+	}
+
+	public Mp3File[][] makeMatrix(Binder binderOp) {
+		List<Mp3File> listaFile = binderOp.getListaFile();
+		final Mp3File[][] dati = new Mp3File[listaFile.size()][1];
+		
+		
+		MyBasicPlayer.setSize(listaFile.size());
+		for (int i = 0; i < listaFile.size(); i++) {
+			final Mp3File mp3 = listaFile.get(i);
+			dati[i][0] = mp3;
+			NewPlayList.getSingleton().put(Integer.toString(i), mp3);
+		}
+		return dati;
 	}
 
 	public void apriFile() {

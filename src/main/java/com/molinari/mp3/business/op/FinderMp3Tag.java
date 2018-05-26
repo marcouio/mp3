@@ -1,12 +1,15 @@
 package com.molinari.mp3.business.op;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.farng.mp3.TagException;
 import org.farng.mp3.id3.ID3v2_4;
 
 import com.molinari.mp3.business.Controllore;
+import com.molinari.mp3.business.Mp3Exception;
 import com.molinari.mp3.business.acoustid.TagAudioTrack;
 import com.molinari.mp3.business.lookup.LookUp;
 import com.molinari.mp3.business.lookup.LookUp.ChromaprintField;
@@ -32,20 +35,22 @@ public class FinderMp3Tag {
 		this.forceFindTag = forceFindOnWeb;
 	}
 	
-	public Tag find(File f){
+	public Tag find(Mp3 mp3){
+
+		File f = mp3.getMp3file();
+		
 		boolean toSave = false;
 		Tag result = null;
 		Tag resultFounded = null;
 		Map<ChromaprintField, String> fp = null;
 		try {
-			Mp3 mp3 = new Mp3(f);
 
 			boolean hasTitleAndArtist = TagUtil.isValidTag(mp3.getTag(), isForceFindTag());
 			
 			if (!hasTitleAndArtist || isForceFindTag()) {
 				
 				LookUp lookUp = new LookUp(KeyHolder.getSingleton().getKey());
-				fp = lookUp.getFingerPrint(f);
+				fp = lookUp.getFingerPrint(mp3.getMp3file());
 				
 				resultFounded = findTagByDb(fp);
 				if(resultFounded == null) {
@@ -95,6 +100,15 @@ public class FinderMp3Tag {
 		
 		return result;
 	
+	
+	}
+	
+	public Tag find(File f){
+		try {
+			return find(new Mp3(f));
+		} catch (IOException | TagException e) {
+			throw new Mp3Exception(e);
+		}
 	}
 	
 	private void saveOnDb(Map<ChromaprintField, String> fp, Tag result) {

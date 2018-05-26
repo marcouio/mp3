@@ -50,7 +50,7 @@ public class BinderOp extends GenericTagOp {
 	private void addMp3ToList(final File f, Mp3 mp3, Mp3File mp3File) {
 		mp3File.setNome(mp3.toString());
 		mp3File.setPath(f.getAbsolutePath());
-		listaFile.add(mp3File);
+		getListaFile().add(mp3File);
 	}
 
 	@Override
@@ -61,12 +61,12 @@ public class BinderOp extends GenericTagOp {
 	}
 	
 	private Mp3File[][] costruisciMatrice() {
-		final Mp3File[][] dati = new Mp3File[listaFile.size()][1];
+		final Mp3File[][] dati = new Mp3File[getListaFile().size()][1];
 		
 		
-		MyBasicPlayer.setSize(listaFile.size());
-		for (int i = 0; i < listaFile.size(); i++) {
-			final Mp3File mp3 = listaFile.get(i);
+		MyBasicPlayer.setSize(getListaFile().size());
+		for (int i = 0; i < getListaFile().size(); i++) {
+			final Mp3File mp3 = getListaFile().get(i);
 			dati[i][0] = mp3;
 			NewPlayList.getSingleton().put(Integer.toString(i), mp3);
 		}
@@ -80,6 +80,14 @@ public class BinderOp extends GenericTagOp {
 
 	public Mp3File[][] getCanzoni() {
 		return canzoni;
+	}
+
+	public List<Mp3File> getListaFile() {
+		return listaFile;
+	}
+
+	public void setListaFile(List<Mp3File> listaFile) {
+		this.listaFile = listaFile;
 	}
 
 }

@@ -22,14 +22,13 @@ import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.objects.TagUtil;
 import com.molinari.mp3.business.op.GenericTagOp;
 import com.molinari.mp3.business.op.KeyHolder;
-import com.molinari.mp3.business.op.UtilOp;
+import com.molinari.mp3.business.op.PathCreator;
 import com.molinari.mp3.business.op.renamer.RenamerOp;
 import com.molinari.utility.GenericException;
 import com.molinari.utility.controller.ControlloreBase;
 import com.molinari.utility.graphic.component.alert.Alert;
 import com.molinari.utility.io.ReturnFileOperation;
 import com.molinari.utility.io.UtilIo;
-import com.molinari.utility.math.UtilMath;
 
 public class TidierOp extends GenericTagOp {
 
@@ -142,9 +141,7 @@ public class TidierOp extends GenericTagOp {
 		try {
 			Mp3 mp3 = new Mp3(f);
 			mp3.setTag(tag);
-			final File cartellaAlfabeto = creaCartellaAlfabeto(tag);
-			final File cartellaArtista = creaCartellaArtista(tag, cartellaAlfabeto);
-			final File cartellaAlbum = creaCartellaAlbum(tag, cartellaArtista);
+			final File cartellaAlbum = PathCreator.createPath(tag, output);
 			String pathCartellaAlbum = cartellaAlbum.getAbsolutePath();
 			String name = RenamerOp.safeRename(pathCartellaAlbum + Mp3ReaderUtil.slash(), f, tag);
 			
@@ -158,7 +155,7 @@ public class TidierOp extends GenericTagOp {
 		}
 		return ret;
 	}
-	
+
 	@Override
 	public void before(String startingPathFile) {
 		super.before(startingPathFile);
@@ -169,68 +166,6 @@ public class TidierOp extends GenericTagOp {
 		}
 	}
 	
-	private static File creaCartellaAlbum(final Tag tag, final File cartellaArtista) {
-		File cartellaAlbum = null;
-		final String pathCartellaArtista = cartellaArtista.getAbsolutePath();
-		String nome = UtilOp.adjust(tag.getNomeAlbum());
-		String pathname = pathCartellaArtista + Mp3ReaderUtil.slash() + nome;
-		cartellaAlbum = new File(pathname.trim());
-		if (!cartellaAlbum.exists()) {
-			cartellaAlbum.mkdir();
-		}
-		return cartellaAlbum;
-
-	}
-
-	
-	private File creaCartellaArtista(final Tag tag, final File cartellaAlfabeto) {
-		File cartellaArtista = null;
-		final String pathCartellaAlfabeto = cartellaAlfabeto.getAbsolutePath();
-		String artistaPrincipale = UtilOp.adjust(tag.getArtistaPrincipale());
-		String pathname = pathCartellaAlfabeto + Mp3ReaderUtil.slash() + artistaPrincipale;
-		cartellaArtista = new File(pathname.trim());
-		if (!cartellaArtista.exists()) {
-			cartellaArtista.mkdir();
-		}
-		return cartellaArtista;
-
-	}
-
-	private File creaCartellaAlfabeto(final Tag tag) {
-		File dir = null;
-		final String nomeAlfa = tag.getArtistaPrincipale();
-
-		StringBuilder pathname = new StringBuilder();
-		pathname.append(output);
-
-		pathname.append(createAlphabetDirName(nomeAlfa));
-		dir = new File(pathname.toString().trim());
-		if (!dir.exists()) {
-			dir.mkdir();
-		}
-		return dir;
-	}
-	
-	public String createAlphabetDirName(String nomeAlfa) {
-		String ret = "";
-
-		if (nomeAlfa != null && nomeAlfa.length() > 1) {
-			String lettera = nomeAlfa.substring(0, 1).toUpperCase();
-			boolean number = UtilMath.isNumber(lettera);
-			if(number){
-				ret = Mp3ReaderUtil.slash() + "0_9";
-
-			}else{
-				ret = Mp3ReaderUtil.slash() + lettera;
-			}
-		} else {
-			ret =  Mp3ReaderUtil.slash() + "NoLetter";
-
-		}
-		return ret;
-
-	}
-
 	public String getOutput() {
 		return output;
 	}

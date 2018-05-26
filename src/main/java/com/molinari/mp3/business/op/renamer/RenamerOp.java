@@ -67,14 +67,10 @@ public class RenamerOp extends GenericTagOp{
 	public static String safeRename(final String pathFile, final File f, Tag tagNew) {
 		String newName = null;
 		if (tagNew.hasTitleAndArtist()) {
-			try {
-				newName = newName(pathFile, tagNew);
-				UtilOp.rename(f, newName);
-				return newName;
+			newName = newName(pathFile, tagNew);
+			UtilOp.rename(f, newName);
+			return newName;
 					
-			} catch (final IOException e) {
-				Controllore.getLog().log(Level.SEVERE, e.getMessage(), e);
-			}
 		} else {
 			Controllore.getLog().info("Impossibile trovare tag per rinominare il file " + f.getName());
 		}
