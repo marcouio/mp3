@@ -1,12 +1,9 @@
 package com.molinari.mp3.business.op;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.function.Function;
 import java.util.logging.Level;
-
-import org.farng.mp3.TagException;
 
 import com.molinari.mp3.business.check.CheckFile;
 import com.molinari.mp3.business.objects.Mp3;
@@ -34,7 +31,7 @@ public abstract class TagOp implements Function<File, Mp3> {
 			Files.deleteIfExists(new File(getNamePlusOriginal(f.getAbsolutePath())).toPath());
 	
 			
-		} catch (IOException | TagException e) {
+		} catch (Exception e) {
 			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
 		
