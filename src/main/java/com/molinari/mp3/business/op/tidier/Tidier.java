@@ -8,7 +8,7 @@ import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.op.KeyHolder;
 import com.molinari.mp3.business.op.PathCreator;
 import com.molinari.mp3.business.op.TagOp;
-import com.molinari.mp3.business.op.renamer.RenamerOp;
+import com.molinari.mp3.business.op.renamer.Renamer;
 import com.molinari.utility.controller.ControlloreBase;
 import com.molinari.utility.io.func.CrosserFiles;
 
@@ -34,6 +34,6 @@ public class Tidier extends TagOp {
 	protected void operationTag(Mp3 mp3) {
 		final File cartellaAlbum = PathCreator.createPath(mp3.getTag(), output);
 		String pathCartellaAlbum = cartellaAlbum.getAbsolutePath();
-		RenamerOp.safeRename(pathCartellaAlbum + Mp3ReaderUtil.slash(), mp3.getMp3file(), mp3.getTag());
+		Renamer.safeRename(pathCartellaAlbum + Mp3ReaderUtil.slash(), mp3.getMp3file(), mp3.getTag());
 	}
 }
