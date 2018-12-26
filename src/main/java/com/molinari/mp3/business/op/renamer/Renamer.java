@@ -1,12 +1,17 @@
 package com.molinari.mp3.business.op.renamer;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+
+import org.farng.mp3.TagException;
 
 import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.op.KeyHolder;
 import com.molinari.mp3.business.op.TagOp;
 import com.molinari.mp3.business.op.UtilOp;
+import com.molinari.utility.controller.ControlloreBase;
 import com.molinari.utility.io.UtilIo;
 
 public class Renamer extends TagOp {
@@ -32,10 +37,16 @@ public class Renamer extends TagOp {
 	}
 
 	@Override
-	protected void operationTag(Mp3 mp3) {
+	protected Mp3 operationTag(Mp3 mp3) {
 		Tag tagNew = mp3.getTag();
 		File mp3file = mp3.getMp3file();
-		safeRename(UtilIo.getParentPath(mp3file), mp3file, tagNew);
+		String rename = safeRename(UtilIo.getParentPath(mp3file), mp3file, tagNew);
+		try {
+			return new Mp3(rename);
+		} catch (IOException | TagException e) {
+			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
+		}
+		return null;
 	}
 
 }

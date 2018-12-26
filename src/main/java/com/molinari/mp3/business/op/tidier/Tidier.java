@@ -1,6 +1,10 @@
 package com.molinari.mp3.business.op.tidier;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+
+import org.farng.mp3.TagException;
 
 import com.molinari.mp3.business.ConnectionMp3;
 import com.molinari.mp3.business.Mp3ReaderUtil;
@@ -31,9 +35,15 @@ public class Tidier extends TagOp {
 	}
 
 	@Override
-	protected void operationTag(Mp3 mp3) {
+	protected Mp3 operationTag(Mp3 mp3) {
 		final File cartellaAlbum = PathCreator.createPath(mp3.getTag(), output);
 		String pathCartellaAlbum = cartellaAlbum.getAbsolutePath();
-		Renamer.safeRename(pathCartellaAlbum + Mp3ReaderUtil.slash(), mp3.getMp3file(), mp3.getTag());
+		String rename = Renamer.safeRename(pathCartellaAlbum + Mp3ReaderUtil.slash(), mp3.getMp3file(), mp3.getTag());
+		try {
+			return new Mp3(rename);
+		} catch (IOException | TagException e) {
+			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
+		}
+		return null;
 	}
 }

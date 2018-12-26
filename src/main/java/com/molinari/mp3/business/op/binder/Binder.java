@@ -17,8 +17,9 @@ public class Binder extends TagOp{
 	}
 	
 	@Override
-	protected void operationTag(Mp3 mp3) {
+	protected Mp3 operationTag(Mp3 mp3) {
 		addMp3ToList(mp3, new Mp3File());
+		return mp3;
 		
 	}
 
