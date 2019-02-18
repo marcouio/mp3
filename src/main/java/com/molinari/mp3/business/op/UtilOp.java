@@ -16,13 +16,14 @@ public class UtilOp {
 	public static String adjust(String nome){
 		return nome.replaceAll("/", "")
 				.replaceAll(":", "")
+				.replaceAll("'", " ")
 				.replaceAll("\"", "")
 				.replace("(", "")
 				.replace(")", "");
 	}
 	
 	public static boolean rename(final File mp3, final String nomedopo) {
-		if(!mp3.getAbsolutePath().equals(nomedopo)){
+		if(!mp3.getAbsolutePath().equalsIgnoreCase(nomedopo)){
 			try{
 				UtilIo.moveFile(mp3, new File(nomedopo));
 				java.nio.file.Files.deleteIfExists(mp3.toPath());
