@@ -19,8 +19,13 @@ import com.molinari.utility.io.csv.WriterCSV;
 
 public abstract class TagOp implements Function<File, Mp3> {
 
-	private FinderMp3Tag finderTag = new FinderMp3Tag(true);
+	private FinderMp3Tag finderTag = null;
 	
+	public TagOp(boolean forceFindTag) {
+		super();
+		this.finderTag = new FinderMp3Tag(forceFindTag);
+	}
+
 	WriterCSV<BeanOperationFile> csv = new WriterCSV<>(BeanOperationFile.class, new File("target").getAbsolutePath() + "/report.csv");
 	
 	@Override

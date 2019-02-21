@@ -141,7 +141,7 @@ public class MyMenu extends JMenuBar {
 			final Pannello pannello = Controllore.getSingleton().getVista().getPannello();
 			pannello.getCartellaInput().setText(file1.getAbsolutePath());
 			
-			Binder binder = new Binder();
+			Binder binder = new Binder(true);
 			new CrosserFiles().execute(pannello.getCartellaInput().getText(), binder::apply);
 			
 			Controllore.getSingleton().getVista();

@@ -14,7 +14,8 @@ public class Writer extends TagOp{
 
 	private String fileToWrite;
 
-	public Writer(String fileToWrite, String key) {
+	public Writer(boolean forceFindTag, String fileToWrite, String key) {
+		super(forceFindTag);
 		KeyHolder.getSingleton().setKey(key);
 		this.fileToWrite = fileToWrite;
 	}

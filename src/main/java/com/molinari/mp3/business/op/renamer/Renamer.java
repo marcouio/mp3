@@ -16,7 +16,8 @@ import com.molinari.utility.io.UtilIo;
 
 public class Renamer extends TagOp {
 
-	public Renamer(String key) {
+	public Renamer(boolean forceFindTag, String key) {
+		super(forceFindTag);
 		KeyHolder.getSingleton().setKey(key);
 	}
 	

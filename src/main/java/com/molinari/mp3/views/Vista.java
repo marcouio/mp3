@@ -41,7 +41,7 @@ public class Vista extends PannelloBase {
 		panForGestore.setLayout(null);
 		panForGestore.setBounds(10, 31, 278, 300);
 		this.add(panForGestore);
-		pannello = Pannello.getSingleton();
+		pannello = new Pannello(this);
 		pannello.setBounds(0, 0, 258, 257);
 		panForGestore.add(pannello);
 	}

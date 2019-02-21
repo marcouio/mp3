@@ -26,13 +26,22 @@ public class TagAudioTrack {
 	public Recording getRecording() {
 		List<Result> results = this.audioTrack.getResults();
 		if (results != null && !results.isEmpty()) {
-			Result result = results.get(0);
+			Result result = getBestResult(results);
 			List<Recording> recordings = result.getRecordings();
 			if (recordings != null && !recordings.isEmpty()) {
 				return recordings.get(0);
 			}
 		}
 		return null;
+	}
+	
+	private Result getBestResult(List<Result> results){
+		return results.stream().max((r1, r2) -> {
+			if(r1.getScore() > r2.getScore()) {
+				return 1;
+			}
+			return -1;
+		}).get();
 	}
 
 	public String getTrackName() {
