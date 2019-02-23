@@ -2,6 +2,7 @@
 package com.molinari.mp3.business.acoustid;
 
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -22,7 +23,9 @@ public class Recording {
     @SerializedName("duration")
     @Expose
     private Integer duration;
-
+    
+    private boolean compilation = true;
+    
     public List<Releasegroup> getReleasegroups() {
         return releasegroups;
     }
@@ -62,5 +65,13 @@ public class Recording {
     public void setDuration(Integer duration) {
         this.duration = duration;
     }
+
+	public boolean isCompilation() {
+		return compilation;
+	}
+
+	public void setCompilation(boolean compilation) {
+		this.compilation = compilation;
+	}
 
 }
