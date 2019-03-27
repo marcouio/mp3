@@ -27,6 +27,7 @@ import com.molinari.utility.io.ExecutorFiles;
 import com.molinari.utility.io.FactoryExecutorFiles;
 import com.molinari.utility.io.FileOperation;
 import com.molinari.utility.io.func.CrosserFiles;
+import com.molinari.utility.io.func.ParallelCrosserFile;
 
 public class Pannello extends JPanel {
 
@@ -126,8 +127,8 @@ public class Pannello extends JPanel {
 		final JButton btnCrealista = new JButton();
 		btnCrealista.addActionListener(arg0 -> {
 			String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
-			new CrosserFiles().execute(cartellaInput.getText(), new Writer(txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt", s)::apply);
-			FileOperation fileOperation = fileOperation = new WriterFromFileOp(txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt");
+			new ParallelCrosserFile().execute(cartellaInput.getText(), new Writer(txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt", s)::apply);
+			FileOperation fileOperation = new WriterFromFileOp(txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt");
 			ExecutorFiles executorFiles = FactoryExecutorFiles.createExecutorFiles(fileOperation);
 			try {
 				executorFiles.start(cartellaInput.getText());
@@ -143,7 +144,7 @@ public class Pannello extends JPanel {
 		buttonOrdina.addActionListener(arg0 -> {
 			try {
 				String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
-				new CrosserFiles().execute(cartellaInput.getText(), new Tidier(s, txtCartellaOutput.getText())::apply);
+				new ParallelCrosserFile().execute(cartellaInput.getText(), new Tidier(s, txtCartellaOutput.getText())::apply);
 				Alert.info("Ok, file mp3 ordinati correttamente", "Perfetto");
 			} catch (final Exception e) {
 				Controllore.log(Level.SEVERE, e.getMessage(), e);
@@ -157,7 +158,7 @@ public class Pannello extends JPanel {
 			String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
 			try {
 				
-				new CrosserFiles().execute(cartellaInput.getText(), new Renamer(s)::apply);
+				new ParallelCrosserFile().execute(cartellaInput.getText(), new Renamer(s)::apply);
 				Alert.info("Ok, file mp3 rinominati correttamente", "Perfetto");
 
 			} catch (final Exception e1) {

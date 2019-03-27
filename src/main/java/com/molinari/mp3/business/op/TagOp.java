@@ -23,8 +23,7 @@ public abstract class TagOp implements Function<File, Mp3> {
 		try {
 			if(f.getAbsolutePath().toLowerCase().endsWith(CheckFile.ESTENSIONE_MP3)){
 				Mp3 mp3 = new Mp3(f);
-				Tag tag = mp3.getTag();
-				if(tag != null && TagUtil.isValidTag(tag, isForceFindTag())) {
+				if(TagUtil.isValidTag(mp3.getTag(), isForceFindTag())) {
 					operationTag(mp3);
 				}else {
 					operationNoTag(mp3);
@@ -32,7 +31,6 @@ public abstract class TagOp implements Function<File, Mp3> {
 			}
 			
 			Files.deleteIfExists(new File(getNamePlusOriginal(f.getAbsolutePath())).toPath());
-	
 			
 		} catch (IOException | TagException e) {
 			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
