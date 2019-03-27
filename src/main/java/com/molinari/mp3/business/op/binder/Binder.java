@@ -8,6 +8,10 @@ import com.molinari.mp3.business.op.TagOp;
 
 public class Binder extends TagOp{
 	
+	public Binder(boolean forceFindTag) {
+		super(forceFindTag);
+	}
+
 	private List<Mp3File>  listaFile = new ArrayList<>();
 	
 	private void addMp3ToList(Mp3 mp3, Mp3File mp3File) {
@@ -17,8 +21,9 @@ public class Binder extends TagOp{
 	}
 	
 	@Override
-	protected void operationTag(Mp3 mp3) {
+	protected Mp3 operationTag(Mp3 mp3) {
 		addMp3ToList(mp3, new Mp3File());
+		return mp3;
 		
 	}
 

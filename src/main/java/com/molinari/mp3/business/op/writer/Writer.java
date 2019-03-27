@@ -14,18 +14,20 @@ public class Writer extends TagOp{
 
 	private String fileToWrite;
 
-	public Writer(String fileToWrite, String key) {
+	public Writer(boolean forceFindTag, String fileToWrite, String key) {
+		super(forceFindTag);
 		KeyHolder.getSingleton().setKey(key);
 		this.fileToWrite = fileToWrite;
 	}
 
 	@Override
-	protected void operationTag(Mp3 mp3) {
+	protected Mp3 operationTag(Mp3 mp3) {
 		Tag tag = mp3.getTag();
 		String artista = CheckFile.checkSingleTag(tag.getArtistaPrincipale());
 		String traccia = CheckFile.checkSingleTag(tag.getTraccia());
 		String riga = artista.toUpperCase() + " - " + traccia.toUpperCase();
 		Mp3ReaderUtil.scriviFileSuPiuRighe(new File(fileToWrite), Lists.newArrayList(riga));
+		return mp3;
 	}
 	
 	

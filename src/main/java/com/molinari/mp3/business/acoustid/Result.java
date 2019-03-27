@@ -2,6 +2,7 @@
 package com.molinari.mp3.business.acoustid;
 
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -16,8 +17,18 @@ public class Result {
     @SerializedName("id")
     @Expose
     private String id;
+    
+    private boolean compilation;
 
-    public List<Recording> getRecordings() {
+    public boolean isCompilation() {
+		return compilation;
+	}
+
+	public void setCompilation(boolean compilation) {
+		this.compilation = compilation;
+	}
+
+	public List<Recording> getRecordings() {
         return recordings;
     }
 

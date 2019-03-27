@@ -135,10 +135,10 @@ public class LookUp {
 	}
 	
 	public TagAudioTrack lookup(Map<ChromaprintField, String> fp) throws Exception {
-		if(fp != null) {
+		if(fp != null) {	
 			int duration = Integer.parseInt(fp.get(ChromaprintField.DURATION));
 			String fingerprint = fp.get(ChromaprintField.FINGERPRINT);
-	
+				
 			String response = lookup(duration, fingerprint);
 			if (response != null && response.length() > 0) {
 				 AudioTrack parseResult = parseResult(lookup(duration, fingerprint));
