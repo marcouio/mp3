@@ -9,25 +9,17 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 import com.molinari.mp3.business.Controllore;
 import com.molinari.mp3.business.Mp3ReaderUtil;
 import com.molinari.mp3.business.op.renamer.Renamer;
 import com.molinari.mp3.business.op.tidier.Tidier;
 import com.molinari.mp3.business.op.writer.Writer;
-import com.molinari.mp3.business.op.writer.WriterFromFileOp;
 import com.molinari.utility.controller.ControlloreBase;
 import com.molinari.utility.graphic.component.alert.Alert;
 import com.molinari.utility.graphic.component.button.ButtonBase;
 import com.molinari.utility.graphic.component.checkbox.CheckBoxBase;
 import com.molinari.utility.graphic.component.container.PannelloBase;
-import com.molinari.utility.io.ExecutorFiles;
-import com.molinari.utility.io.FactoryExecutorFiles;
-import com.molinari.utility.io.FileOperation;
-import com.molinari.utility.io.func.CrosserFiles;
 import com.molinari.utility.io.func.ParallelCrosserFile;
 
 public class Pannello extends PannelloBase {
@@ -104,13 +96,6 @@ public class Pannello extends PannelloBase {
 		btnCrealista.addActionListener(arg0 -> {
 			String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
 			new ParallelCrosserFile().execute(cartellaInput.getText(), new Writer(force.isSelected(), txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt", s)::apply);
-			FileOperation fileOperation = new WriterFromFileOp(txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt");
-			ExecutorFiles executorFiles = FactoryExecutorFiles.createExecutorFiles(fileOperation);
-			try {
-				executorFiles.start(cartellaInput.getText());
-			} catch (ParserConfigurationException | SAXException e) {
-				ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
-			}
 		});
 		btnCrealista.setText("crea lista");
 		btnCrealista.setSize(110, 23);

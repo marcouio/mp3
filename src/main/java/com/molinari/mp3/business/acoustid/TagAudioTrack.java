@@ -90,7 +90,7 @@ public class TagAudioTrack {
 
 	public Comparator<? super Result> maxScore() {
 		return (r1, r2) -> {
-			if(r1.getScore() > r2.getScore()) {
+			if(r1.getScore() >= r2.getScore()) {
 				return 1;
 			}
 			return -1;
