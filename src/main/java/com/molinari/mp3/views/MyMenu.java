@@ -19,6 +19,7 @@ import com.molinari.mp3.business.op.binder.Binder;
 import com.molinari.mp3.business.op.binder.Mp3File;
 import com.molinari.mp3.business.player.MyBasicPlayer;
 import com.molinari.utility.controller.ControlloreBase;
+import com.molinari.utility.io.func.ParallelCrosserFile;
 import com.molinari.utility.io.func.CrosserFiles;
 
 public class MyMenu extends JMenuBar {
@@ -142,7 +143,7 @@ public class MyMenu extends JMenuBar {
 			pannello.getCartellaInput().setText(file1.getAbsolutePath());
 			
 			Binder binder = new Binder(true);
-			new CrosserFiles().execute(pannello.getCartellaInput().getText(), binder::apply);
+			new ParallelCrosserFile().execute(pannello.getCartellaInput().getText(), binder::apply);
 			
 			Controllore.getSingleton().getVista();
 			final String[] nomiColonne = Controllore.getSingleton().getVista().getPlayList().getNomiColonne();
