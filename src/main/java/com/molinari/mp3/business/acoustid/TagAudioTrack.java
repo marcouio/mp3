@@ -5,9 +5,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.molinari.utility.CounterMap;
+
 public class TagAudioTrack {
 
 	private AudioTrack audioTrack;
+	private String trackName;
+	private Result bestResult;
+	private Recording albumRecording;
 
 	public TagAudioTrack(AudioTrack audioTrack) {
 		this.audioTrack = audioTrack;
@@ -50,24 +55,74 @@ public class TagAudioTrack {
 	}
 	
 	public Recording getAlbumRecording(List<Recording> recordings) {
-		if(recordings != null) {
-			for (Recording rec : recordings) {
-				List<Releasegroup> releasegroups = rec.getReleasegroups();
-				Optional<Releasegroup> rel = findAlbum(releasegroups);
+		
+		if(albumRecording == null) {
+		
+			if(recordings != null) {
+				
+				CounterMap<String> map = countTrackName(recordings);
+				
+				String keyWithMaxCounter = map.getKeyWithMaxCounter();
+				
+				//cerco che non sia album e il titolo il più trovato
+				for (Recording rec : recordings) {
+					List<Releasegroup> releasegroups = rec.getReleasegroups();
+					if (releasegroups != null && !releasegroups.isEmpty()) {
 						
-				if(rel.isPresent()) {
-					rec.setCompilation(false);
-					return rec;
+						Optional<Releasegroup> rel = findAlbum(releasegroups);
+						if(rel.isPresent() && keyWithMaxCounter.equals(rec.getTitle())) {
+							rec.setCompilation(false);
+							albumRecording = rec;
+							return albumRecording;
+						}
+					}
 				}
+				
+				//cerco solo il titolo più trovato
+				for (Recording rec : recordings) {
+					List<Releasegroup> releasegroups = rec.getReleasegroups();
+					if (releasegroups != null && !releasegroups.isEmpty()) {
+						if(keyWithMaxCounter.equals(rec.getTitle())) {
+							rec.setCompilation(false);
+							albumRecording = rec;
+							return albumRecording;
+						}
+					}
+				}
+				
+				
+				albumRecording = recordings.get(0);
 			}
-			return recordings.get(0);
 		}
-		return new Recording();
+		if(albumRecording == null) {
+			albumRecording = new Recording();
+		}
+		return albumRecording;
+	}
+
+	public CounterMap<String> countTrackName(List<Recording> recordings) {
+		CounterMap<String> map = new CounterMap<>();
+		for (Recording rec : recordings) {
+			List<Releasegroup> releasegroups = rec.getReleasegroups();
+			if (releasegroups != null && !releasegroups.isEmpty()) {
+				map.put(rec.getTitle());
+			}
+		}
+		return map;
+	}
+	public String getTrackName() {
+		if(trackName == null) {
+			Recording recording = getRecording();
+			if(recording != null){
+				trackName = recording.getTitle();
+			}
+		}
+		return trackName;
 	}
 
 	public Optional<Releasegroup> findAlbum(List<Releasegroup> releasegroups) {
 		Optional<Releasegroup> rel = releasegroups.stream().filter((r) -> {
-			boolean isAlbum = r.getType().equalsIgnoreCase("ALBUM");
+			boolean isAlbum = "ALBUM".equalsIgnoreCase(r.getType());
 			boolean isCompilation = r.getSecondarytypes() != null && r.getSecondarytypes().stream().anyMatch(s -> s.equalsIgnoreCase("COMPILATION"));
 			return isAlbum && !isCompilation;
 		}).findFirst();
@@ -75,11 +130,15 @@ public class TagAudioTrack {
 	}
 	
 	public Result getBestResult(List<Result> results){
-		Result bestResult = results.stream().max(maxScore()).get();
 		
-		Optional<Result> findFirst = getResultNoCompilation(results).findFirst();
-		if(findFirst.isPresent()) {
-			return getResultNoCompilation(results).max(maxScore()).get();
+		if(bestResult == null) {
+		
+			bestResult = results.stream().max(maxScore()).get();
+			
+			Optional<Result> findFirst = getResultNoCompilation(results).findFirst();
+			if(findFirst.isPresent()) {
+				bestResult = getResultNoCompilation(results).max(maxScore()).get();
+			}
 		}
 		return bestResult;
 	}
@@ -97,13 +156,6 @@ public class TagAudioTrack {
 		};
 	}
 
-	public String getTrackName() {
-		Recording recording = getRecording();
-		if(recording != null){
-			return recording.getTitle();
-		}
-		return "";
-	}
 	
 	public String getArtist(){
 		Recording recording = getRecording();

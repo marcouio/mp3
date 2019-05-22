@@ -31,12 +31,13 @@ public class UtilOp {
 				Controllore.getLog().info(format);
 				return true;
 			}catch (Exception e) {
-				Controllore.getLog().severe("-> Cambio nome non riuscito");
+				Controllore.getLog().severe(MessageFormat.format("-> Cambio nome non riuscito({0}) ", mp3.getName()));
 				Controllore.getLog().severe(e.getMessage());
 				throw new Mp3Exception(e);
 			}
 		}
-		Controllore.getLog().info("-> Mp3 non rinominato perché già con lo stesso nome");
+		String logStessoNome = MessageFormat.format("-> Mp3 {0} non rinominato perché già con lo stesso nome", mp3.getName());
+		Controllore.getLog().info(logStessoNome);
 		return false;
 	}
 }

@@ -43,7 +43,7 @@ public abstract class TagOp implements Function<File, Mp3> {
 			b.setOutput(ret != null ? ret.getNome() : null);
 			
 		} catch (Exception e) {
-			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
+			ControlloreBase.getLog().log(Level.SEVERE, "Error on file " + f.getName(), e);
 			b.setError(e.getMessage());
 		}
 		write(b);

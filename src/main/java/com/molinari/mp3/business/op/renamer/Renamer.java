@@ -45,7 +45,7 @@ public class Renamer extends TagOp {
 		try {
 			return new Mp3(rename);
 		} catch (IOException | TagException e) {
-			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
+			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage() + " on " + mp3.getNome(), e);
 		}
 		return null;
 	}
