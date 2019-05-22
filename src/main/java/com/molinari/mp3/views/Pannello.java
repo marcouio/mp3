@@ -20,7 +20,7 @@ import com.molinari.utility.graphic.component.alert.Alert;
 import com.molinari.utility.graphic.component.button.ButtonBase;
 import com.molinari.utility.graphic.component.checkbox.CheckBoxBase;
 import com.molinari.utility.graphic.component.container.PannelloBase;
-import com.molinari.utility.io.func.ParallelCrosserFile;
+import com.molinari.utility.io.func.CrosserFiles;
 
 public class Pannello extends PannelloBase {
 
@@ -95,7 +95,7 @@ public class Pannello extends PannelloBase {
 		final ButtonBase btnCrealista = new ButtonBase(this);
 		btnCrealista.addActionListener(arg0 -> {
 			String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
-			new ParallelCrosserFile().execute(cartellaInput.getText(), new Writer(force.isSelected(), txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt", s)::apply);
+			new CrosserFiles().execute(cartellaInput.getText(), new Writer(force.isSelected(), txtCartellaOutput.getText() + Mp3ReaderUtil.slash() + "listaAlbum.odt", s)::apply);
 		});
 		btnCrealista.setText("crea lista");
 		btnCrealista.setSize(110, 23);
@@ -106,7 +106,7 @@ public class Pannello extends PannelloBase {
 		buttonOrdina.addActionListener(arg0 -> {
 			try {
 				String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
-				new ParallelCrosserFile().execute(cartellaInput.getText(), new Tidier(true, s, txtCartellaOutput.getText())::apply);
+				new CrosserFiles().execute(cartellaInput.getText(), new Tidier(true, s, txtCartellaOutput.getText())::apply);
 				Alert.info("Ok, file mp3 ordinati correttamente", "Perfetto");
 			} catch (final Exception e) {
 				Controllore.log(Level.SEVERE, e.getMessage(), e);
@@ -121,7 +121,7 @@ public class Pannello extends PannelloBase {
 			String s = JOptionPane.showInputDialog("key?", "0B3qZnQc");
 			try {
 				
-				new ParallelCrosserFile().execute(cartellaInput.getText(), new Renamer(true, s)::apply);
+				new CrosserFiles().execute(cartellaInput.getText(), new Renamer(true, s)::apply);
 				Alert.info("Ok, file mp3 rinominati correttamente", "Perfetto");
 
 			} catch (final Exception e1) {
