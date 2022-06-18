@@ -146,7 +146,7 @@ public class Controllore extends ControlloreBase {
 	
 	public static void main(final String[] args) {
 		ControlloreBase.getLog().setLevel(Level.SEVERE);
-		Controllore.getSingleton().myMain(Controllore.getSingleton(), true, "myApplication");
+		Controllore.getSingleton().myMain(Controllore.getSingleton(), "myApplication");
 	}
 
 	@Override
