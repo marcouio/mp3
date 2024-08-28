@@ -8,7 +8,7 @@ public class KeyHolder {
 			//do nothing
 		}
 		
-		private String key = "0B3qZnQc";
+		private String key = "_Q6hoFWgAAc";
 
 		public String getKey() {
 			return key;
