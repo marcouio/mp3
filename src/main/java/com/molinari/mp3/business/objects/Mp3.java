@@ -100,7 +100,7 @@ public class Mp3 extends MP3File {
 	}
 
 	public void rename(final String nome_dopo) throws IOException {
-		UtilOp.rename(this.getMp3file(), nome_dopo);
+		UtilOp.rename(this.getMp3file(), new File(nome_dopo), false);
 	}
 
 	/**
