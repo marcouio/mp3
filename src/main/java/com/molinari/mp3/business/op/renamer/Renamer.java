@@ -49,7 +49,7 @@ public class Renamer extends TagOp {
 	@Override
 	protected Mp3 operationTag(Mp3 mp3) {
 		File mp3file = mp3.getMp3file();
-		File renamed = safeRename(mp3file.getParentFile(), mp3file, mp3.getTag());
+		File renamed = safeRenameInRun(mp3file.getParentFile(), mp3file, mp3.getTag());
 		mp3.setFile(renamed);
 		mp3.setNome(renamed.getName());
 		return mp3;

@@ -2,17 +2,21 @@ package com.molinari.mp3.business.op;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.logging.Level;
 
 import org.farng.mp3.TagException;
 
+import com.molinari.mp3.business.Mp3Exception;
 import com.molinari.mp3.business.check.CheckFile;
 import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.objects.TagUtil;
+import com.molinari.mp3.business.op.renamer.Renamer;
 import com.molinari.utility.controller.ControlloreBase;
 import com.molinari.utility.io.csv.BeanOperationFile;
 import com.molinari.utility.io.csv.WriterCSV;
@@ -20,6 +24,7 @@ import com.molinari.utility.io.csv.WriterCSV;
 public abstract class TagOp implements Function<File, Mp3> {
 
 	private FinderMp3Tag finderTag = null;
+	private final Set<String> renamedTargets = new HashSet<>();
 	
 	public TagOp(boolean forceFindTag) {
 		super();
@@ -39,7 +44,6 @@ public abstract class TagOp implements Function<File, Mp3> {
 				ret = execute(f);
 			}
 			
-			Files.deleteIfExists(new File(getNamePlusOriginal(f.getAbsolutePath())).toPath());
 			b.setOutput(ret != null ? ret.getNome() : null);
 			
 		} catch (Exception e) {
@@ -47,7 +51,7 @@ public abstract class TagOp implements Function<File, Mp3> {
 			b.setError(e.getMessage());
 		}
 		write(b);
-		return null;
+		return ret;
 	}
 
 	public void write(BeanOperationFile b) {
@@ -56,6 +60,21 @@ public abstract class TagOp implements Function<File, Mp3> {
 		} catch (IOException e) {
 			ControlloreBase.getLog().log(Level.SEVERE, e.getMessage(), e);
 		}
+	}
+
+	protected File safeRenameInRun(File parentDir, File original, Tag tagNew) {
+		File target = Renamer.buildRenamedFile(parentDir, original, tagNew);
+		if (!UtilOp.isSameFile(original, target)) {
+			String key = target.getAbsoluteFile().toPath().normalize().toString();
+			if (!renamedTargets.add(key)) {
+				String message = MessageFormat.format(
+						"-> Collisione nel batch: piu file generano lo stesso nome {0}. Rinomina annullata per {1}",
+						target.getAbsolutePath(), original.getAbsolutePath());
+				ControlloreBase.getLog().severe(message);
+				throw new Mp3Exception(message);
+			}
+		}
+		return Renamer.safeRename(parentDir, original, tagNew);
 	}
 
 	public Mp3 execute(File f) throws IOException, TagException {

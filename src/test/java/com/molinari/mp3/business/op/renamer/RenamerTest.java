@@ -3,6 +3,7 @@ package com.molinari.mp3.business.op.renamer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import com.molinari.mp3.business.Mp3Exception;
+import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.objects.Tag;
 import com.molinari.mp3.business.objects.TagUtil;
 
@@ -123,6 +126,41 @@ public class RenamerTest {
 
 		assertEquals(source, result);
 		assertTrue(source.exists());
+	}
+
+	@Test
+	public void operationTagDetectsCollisionWithinBatch() throws IOException {
+		File dir = folder.newFolder("music");
+		File first = new File(dir, "a.mp3");
+		File second = new File(dir, "b.mp3");
+		Files.write(first.toPath(), "first".getBytes(StandardCharsets.UTF_8));
+		Files.write(second.toPath(), "second".getBytes(StandardCharsets.UTF_8));
+
+		Renamer renamer = new Renamer(false, "key");
+		renamer.operationTag(mp3WithFile(first, new TestTag("Artist", "Title")));
+
+		try {
+			renamer.operationTag(mp3WithFile(second, new TestTag("Artist", "Title")));
+			fail("Attesa collisione nel batch");
+		} catch (Mp3Exception expected) {
+		}
+
+		File target = new File(dir, "Artist - Title.mp3");
+		assertTrue(target.exists());
+		assertEquals("first", new String(Files.readAllBytes(target.toPath()), StandardCharsets.UTF_8));
+		assertTrue(second.exists());
+		assertEquals("second", new String(Files.readAllBytes(second.toPath()), StandardCharsets.UTF_8));
+	}
+
+	private Mp3 mp3WithFile(final File file, final Tag tag) {
+		Mp3 mp3 = new Mp3() {
+			@Override
+			public Tag getTag() {
+				return tag;
+			}
+		};
+		mp3.setFile(file);
+		return mp3;
 	}
 
 	private static final class TestTag implements Tag {

@@ -6,7 +6,6 @@ import com.molinari.mp3.business.objects.Mp3;
 import com.molinari.mp3.business.op.KeyHolder;
 import com.molinari.mp3.business.op.PathCreator;
 import com.molinari.mp3.business.op.TagOp;
-import com.molinari.mp3.business.op.renamer.Renamer;
 
 public class Tidier extends TagOp {
 
@@ -26,7 +25,7 @@ public class Tidier extends TagOp {
 	@Override
 	protected Mp3 operationTag(Mp3 mp3) {
 		final File cartellaAlbum = PathCreator.createPath(mp3.getTag(), output);
-		File renamed = Renamer.safeRename(cartellaAlbum, mp3.getMp3file(), mp3.getTag());
+		File renamed = safeRenameInRun(cartellaAlbum, mp3.getMp3file(), mp3.getTag());
 		mp3.setFile(renamed);
 		mp3.setNome(renamed.getName());
 		return mp3;
