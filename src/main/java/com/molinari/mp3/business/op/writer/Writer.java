@@ -13,6 +13,7 @@ import com.molinari.mp3.business.op.TagOp;
 public class Writer extends TagOp{
 
 	private String fileToWrite;
+	private boolean outputInitialized;
 
 	public Writer(boolean forceFindTag, String fileToWrite, String key) {
 		super(forceFindTag);
@@ -26,7 +27,8 @@ public class Writer extends TagOp{
 		String artista = CheckFile.checkSingleTag(tag.getArtistaPrincipale());
 		String traccia = CheckFile.checkSingleTag(tag.getTraccia());
 		String riga = artista.toUpperCase() + " - " + traccia.toUpperCase();
-		Mp3ReaderUtil.scriviFileSuPiuRighe(new File(fileToWrite), Lists.newArrayList(riga));
+		Mp3ReaderUtil.scriviFileSuPiuRighe(new File(fileToWrite), Lists.newArrayList(riga), outputInitialized);
+		outputInitialized = true;
 		return mp3;
 	}
 	

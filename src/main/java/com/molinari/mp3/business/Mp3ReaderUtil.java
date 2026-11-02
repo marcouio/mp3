@@ -45,6 +45,10 @@ public class Mp3ReaderUtil {
 		UtilIo.scriviFileSuPiuRighe(file, righe);
 	}
 
+	public static void scriviFileSuPiuRighe(final File file, final List<String> righe, final boolean append) {
+		UtilIo.scriviFileSuPiuRighe(file, righe, append);
+	}
+
 	public static Document createDocument(final File xml) throws ParserConfigurationException, SAXException, IOException {
 		final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
